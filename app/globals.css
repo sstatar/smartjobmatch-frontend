@@ -1,26 +1,89 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+    /* ===== Primitive Colors ===== */
+    --color-black-100: #000000;
+    --color-black-200: #222222;
+
+    --color-white-100: #ffffff;
+
+    --color-gray-100: #f0f0f0;
+    --color-gray-200: #393939;
+
+    --color-green-100: #7abb5a;
+
+    --color-blue-100: #161159;
+    --color-blue-200: #001b74;
+
+    --color-cream-100: #f0ecde;
+
+    /* ===== Font Family ===== */
+    --font-sans: var(--font-inter);
+
+    /* ===== Font Size Scale ===== */
+    --font-size-0: 0.625rem;
+    --font-size-1: 0.75rem;
+    --font-size-2: 0.9375rem;
+    --font-size-3: 1rem;
+    --font-size-4: 1.125rem;
+    --font-size-5: 1.25rem;
+    --font-size-6: 1.5rem;
+    --font-size-7: 1.75rem;
+    --font-size-8: 2.25rem;
+    --font-size-9: 2.8125rem;
+
+    /* ===== Primitive Radius ===== */
+    --radius-1: 10px;
+    --radius-2: 15px;
+    --radius-3: 20px;
+    --radius-4: 45px;
+    --radius-full: 9999px;
+
+    /* ===== Primitive Font Weight ===== */
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+    /* ===== Semantic Colors ===== */
+    --color-primary: var(--color-blue-200);
+    --color-secondary: var(--color-white-100);
+    --color-tertiary: var(--color-cream-100);
+    --color-accent: var(--color-gray-200);
+    --color-accent-2: var(--color-gray-100);
+    --color-success: var(--color-green-100);
+
+    /* ===== Semantic Radius ===== */
+    --radius-sm: var(--radius-1);
+    --radius-md: var(--radius-2);
+    --radius-lg: var(--radius-3);
+    --radius-xl: var(--radius-4);
+    --radius-pill: var(--radius-full);
+
+    /* ===== Semantic Font Size ===== */
+    --text-heading-1: var(--font-size-9);
+    --text-heading-2: var(--font-size-8);
+    --text-heading-3: var(--font-size-6);
+    --text-heading-4: var(--font-size-5);
+    --text-heading-5: var(--font-size-3);
+
+    --text-subtitle-1: var(--font-size-5);
+    --text-subtitle-2: var(--font-size-3);
+
+    --text-button-1: var(--font-size-5);
+    --text-button-2: var(--font-size-2);
+    --text-button-3: var(--font-size-0);
+
+    --text-logo-1: var(--font-size-6);
+
+    /* ===== Semantic Font Weight ===== */
+    --weight-heading: var(--font-weight-bold);
+    --weight-subtitle: var(--font-weight-semibold);
+    --weight-button: var(--font-weight-semibold);
+    --weight-body: var(--font-weight-regular);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme {
 }
