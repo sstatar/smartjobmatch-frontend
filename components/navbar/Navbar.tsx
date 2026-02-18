@@ -2,24 +2,28 @@
 
 import DefaultNavbar from "./DefaultNavbar";
 import AuthNavbar from "./AuthNavbar";
-import DashboardNavbar from "./DashboardNavbar";
+import DashboardNavbar, { DashboardTab } from "./DashboardNavbar";
 
 export type NavbarVariant = "default" | "auth" | "dashboard";
 
 type NavbarProps = {
-  variant?: NavbarVariant;
+    variant?: NavbarVariant;
+    activedTab?: DashboardTab;
 };
 
-export default function Navbar({ variant = "default" }: NavbarProps) {
-  const variants = {
-    default: <DefaultNavbar />,
-    auth: <AuthNavbar />,
-    dashboard: <DashboardNavbar />,
-  };
+export default function Navbar({
+    variant = "default",
+    activedTab,
+}: NavbarProps) {
+    const variants = {
+        default: <DefaultNavbar />,
+        auth: <AuthNavbar />,
+        dashboard: <DashboardNavbar activedTab={activedTab} />,
+    };
 
-  return (
-    <nav className="w-full h-[72px] flex items-center px-6 border-b border-accent-2">
-      {variants[variant]}
-    </nav>
-  );
+    return (
+        <nav className="w-full h-[72px] flex items-center px-6 border-b border-accent-2">
+            {variants[variant]}
+        </nav>
+    );
 }

@@ -3,30 +3,46 @@
 import Logo from "@/components/ui/Logo";
 import Button from "@/components/ui/Button";
 
-export default function DashboardNavbar() {
-  return (
-    <>
-      {/* Left */}
-      <div className="flex-1 items-center gap-4">
-        {/* Sidebar toggle icon */}
-        <Logo />
-      </div>
+export type DashboardTab = "jobs" | "saved" | "applied";
 
-      {/* Center - Search */}
-      <div className="flex-1 flex justify-center">
-        
-          <Button>Jobs</Button>
-          <Button>saved</Button>
-          <Button>applied</Button>
-        </div>
-    
+export default function DashboardNavbar({
+    activedTab,
+}: {
+    activedTab?: DashboardTab;
+}) {
+    return (
+        <>
+            {/* Left */}
+            <div className="flex-1 items-center gap-4">
+                {/* Sidebar toggle icon */}
+                <Logo />
+            </div>
 
-      {/* Right */}
-      <div className="flex-1 items-center flex justify-end gap-4">
-        {/* Notification Icon */}
-        <Button variant="secondary">Post Job</Button>
-        {/* Avatar */}
-      </div>
-    </>
-  );
+            {/* Center - Search */}
+            <div className="flex-1 flex justify-center gap-6">
+                <Button
+                    variant={activedTab === "jobs" ? "primary" : "tertiary"}
+                >
+                    Jobs
+                </Button>
+                <Button
+                    variant={activedTab === "saved" ? "primary" : "tertiary"}
+                >
+                    saved
+                </Button>
+                <Button
+                    variant={activedTab === "applied" ? "primary" : "tertiary"}
+                >
+                    applied
+                </Button>
+            </div>
+
+            {/* Right */}
+            <div className="flex-1 items-center flex justify-end gap-4">
+                {/* Notification Icon */}
+                {/* <Button variant="secondary">Post Job</Button> */}
+                search |{/* Avatar */} avatar
+            </div>
+        </>
+    );
 }
