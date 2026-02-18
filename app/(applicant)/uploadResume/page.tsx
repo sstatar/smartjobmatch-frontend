@@ -10,12 +10,12 @@ export default function UploadResume() {
             <Navbar variant="auth"></Navbar>
 
             <div className="flex flex-col items-center gap-16">
-                <h1 className="text-accent text-heading-3 font-[var(--weight-heading)]">
+                <h1 className="text-accent text-heading-2 font-[var(--weight-heading)]">
                     Would you like to personalize your search by uploading a
                     resume?
                 </h1>
 
-                <div className=" flex items-center justify-center border border-accent p-14 rounded-sm">
+                <div className=" flex items-center justify-center border border-accent p-14 rounded-sm min-w-[386px]">
                     <div className=" flex flex-col items-center justify-center gap-10 ">
                         <ContentCircle>
                             <IconDownload className="w-15 h-15 text-accent" />
