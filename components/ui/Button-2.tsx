@@ -1,9 +1,10 @@
-
+" use client";
 type ButtonSecondProps = {
     children: React.ReactNode;
     onClick?: () => void;
     variant?: "primary" | "secondary" | "tertiary";
     disabled?: boolean;
+    className?: string;
 };
 
 export default function ButtonSecond({
@@ -11,9 +12,10 @@ export default function ButtonSecond({
     onClick,
     variant = "primary",
     disabled = false,
+    className = "",
 }: ButtonSecondProps) {
     const base =
-        "h-[56px] inline-flex items-center justify-center gap-2 px-6 rounded-xl text-button-2 font-[var(--weight-button)] transition";
+        "h-[56px] inline-flex items-center justify-center gap-2 px-7.5 rounded-xl text-button-1 font-[var(--weight-button)] transition";
     const variants = {
         primary: "bg-success text-secondary",
         secondary: "bg-primary text-secondary",
@@ -24,7 +26,7 @@ export default function ButtonSecond({
         <button
             onClick={onClick}
             disabled={disabled}
-            className={`${base} ${variants[variant]} ${
+            className={`${base} ${className} ${variants[variant]} ${
                 disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
             }`}
         >
