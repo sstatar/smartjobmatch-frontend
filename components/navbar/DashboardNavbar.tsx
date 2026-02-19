@@ -5,6 +5,13 @@ import Button from "@/components/ui/Button";
 
 export type DashboardTab = "jobs" | "saved" | "applied";
 
+// TODO: count of each tab, e.g. saved jobs, applied jobs is from backend
+const eachTabCount = {
+    // jobs: 10,
+    saved: 6,
+    applied: 7,
+};
+
 export default function DashboardNavbar({
     activedTab,
 }: {
@@ -27,11 +34,19 @@ export default function DashboardNavbar({
                 </Button>
                 <Button
                     variant={activedTab === "saved" ? "primary" : "tertiary"}
+                    count={
+                        activedTab == "saved" ? undefined : eachTabCount.saved
+                    }
                 >
                     saved
                 </Button>
                 <Button
                     variant={activedTab === "applied" ? "primary" : "tertiary"}
+                    count={
+                        activedTab == "applied"
+                            ? undefined
+                            : eachTabCount.applied
+                    }
                 >
                     applied
                 </Button>
