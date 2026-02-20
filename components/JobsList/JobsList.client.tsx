@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import JobCard from "../ui/JobCard";
-import JobDetail from "../JobDetail";
+import JobCard from "./JobCard";
+import JobDetail from "./JobDetail";
 import { AiAnalysisResults } from "./JobAppliedList.client";
 
 export interface JobCardData {
-    id: number;
+    id: string;
     title: string;
     description: string;
     salaryMin: number | null;
@@ -86,6 +86,7 @@ export default function JobsListClient({ jobs }: { jobs: JobCardData[] }) {
 
             <div className="jobs-detail w-2/3">
                 <JobDetail
+                    key={selectedJob?.id || "empty-job"}
                     job={selectedJob}
                     aiAnalysisResult={selectedJob?.aiAnalysisResults?.[0]}
                 />

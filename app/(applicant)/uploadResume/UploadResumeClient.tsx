@@ -46,7 +46,9 @@ export default function UploadResumeClient() {
                             file={file}
                             onFileSelect={(f) => setFile(f)}
                             onPreview={() => setStep("preview")}
-                            onAnalyze={() => {if (file) handleAnalyze(file);}}
+                            onAnalyze={() => {
+                                if (file) handleAnalyze(file);
+                            }}
                         />
                     </>
                 )}

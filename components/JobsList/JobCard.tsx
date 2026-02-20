@@ -1,6 +1,6 @@
 import BookmarkIcon from "@/public/svgs/bookmark.svg";
-import CircularProgress from "./CircularProgress";
-import { JobCardData } from "../JobsList/JobsList.client";
+import CircularProgress from "../ui/CircularProgress";
+import { JobCardData } from "./JobsList.client";
 
 interface JobCardProps {
     jobData: JobCardData;
