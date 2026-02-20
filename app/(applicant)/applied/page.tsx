@@ -1,6 +1,6 @@
 import JobsList from "@/components/JobsList/JobList.server";
 import Navbar from "@/components/navbar/Navbar";
-import Textbox from "@/components/Textbox";
+import Textbox from "@/components/ui/Textbox";
 import LocationIcon from "@/public/svgs/location.svg";
 import SearchIcon from "@/public/svgs/search.svg";
 

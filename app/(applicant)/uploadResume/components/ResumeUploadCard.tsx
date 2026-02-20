@@ -14,7 +14,12 @@ type ResumeUploadCardProps = {
     onPreview: () => void;
 };
 
-export default function ResumeUploadCard({ onAnalyze, onPreview, onFileSelect, file}: ResumeUploadCardProps )  {
+export default function ResumeUploadCard({
+    onAnalyze,
+    onPreview,
+    onFileSelect,
+    file,
+}: ResumeUploadCardProps) {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const handleClick = () => {
@@ -37,7 +42,12 @@ export default function ResumeUploadCard({ onAnalyze, onPreview, onFileSelect, f
                 <div className="absolute top-6 right-6">
                     <Cross
                         className="cursor-pointer"
-                        onClick={() => onFileSelect(null)}
+                        onClick={() => {
+                            onFileSelect(null);
+                            if (inputRef.current) {
+                                inputRef.current.value = "";
+                            }
+                        }}
                     />
                 </div>
             )}
@@ -50,8 +60,9 @@ export default function ResumeUploadCard({ onAnalyze, onPreview, onFileSelect, f
                     <IconDownload className="w-12 h-12 text-accent" />
                 </ContentCircle>
                 {file && (
-                    <div className="flex gap-2 items-center"
-                    onClick={onPreview}
+                    <div
+                        className="flex gap-2 items-center"
+                        onClick={onPreview}
                     >
                         <CheckIcon className="w-5 h-5 text-success" />
                         <span className="underline text-primary font-medium">

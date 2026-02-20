@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import ResumeUploadCard from "@/app/(applicant)/uploadResume/components/ResumeUploadCard";
-import SkipButton from "@/components/SkipButton";
+import SkipButton from "@/components/ui/SkipButton";
 import ProgressBar from "@/components/ui/ProgressBar";
 import { useRouter } from "next/navigation";
 import ShowResumePreview from "@/components/ui/ShowResumePreview";
+import { analyzeResume } from "@/app/(applicant)/uploadResume/service/resumeService";
 
 type Step = "upload" | "preview" | "analyzing";
 
@@ -15,21 +16,25 @@ export default function UploadResumeClient() {
     const [file, setFile] = useState<File | null>(null);
     const [progress, setProgress] = useState(0);
 
-    const handleAnalyze = async (file: File) => {
-        setStep("analyzing");
-        setProgress(0);
+    const handleAnalyze = async (selectedFile: File) => {
+        try {
+            setStep("analyzing");
+            const result = await analyzeResume(selectedFile, (percent) => {
+                setProgress(percent);
+            });
 
-        let value = 0;
 
-        const interval = setInterval(() => {
-            value += 10;
-            setProgress(value);
+            console.log("Analysis Result:", result);
 
-            if (value >= 100) {
-                clearInterval(interval);
+            setTimeout(() => {
                 router.push("/");
-            }
-        }, 300);
+            }, 500);
+        } catch (error) {
+            console.error("Error analyzing resume:", error);
+            alert("Sorry, an error occurred while analyzing your data. Please try again.");
+            setFile(null);
+            setStep("upload");
+        }
     };
 
     return (
@@ -46,7 +51,9 @@ export default function UploadResumeClient() {
                             file={file}
                             onFileSelect={(f) => setFile(f)}
                             onPreview={() => setStep("preview")}
-                            onAnalyze={() => {if (file) handleAnalyze(file);}}
+                            onAnalyze={() => {
+                                if (file) handleAnalyze(file);
+                            }}
                         />
                     </>
                 )}
