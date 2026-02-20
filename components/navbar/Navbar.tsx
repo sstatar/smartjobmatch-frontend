@@ -11,7 +11,7 @@ type NavbarProps = {
     activedTab?: DashboardTab;
 };
 
-export default function Navbar({
+export default async function Navbar({
     variant = "default",
     activedTab,
 }: NavbarProps) {
@@ -22,7 +22,7 @@ export default function Navbar({
     };
 
     return (
-        <nav className="w-full h-[72px] flex items-center px-6 border-b border-accent-2">
+        <nav className="w-full h-18 flex items-center px-6 border-b border-accent-2">
             {variants[variant]}
         </nav>
     );

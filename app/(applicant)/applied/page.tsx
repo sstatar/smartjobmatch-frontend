@@ -7,7 +7,7 @@ import SearchIcon from "@/public/svgs/search.svg";
 export default function Page() {
     return (
         <div>
-            <Navbar variant="dashboard" activedTab="jobs" />
+            <Navbar variant="dashboard" activedTab="applied" />
 
             <div className="page flex flex-col gap-8 m-12">
                 <div className="search flex gap-2 justify-center">
@@ -26,7 +26,7 @@ export default function Page() {
                 </div>
 
                 <div>
-                    <JobsList />
+                    <JobsList queryType="applied" />
                 </div>
             </div>
         </div>

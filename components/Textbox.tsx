@@ -20,10 +20,19 @@ export default function Textbox({
     const borderClass = `border border-transparent focus:outline-none focus:ring-1 focus:ring-accent focus:border-transparent`;
     const base = `${borderClass} bg-accent-2 p-2 ${children ? "pl-10" : "pl-4"} w-full h-full`;
 
+    const enhancedChildren = React.Children.map(children, (child) => {
+        if (React.isValidElement<{ className?: string }>(child)) {
+            return React.cloneElement(child, {
+                className: `absolute w-6 h-6 left-3 top-1/2 -translate-y-1/2 ${child.props.className ?? ""}`,
+            });
+        }
+        return child;
+    });
+
     return (
         <div className={`${widthClass} ${heightClass}`}>
             <label className="relative flex items-center w-full h-full">
-                {children}
+                {enhancedChildren}
                 <input
                     type="text"
                     className={`${base} ${className}`}
