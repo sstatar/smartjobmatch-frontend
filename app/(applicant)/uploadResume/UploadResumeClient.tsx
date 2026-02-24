@@ -23,15 +23,16 @@ export default function UploadResumeClient() {
                 setProgress(percent);
             });
 
-
             console.log("Analysis Result:", result);
 
             setTimeout(() => {
-                router.push("/");
+                router.push("/home");
             }, 500);
         } catch (error) {
             console.error("Error analyzing resume:", error);
-            alert("Sorry, an error occurred while analyzing your data. Please try again.");
+            alert(
+                "Sorry, an error occurred while analyzing your data. Please try again.",
+            );
             setFile(null);
             setStep("upload");
         }

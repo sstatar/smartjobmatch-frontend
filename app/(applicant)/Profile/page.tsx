@@ -1,15 +1,20 @@
 "use client";
 
 import ButtonMenu from "@/components/ui/ButtonMenu";
-import InfoTag from "@/components/ui/InfoTag";
 import Profile from "@/public/svgs/profile.svg";
-import ProfileSectionWrapper from "./(ProfileSectionDisplay)/ProfileSectionWrapper";
-import PersonalInfoDisplay from "./(ProfileSectionDisplay)/(Content)/PersonalInfoDisplay";
-import { use } from "react";
 import EducationDisplay from "./(ProfileSectionDisplay)/(Content)/EducationDisplay";
-import WorkExperienceDisplay from "./(ProfileSectionDisplay)/(Content)/WorkExperienceDisplay";
+import PersonalInfoDisplay from "./(ProfileSectionDisplay)/(Content)/PersonalInfoDisplay";
 import SkillsDisplay from "./(ProfileSectionDisplay)/(Content)/SkillsDisplay";
-const mockSkills = ["React", "Next.js", "Tailwind CSS", "TypeScript", "Figma", "Node.js"];
+import WorkExperienceDisplay from "./(ProfileSectionDisplay)/(Content)/WorkExperienceDisplay";
+import ProfileSectionWrapper from "./(ProfileSectionDisplay)/ProfileSectionWrapper";
+const mockSkills = [
+    "React",
+    "Next.js",
+    "Tailwind CSS",
+    "TypeScript",
+    "Figma",
+    "Node.js",
+];
 
 export default function page() {
     // 💡 สร้างข้อมูลจำลองตรงนี้
@@ -54,46 +59,45 @@ export default function page() {
 
     return (
         <div className="flex items-start justify-center">
-            
             <ButtonMenu text="Profile" icon={Profile}></ButtonMenu>
             <div className="flex flex-col">
-            <div>
-                <h1 className=" text-heading-2">Profile</h1>
-            </div>
-            <ProfileSectionWrapper
-                title="Personal Information"
-                onEdit={() => alert("Edit Clicked!")}
-                isEmpty={false}
-            >
-                <PersonalInfoDisplay Data={mockUserData} />
-            </ProfileSectionWrapper>
+                <div>
+                    <h1 className=" text-heading-2">Profile</h1>
+                </div>
+                <ProfileSectionWrapper
+                    title="Personal Information"
+                    onEdit={() => alert("Edit Clicked!")}
+                    isEmpty={false}
+                >
+                    <PersonalInfoDisplay Data={mockUserData} />
+                </ProfileSectionWrapper>
 
-            {/* Section 2: Education (เพิ่มเข้ามาใหม่) */}
-            <ProfileSectionWrapper
-                title="Education"
-                onEdit={() => alert("Edit Education")}
-                isEmpty={mockEducationData.length === 0}
-            >
-                <EducationDisplay data={mockEducationData} />
-            </ProfileSectionWrapper>
+                {/* Section 2: Education (เพิ่มเข้ามาใหม่) */}
+                <ProfileSectionWrapper
+                    title="Education"
+                    onEdit={() => alert("Edit Education")}
+                    isEmpty={mockEducationData.length === 0}
+                >
+                    <EducationDisplay data={mockEducationData} />
+                </ProfileSectionWrapper>
 
-            {/* Section 3: Work Experience (ใหม่!) */}
-            <ProfileSectionWrapper
-                title="Work Experience"
-                onEdit={() => alert("Edit Work Experience")}
-                isEmpty={mockWorkData.length === 0}
-            >
-                <WorkExperienceDisplay data={mockWorkData} />
-            </ProfileSectionWrapper>
+                {/* Section 3: Work Experience (ใหม่!) */}
+                <ProfileSectionWrapper
+                    title="Work Experience"
+                    onEdit={() => alert("Edit Work Experience")}
+                    isEmpty={mockWorkData.length === 0}
+                >
+                    <WorkExperienceDisplay data={mockWorkData} />
+                </ProfileSectionWrapper>
 
-            {/* Section 4: Skills (ใหม่!) */}
-            <ProfileSectionWrapper
-                title="Skills"
-                onEdit={() => alert("Edit Skills")}
-                isEmpty={mockSkills.length === 0}
-            >
-                <SkillsDisplay skills={mockSkills} />
-            </ProfileSectionWrapper>
+                {/* Section 4: Skills (ใหม่!) */}
+                <ProfileSectionWrapper
+                    title="Skills"
+                    onEdit={() => alert("Edit Skills")}
+                    isEmpty={mockSkills.length === 0}
+                >
+                    <SkillsDisplay skills={mockSkills} />
+                </ProfileSectionWrapper>
             </div>
         </div>
     );

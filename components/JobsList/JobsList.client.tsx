@@ -61,6 +61,13 @@ export interface JobCardData {
 export default function JobsListClient({ jobs }: { jobs: JobCardData[] }) {
     const [selectedJob, setSelectedJob] = useState<JobCardData | null>(null);
 
+    if (!jobs)
+        return (
+            <div>
+                <p>Loading...</p>
+            </div>
+        );
+
     jobs.sort((a, b) => {
         const aScore = a.aiAnalysisResults?.length
             ? a.aiAnalysisResults[0].aiScore
