@@ -11,7 +11,6 @@ export async function aiAnalyzeJob(jobId: string) {
         `${API_BASE_URL}/job-posts/aiMatchAnalysis?jobId=${jobId}`,
         {
             headers: {
-                "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             },
         },

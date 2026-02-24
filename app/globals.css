@@ -87,9 +87,6 @@
     --weight-body: var(--font-weight-regular);
 }
 
-@theme {
-}
-
 .markdown > * {
     all: revert;
 }

@@ -7,8 +7,6 @@ export async function applyForJob(jobId: string) {
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
 
-    console.log({ jobPostId: jobId });
-
     const response = await fetch(`${API_BASE_URL}/applications`, {
         method: "POST",
         headers: {

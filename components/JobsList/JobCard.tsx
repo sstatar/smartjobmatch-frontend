@@ -10,6 +10,7 @@ interface JobCardProps {
      * Changes border to black and adds a medium shadow.
      */
     isSelected?: boolean;
+    showBookmark?: boolean;
     onClick?: () => void;
 }
 
@@ -17,6 +18,7 @@ export default function JobCard({
     jobData,
     aiScore = undefined,
     isSelected = false, // Default เป็น false (โหมดปกติ)
+    showBookmark = true,
     onClick,
 }: JobCardProps) {
     if (aiScore === undefined) {
@@ -27,7 +29,7 @@ export default function JobCard({
 
     return (
         <div
-            className={`job-card flex gap-1.75 p-4 w-full rounded-lg border bg-white transition-all duration-200 ease-in-out
+            className={`job-card cursor-pointer flex gap-1.75 p-4 w-full rounded-lg border bg-white transition-all duration-200 ease-in-out
             ${
                 isSelected
                     ? "border-black shadow-xl" // Styles เมื่อถูกเลือก (ขอบดำ + เงาเพิ่มขึ้น)
@@ -50,8 +52,8 @@ export default function JobCard({
                         {jobData.location?.country}
                     </div>
                     <div className="salary font-medium text-subtitle-2">
-                        {jobData.salaryMin !== null &&
-                        jobData.salaryMax !== null &&
+                        {jobData.salaryMin &&
+                        jobData.salaryMax &&
                         jobData.currency
                             ? `${jobData.salaryMin.toLocaleString()} - ${jobData.salaryMax.toLocaleString()} ${jobData.currency}`
                             : "Salary not specified"}
@@ -77,7 +79,9 @@ export default function JobCard({
                 </div>
             </div>
             {/* <BookmarkIcon className="w-6 h-6 text-accent" /> */}
-            <BookmarkIcon className="w-6 h-6 text-accent stroke-2 fill-current" />
+            {showBookmark && (
+                <BookmarkIcon className="w-6 h-6 text-accent stroke-2 fill-current" />
+            )}
         </div>
     );
 }

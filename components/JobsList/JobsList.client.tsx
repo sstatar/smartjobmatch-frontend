@@ -9,15 +9,15 @@ export interface JobCardData {
     id: string;
     title: string;
     description: string;
-    salaryMin: number | null;
-    salaryMax: number | null;
-    currency: string | null;
+    salaryMin?: number;
+    salaryMax?: number;
+    currency?: string;
     isActive: boolean;
     workplaceType: string;
     postedAt: string;
-    skillWeight: number;
-    educationWeight: number;
-    experienceWeight: number;
+    skillWeight?: number;
+    educationWeight?: number;
+    experienceWeight?: number;
     companyId: string;
     locationId?: string;
     employedTypeId?: string;
@@ -26,7 +26,7 @@ export interface JobCardData {
     company: {
         id: string;
         name: string;
-        logoUrl: string | null;
+        logoUrl?: string;
     };
     location?: {
         id: string;
@@ -48,10 +48,7 @@ export interface JobCardData {
         keywords: string[];
     };
     skillRequirements: Array<{
-        jobPostId: string;
-        skillId: string;
         skill: {
-            id: string;
             name: string;
         };
     }>;
