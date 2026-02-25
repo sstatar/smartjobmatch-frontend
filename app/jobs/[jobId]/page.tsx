@@ -1,9 +1,10 @@
 import { JobPost } from "@/app/actions/company";
-import { getJobById } from "./service/jobs";
-import ReactMarkdown from "react-markdown";
+import CandidateCard from "@/components/CandidateCard";
 import JobCard from "@/components/JobsList/JobCard";
 import Button from "@/components/ui/Button-2";
-import CandidateCard from "@/components/CandidateCard";
+import Link from "next/link";
+import { getJobById } from "./service/jobs";
+import JobDetailCard from "@/components/JobDetailCard";
 
 export default async function Page({
     params,
@@ -30,23 +31,20 @@ export default async function Page({
                         }}
                         showBookmark={false}
                     />
-                    <Button variant="secondary">
-                        Find matching candidates
-                    </Button>
+                    <Link href={`/jobs/${job.id}/candidates`}>
+                        <Button variant="secondary">
+                            Find matching candidates
+                        </Button>
+                    </Link>
                 </div>
-                <div className="w-2/3 flex flex-col p-4 border border-gray-300 rounded-lg">
-                    <h1 className="text-heading-3 font-semibold">
-                        Job details
-                    </h1>
-                    <div className="markdown">
-                        <ReactMarkdown>{job.description}</ReactMarkdown>
-                    </div>
+                <div className="w-2/3">
+                    <JobDetailCard content={job.description} />
                 </div>
             </section>
             <section id="candidates">
                 <h1 className="text-heading-3 font-semibold">Candidates</h1>
                 <div className="mt-4 flex gap-3">
-                    {job.applications
+                    {job.applications.length > 0
                         ? job.applications.map((candidate) => (
                               <CandidateCard
                                   key={`${candidate.id}`}
@@ -58,6 +56,7 @@ export default async function Page({
                                       firstName:
                                           candidate.profile.user.firstName,
                                       lastName: candidate.profile.user.lastName,
+                                      email: candidate.profile.user.email,
                                       summary:
                                           candidate.aiAnalysisResult.summary,
                                       aiScore:

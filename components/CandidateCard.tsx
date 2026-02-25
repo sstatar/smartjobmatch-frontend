@@ -5,6 +5,7 @@ export type CandidateProps = {
     profileId: string;
     profilePictureUrl?: string;
     firstName: string;
+    email: string;
     lastName: string;
     summary: string;
     aiScore: number;
@@ -21,8 +22,11 @@ export default function CandidateCard({
             <div className="flex justify-between">
                 {candidate.profilePictureUrl ? (
                     <Image
+                        width={400}
+                        height={400}
                         src={candidate.profilePictureUrl}
                         alt={candidate.firstName}
+                        className="w-20 h-20 rounded-full object-cover border"
                     />
                 ) : (
                     <div className="w-20 h-20 bg-gray-300 rounded-full" />
@@ -33,6 +37,7 @@ export default function CandidateCard({
                 <h1>
                     {candidate.firstName} {candidate.lastName}
                 </h1>
+                <h1>{candidate.email}</h1>
                 <h1>
                     status :{" "}
                     <span className="text-subtitle-2 font-thin text-blue-500">
