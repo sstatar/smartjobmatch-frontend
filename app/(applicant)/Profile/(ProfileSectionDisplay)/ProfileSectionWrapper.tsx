@@ -1,6 +1,7 @@
 import Pencil from "@/public/svgs/pencil.svg";
 
 type WrapperProps = {
+    id: string;
     title: string;
     onEdit: () => void;
     children: React.ReactNode; // ข้อมูลที่จะแสดงในแต่ละ Section
@@ -8,6 +9,7 @@ type WrapperProps = {
 };
 
 export default function ProfileSectionWrapper({
+    id,
     title,
     onEdit,
     children,
@@ -16,7 +18,7 @@ export default function ProfileSectionWrapper({
     if (isEmpty) return null;
 
     return (
-        <div className="w-full max-w-[974px] px-6 pt-6 pb-4 md:py-6 flex flex-col items-center">
+        <div id={id} className="w-full max-w-[974px] px-6 pt-6 md:pt-6 flex flex-col items-center">
             
             <div className="w-full">
                 <div className="flex justify-between items-center mb-4">
@@ -31,8 +33,9 @@ export default function ProfileSectionWrapper({
 
                 <div className="mb-6">{children}</div>
             </div>
-
-            <div className="w-full max-w-[831px] border-b border-gray-200" />
+            {id === "skills" ? "": <div className="w-full max-w-[850px] border-b border-accent-2" />
+            }
+            
         </div>
     );
 }
