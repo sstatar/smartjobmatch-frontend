@@ -5,6 +5,8 @@ type ButtonProps = {
     variant?: "primary" | "secondary" | "tertiary";
     disabled?: boolean;
     count?: number;
+    type?: "button" | "submit" | "reset";
+    form?: string;
 };
 
 export default function Button({
@@ -12,7 +14,9 @@ export default function Button({
     onClick,
     variant = "primary",
     disabled = false,
-    count
+    count,
+    type = "button",
+    form,
 }: ButtonProps) {
     const base =
         "h-[38px] inline-flex items-center justify-center gap-2 px-6 rounded-xl text-button-2 font-[var(--weight-button)] transition";
@@ -24,6 +28,8 @@ export default function Button({
 
     return (
         <button
+            type={type}
+            form={form}
             onClick={onClick}
             disabled={disabled}
             className={`${base} ${variants[variant]} ${

@@ -13,7 +13,7 @@ export default function ButtonMenu({
     isActive = false,
 }: IconButtonProps) {
     const baseStyles =
-        "flex  justify-start gap-2 px-4 py-2 rounded-sm font-medium transition-all duration-200 active:scale-95 w-full max-w-[158px]";
+        "flex  justify-start gap-2 px-4 py-3 rounded-sm font-medium transition-all duration-200 active:scale-95 w-full";
     
         const activeStyles = "bg-accent-2 !text-accent"
 
@@ -28,7 +28,7 @@ export default function ButtonMenu({
             className={`${baseStyles} ${isActive ? activeStyles : variants[variant]}`}
         >
             <Icon className="w-6 h-6 text-accent" />
-            <span className="text-accent">{text}</span>
+            <span className="text-accent font-(--weight-button)">{text}</span>
         </button>
     );
 }

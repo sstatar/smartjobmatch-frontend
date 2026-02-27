@@ -1,99 +1,65 @@
-"use client";
+import Navbar from "@/components/navbar/Navbar";
+import ProfileContent from "./(ProfileSectionDisplay)/ProfileContent";
+import Sidebar from "@/components/sideBar/Sidebar";
+import { cookies } from "next/headers";
+import { API_BASE_URL } from "@/lib/api-config";
 
-import ButtonMenu from "@/components/ui/ButtonMenu";
-import InfoTag from "@/components/ui/InfoTag";
-import Profile from "@/public/svgs/profile.svg";
-import ProfileSectionWrapper from "./(ProfileSectionDisplay)/ProfileSectionWrapper";
-import PersonalInfoDisplay from "./(ProfileSectionDisplay)/(Content)/PersonalInfoDisplay";
-import { use } from "react";
-import EducationDisplay from "./(ProfileSectionDisplay)/(Content)/EducationDisplay";
-import WorkExperienceDisplay from "./(ProfileSectionDisplay)/(Content)/WorkExperienceDisplay";
-import SkillsDisplay from "./(ProfileSectionDisplay)/(Content)/SkillsDisplay";
-const mockSkills = ["React", "Next.js", "Tailwind CSS", "TypeScript", "Figma", "Node.js"];
+export default async function page() {
+    // 1. ล้วงมือเข้าไปหยิบ Token จากกระเป๋า Cookie (ฝั่ง Server ทำได้สบายๆ)
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
 
-export default function page() {
-    // 💡 สร้างข้อมูลจำลองตรงนี้
-    const mockUserData = {
-        name: "Sasiporn Chatthongchai",
-        address: "Bangkok, Thailand",
-        mail: "sasiporn.c@example.com",
-        phone: "098-XXX-XXXX",
-        linkedin: "linkedin.com/in/sasiporn",
-        github: "github.com/sasiporn-c",
-    };
-
-    const mockEducationData = [
-        {
-            id: 1,
-            period: "2022-09 ↳ Present",
-            institution: "King Mongkut's Institute of Technology Ladkrabang",
-            degree: "Bachelor's degree in Computer Science", // ปรับจาก Master ตามที่คุณเรียนจริง
-            gpax: "3.00",
-        },
-    ];
-
-    interface WorkItem {
-        id: number;
-        period: string;
-        company: string;
-        position: string;
-        summary?: string;
-        descriptions?: string[];
+    if (!token) {
+        // ถ้าไม่มี Token แปลว่ายังไม่ล็อกอิน โยนกลับไปหน้า Login ได้เลย
+        return <div>กรุณาล็อกอินก่อนเข้าใช้งาน</div>;
     }
 
-    const mockWorkData: WorkItem[] = [
-        {
-            id: 1,
-            period: "2022-09 ↳ Present",
-            company: "Google",
-            position: "Frontend Developer",
-            summary: "some summary from this work",
-            descriptions: ["Job description", "Job description"],
-        },
-    ];
+    let profileData = null;
+
+    try {
+        // 2. ใช้ fetch ของเซิร์ฟเวอร์ยิงไปหา Backend พร้อมแนบ Token ไปใน Header
+        const res = await fetch(`${API_BASE_URL}/profiles/me`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`, // 💡 แนบ Token ตรงนี้!
+            },
+            cache: "no-store", // สั่งให้ดึงข้อมูลใหม่เสมอ ไม่ต้องจำของเก่า
+        });
+
+        if (res.ok) {
+            profileData = await res.json();
+        } else {
+            console.error("ดึงข้อมูลไม่สำเร็จ Status:", res.status);
+        }
+    } catch (error) {
+        console.error("เกิดข้อผิดพลาดในการต่อ API:", error);
+    }
+
+    // 3. ถ้า API ล่ม หรือหาข้อมูลไม่เจอ
+    if (!profileData) {
+        return <div>ไม่พบข้อมูลโปรไฟล์ หรือ เซิร์ฟเวอร์มีปัญหา</div>;
+    }
 
     return (
-        <div className="flex items-start justify-center">
-            
-            <ButtonMenu text="Profile" icon={Profile}></ButtonMenu>
-            <div className="flex flex-col">
-            <div>
-                <h1 className=" text-heading-2">Profile</h1>
-            </div>
-            <ProfileSectionWrapper
-                title="Personal Information"
-                onEdit={() => alert("Edit Clicked!")}
-                isEmpty={false}
-            >
-                <PersonalInfoDisplay Data={mockUserData} />
-            </ProfileSectionWrapper>
+        <div className="h-screen flex flex-col">
+            <Navbar variant="dashboard" />
+            <div className="flex flex-1 overflow-hidden gap-4 justify-center px-8">
+                <Sidebar />
 
-            {/* Section 2: Education (เพิ่มเข้ามาใหม่) */}
-            <ProfileSectionWrapper
-                title="Education"
-                onEdit={() => alert("Edit Education")}
-                isEmpty={mockEducationData.length === 0}
-            >
-                <EducationDisplay data={mockEducationData} />
-            </ProfileSectionWrapper>
-
-            {/* Section 3: Work Experience (ใหม่!) */}
-            <ProfileSectionWrapper
-                title="Work Experience"
-                onEdit={() => alert("Edit Work Experience")}
-                isEmpty={mockWorkData.length === 0}
-            >
-                <WorkExperienceDisplay data={mockWorkData} />
-            </ProfileSectionWrapper>
-
-            {/* Section 4: Skills (ใหม่!) */}
-            <ProfileSectionWrapper
-                title="Skills"
-                onEdit={() => alert("Edit Skills")}
-                isEmpty={mockSkills.length === 0}
-            >
-                <SkillsDisplay skills={mockSkills} />
-            </ProfileSectionWrapper>
+                <div className="flex flex-1 flex-col mt-2.5 width-full overflow-hidden">
+                    <div>
+                        <h1 className=" text-heading-200 font-(--weight-heading) text-accent mx-10 mb-1.5">
+                            Profile
+                        </h1>
+                    </div>
+                    <ProfileContent
+                        userData={profileData.personal || {}}
+                        educationData={profileData.education || []}
+                        workData={profileData.workExperience || []}
+                        skills={profileData.skills || []}
+                    />
+                </div>
             </div>
         </div>
     );

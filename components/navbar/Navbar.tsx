@@ -11,7 +11,7 @@ type NavbarProps = {
     activedTab?: DashboardTab;
 };
 
-export default async function Navbar({
+export default function Navbar({
     variant = "default",
     activedTab,
 }: NavbarProps) {
