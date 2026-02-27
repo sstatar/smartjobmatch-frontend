@@ -1,0 +1,30 @@
+"use client";
+
+import { JobCardData } from "./JobsList/JobsList.client";
+import JobCard from "./JobsList/JobCard";
+import { useRouter } from "next/navigation";
+
+export default function CompanyJobList({
+    jobsData,
+}: {
+    jobsData: JobCardData[];
+}) {
+    const router = useRouter();
+    return (
+        <div className="flex flex-col gap-3">
+            <h1 className="text-heading-4 font-semibold">Jobs</h1>
+            <div className="jobs flex flex-col gap-2">
+                {jobsData &&
+                    jobsData.map((job) => (
+                        <div key={job.id} className="job w-3/4">
+                            <JobCard
+                                jobData={job}
+                                showBookmark={false}
+                                onClick={() => router.push(`/jobs/${job.id}`)}
+                            />
+                        </div>
+                    ))}
+            </div>
+        </div>
+    );
+}

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import JobCard from "../ui/JobCard";
+import JobCard from "./JobCard";
 import { JobCardData } from "./JobsList.client";
-import JobDetail from "../JobDetail";
+import JobDetail from "./JobDetail";
 
 export type AiAnalysisResults = {
     id: string;
@@ -50,6 +50,7 @@ export default function JobsAppliedListClient({
 
             <div className="jobs-detail w-2/3">
                 <JobDetail
+                    key={selectedJob?.id || "empty-job"}
                     job={selectedJob?.jobPost ?? null}
                     isApplied={true}
                     aiAnalysisResult={selectedJob?.aiAnalysisResult}

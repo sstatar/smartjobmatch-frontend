@@ -1,23 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import JobCard from "../ui/JobCard";
-import JobDetail from "../JobDetail";
+import JobCard from "./JobCard";
+import JobDetail from "./JobDetail";
 import { AiAnalysisResults } from "./JobAppliedList.client";
 
 export interface JobCardData {
-    id: number;
+    id: string;
     title: string;
     description: string;
-    salaryMin: number | null;
-    salaryMax: number | null;
-    currency: string | null;
+    salaryMin?: number;
+    salaryMax?: number;
+    currency?: string;
     isActive: boolean;
     workplaceType: string;
     postedAt: string;
-    skillWeight: number;
-    educationWeight: number;
-    experienceWeight: number;
+    skillWeight?: number;
+    educationWeight?: number;
+    experienceWeight?: number;
     companyId: string;
     locationId?: string;
     employedTypeId?: string;
@@ -26,7 +26,7 @@ export interface JobCardData {
     company: {
         id: string;
         name: string;
-        logoUrl: string | null;
+        logoUrl?: string;
     };
     location?: {
         id: string;
@@ -48,10 +48,7 @@ export interface JobCardData {
         keywords: string[];
     };
     skillRequirements: Array<{
-        jobPostId: string;
-        skillId: string;
         skill: {
-            id: string;
             name: string;
         };
     }>;
@@ -60,6 +57,13 @@ export interface JobCardData {
 
 export default function JobsListClient({ jobs }: { jobs: JobCardData[] }) {
     const [selectedJob, setSelectedJob] = useState<JobCardData | null>(null);
+
+    if (!jobs)
+        return (
+            <div>
+                <p>Loading...</p>
+            </div>
+        );
 
     jobs.sort((a, b) => {
         const aScore = a.aiAnalysisResults?.length
@@ -86,6 +90,7 @@ export default function JobsListClient({ jobs }: { jobs: JobCardData[] }) {
 
             <div className="jobs-detail w-2/3">
                 <JobDetail
+                    key={selectedJob?.id || "empty-job"}
                     job={selectedJob}
                     aiAnalysisResult={selectedJob?.aiAnalysisResults?.[0]}
                 />

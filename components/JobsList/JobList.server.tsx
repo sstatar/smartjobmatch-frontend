@@ -24,7 +24,9 @@ export default async function JobsList({
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
         },
-    }).then((res) => res.json());
+    })
+        .then((res) => res.json())
+        .catch(console.error);
 
     const JobClient = {
         all: <JobListClient jobs={jobs} />,
