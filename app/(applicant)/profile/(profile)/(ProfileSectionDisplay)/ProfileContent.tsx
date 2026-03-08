@@ -3,7 +3,7 @@
 import ProfileTabs from "./ProfileTabs";
 import ProfileSectionWrapper from "./ProfileSectionWrapper";
 import PersonalInfoDisplay from "./(Content)/PersonalInfoDisplay";
-import EducationDisplay from "./(Content)/EducationDisplay";
+import EducationDisplay, { EducationProps } from "./(Content)/EducationDisplay";
 import WorkExperienceDisplay from "./(Content)/WorkExperienceDisplay";
 import SkillsDisplay from "./(Content)/SkillsDisplay";
 import { useState } from "react";
@@ -12,63 +12,46 @@ import PersonalForm from "../(formUser)/(FromContent)/PersonalForm";
 import EducationForm from "../(formUser)/(FromContent)/EducationForm";
 import WorkExperienceForm from "../(formUser)/(FromContent)/WorkExperienceForm";
 import SkillsForm from "../(formUser)/(FromContent)/SkillsForm";
+import { WorkExperienceProps } from "./(Content)/WorkExperienceDisplay";
 
-interface UserData {
-    name: string;
+interface PersonalData {
+    firstName: string;
+    lastName: string;
     address?: string;
-    mail?: string;
-    phone?: string;
+    email: string;
+    phone: string;
     linkedin?: string;
     github?: string;
 }
 
-interface EducationItem {
-    id: number;
-    period: string;
-    institution: string;
-    degree: string;
-    gpax?: string;
-}
-
-interface WorkItem {
-    id: number;
-    period: string;
-    company: string;
-    position: string;
-    summary?: string;
-    descriptions?: string[];
-}
-
 // 2. ปรับ ProfileContentProps ให้ใช้ Interface ที่เราสร้างขึ้น
 type ProfileContentProps = {
-    userData: UserData; // ไม่ใช่ string[]
-    educationData: EducationItem[]; // เป็น Array ของ Object
-    workData: WorkItem[]; // เป็น Array ของ Object
+    personalData: PersonalData; // ไม่ใช่ string[]
+    educationData: EducationProps[]; // เป็น Array ของ Object
+    workData: WorkExperienceProps[]; // เป็น Array ของ Object
     skills: string[]; // อันนี้เป็น string[] ถูกต้องแล้ว
 };
 
 export default function ProfileContent({
-    userData,
+    personalData,
     educationData,
     workData,
     skills,
 }: ProfileContentProps) {
     const [editingSection, setEditingSection] = useState<string | null>(null);
 
-    const handleEdit = (section: string) => {
-        alert(`Editing ${section}`);
-    };
 
     return (
         <div className="flex flex-col bg-accent-2 p-6 rounded-xl overflow-hidden">
             <ProfileTabs />
             <div className="bg-secondary rounded-b-2xl overflow-y-auto flex-1 scroll-smooth">
+                {/* Section 1: Personal Information */}
                 <ProfileSectionWrapper
                     id="personal"
-                    title="Personal Information"
+                    title="Personal"
                     onEdit={() => setEditingSection("personal")}
                 >
-                    <PersonalInfoDisplay Data={userData} />
+                    <PersonalInfoDisplay data={personalData} />
                 </ProfileSectionWrapper>
                 {/* Section 2: Education (เพิ่มเข้ามาใหม่) */}
                 <ProfileSectionWrapper

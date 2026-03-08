@@ -1,8 +1,11 @@
 import Navbar from "@/components/navbar/Navbar";
-import ProfileContent from "./(ProfileSectionDisplay)/ProfileContent";
 import Sidebar from "@/components/sideBar/Sidebar";
 import { cookies } from "next/headers";
 import { API_BASE_URL } from "@/lib/api-config";
+import ResumeFileCard from "@/components/ui/ResumeFileCard";
+import ProfileVisibilitySelect from "@/components/ui/ProfileVisibilitySelect";
+import ButtonSecond from "@/components/ui/Button-2";
+
 
 export default async function page() {
     // 1. ล้วงมือเข้าไปหยิบ Token จากกระเป๋า Cookie (ฝั่ง Server ทำได้สบายๆ)
@@ -29,6 +32,7 @@ export default async function page() {
 
         if (res.ok) {
             profileData = await res.json();
+            
         } else {
             console.error("ดึงข้อมูลไม่สำเร็จ Status:", res.status);
         }
@@ -50,15 +54,20 @@ export default async function page() {
                 <div className="flex flex-1 flex-col mt-2.5 width-full overflow-hidden">
                     <div>
                         <h1 className=" text-heading-200 font-(--weight-heading) text-accent mx-10 mb-1.5">
-                            Profile
+                           Resume
                         </h1>
+
+                        <div className = "flex bg-accent-2 p-6 rounded-lg">
+                            <div className="flex flex-col gap-3 bg-secondary p-6 rounded-lg w-full items-start">
+                                
+                                <ProfileVisibilitySelect></ProfileVisibilitySelect>
+                                <ResumeFileCard resumeName="Resume.pdf" dateAdded="01/01/2023"></ResumeFileCard>
+                                <ButtonSecond >Analyze Resume</ButtonSecond>
+                            </div>
+
+                        </div>
                     </div>
-                    <ProfileContent
-                        userData={profileData.personal || {}}
-                        educationData={profileData.education || []}
-                        workData={profileData.workExperience || []}
-                        skills={profileData.skills || []}
-                    />
+                    
                 </div>
             </div>
         </div>
