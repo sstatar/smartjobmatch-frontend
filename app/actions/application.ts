@@ -16,10 +16,12 @@ export async function applyForJob(jobId: string) {
         body: JSON.stringify({ jobPostId: jobId }),
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-        return { error: "เกิดข้อผิดพลาดในการสมัครงาน" };
+        console.log(data);
+        return { error: `failed to apply for this job (${data.message})` };
     }
 
-    const data = await response.json();
     return { success: true, data }; // ส่งคืน data กลับไปให้ UI
 }

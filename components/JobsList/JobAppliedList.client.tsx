@@ -28,24 +28,28 @@ export default function JobsAppliedListClient({
 }) {
     const [selectedJob, setSelectedJob] = useState<ApplyJobsData | null>(null);
 
-    jobs.sort((a, b) => {
-        return b.aiAnalysisResult.aiScore - a.aiAnalysisResult.aiScore;
-    });
-
-    console.log(jobs);
+    const sortedJobs = Array.isArray(jobs)
+        ? jobs.sort((a, b) => {
+              return b.aiAnalysisResult.aiScore - a.aiAnalysisResult.aiScore;
+          })
+        : [];
 
     return (
         <div className="jobs flex gap-4">
             <div className="jobs-list flex w-1/3 flex-col gap-4">
-                {jobs.map((job) => (
-                    <JobCard
-                        key={job.id}
-                        aiScore={job.aiAnalysisResult?.aiScore}
-                        jobData={job.jobPost}
-                        isSelected={selectedJob?.id === job.id}
-                        onClick={() => setSelectedJob(job)}
-                    />
-                ))}
+                {sortedJobs.length > 0 ? (
+                    sortedJobs.map((job) => (
+                        <JobCard
+                            key={job.id}
+                            aiScore={job.aiAnalysisResult?.aiScore}
+                            jobData={job.jobPost}
+                            isSelected={selectedJob?.id === job.id}
+                            onClick={() => setSelectedJob(job)}
+                        />
+                    ))
+                ) : (
+                    <p>No jobs found</p>
+                )}
             </div>
 
             <div className="jobs-detail w-2/3">

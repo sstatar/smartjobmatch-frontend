@@ -14,11 +14,14 @@ export async function getJobById(jobId: string) {
             },
         });
 
+        const data = await response.json();
+
         if (!response.ok) {
-            return { error: "failed to fetch this job post id" };
+            return {
+                error: `failed to fetch this job post id (${data.message})`,
+            };
         }
 
-        const data = await response.json();
         return { success: true, data }; // ส่งคืน data กลับไปให้ UI
     } catch (_) {
         return { error: "failed to fetch this job post id" };

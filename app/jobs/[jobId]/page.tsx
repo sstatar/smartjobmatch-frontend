@@ -18,6 +18,11 @@ export default async function Page({
         experienceLevel: { id: string; name: string };
         skillRequirements: { skill: { name: string } }[];
     } = res.data;
+    const candidates = Array.isArray(job.applications)
+        ? job.applications.sort(
+              (a, b) => b.aiAnalysisResult.aiScore - a.aiAnalysisResult.aiScore,
+          )
+        : [];
 
     return job ? (
         <div className="my-10 mx-20 flex flex-col gap-4">
@@ -31,6 +36,8 @@ export default async function Page({
                         }}
                         showBookmark={false}
                     />
+                    {/* TODO: add loading screen while finding candidates*/}
+                    {/* TODO: hide the button if user role is applicant */}
                     <Link href={`/jobs/${job.id}/candidates`}>
                         <Button variant="secondary">
                             Find matching candidates
@@ -44,8 +51,9 @@ export default async function Page({
             <section id="candidates">
                 <h1 className="text-heading-3 font-semibold">Candidates</h1>
                 <div className="mt-4 flex gap-3">
-                    {job.applications.length > 0
-                        ? job.applications.map((candidate) => (
+                    {/* TODO: if user role is applicant, hide this part */}
+                    {candidates.length > 0
+                        ? candidates.map((candidate) => (
                               <CandidateCard
                                   key={`${candidate.id}`}
                                   candidate={{
@@ -62,6 +70,8 @@ export default async function Page({
                                       aiScore:
                                           candidate.aiAnalysisResult.aiScore,
                                       status: candidate.status,
+                                      aiAnalysisResult:
+                                          candidate.aiAnalysisResult,
                                   }}
                               />
                           ))
