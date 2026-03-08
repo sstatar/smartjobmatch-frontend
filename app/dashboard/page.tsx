@@ -28,7 +28,7 @@ export default async function DashboardPage() {
     return (
         <div className="mt-10 text-center">
             <h1>ยินดีต้อนรับ</h1>
-            <h2>id: {userData.id},</h2>
+            <h2>user id: {userData.id},</h2>
             <h2>email: {userData.email},</h2>
             <h2>role: {userData.role}</h2>
             <p>ข้อมูลโปรไฟล์ของคุณถูกดึงมาอย่างปลอดภัยบนเซิร์ฟเวอร์!</p>

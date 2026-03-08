@@ -1,34 +1,29 @@
+// app/jobs/page.tsx
+import JobQueryInput from "@/components/JobQueryInput";
 import JobsList from "@/components/JobsList/JobList.server";
 import Navbar from "@/components/navbar/Navbar";
-import Textbox from "@/components/ui/Textbox";
-import LocationIcon from "@/public/svgs/location.svg";
-import SearchIcon from "@/public/svgs/search.svg";
 
-export default function Page() {
+export default async function Page(props: {
+    searchParams?: Promise<{
+        query?: string;
+        location?: string;
+        page?: string;
+    }>;
+}) {
+    const searchParams = await props.searchParams;
+    const query = searchParams?.query || "";
+    const location = searchParams?.location || "";
+    const currentPage = Number(searchParams?.page) || 1; // แปลงเป็นตัวเลข ถ้าไม่มีให้เริ่มที่ 1
+
     return (
-        <div>
+        <>
             <Navbar variant="dashboard" activedTab="jobs" />
+            <div className="page flex flex-col gap-8 mt-8 m-12">
+                <JobQueryInput />
 
-            <div className="page flex flex-col gap-8 m-12">
-                <div className="search flex gap-2 justify-center">
-                    <Textbox
-                        className="rounded-tl-full rounded-bl-full"
-                        placeholder="Job Title, Keyword, or company"
-                    >
-                        <SearchIcon className="text-accent w-5 h-5" />
-                    </Textbox>
-                    <Textbox
-                        className="rounded-tr-full rounded-br-full"
-                        placeholder="Location"
-                    >
-                        <LocationIcon className="text-accent w-5 h-5" />
-                    </Textbox>
-                </div>
-
-                <div>
-                    <JobsList />
-                </div>
+                {/* ส่ง currentPage ไปยิง API เพื่อดึง data และ totalPages */}
+                <JobsList query={query} page={currentPage} />
             </div>
-        </div>
+        </>
     );
 }

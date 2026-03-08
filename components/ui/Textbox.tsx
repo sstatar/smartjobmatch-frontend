@@ -5,6 +5,8 @@ export type TextboxProps = {
     height?: string;
     className?: string;
     placeholder?: string;
+    defaultValue?: string;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     children?: React.ReactNode;
 };
 
@@ -13,6 +15,8 @@ export default function Textbox({
     height,
     className,
     placeholder = "",
+    defaultValue = "",
+    onChange,
     children,
 }: TextboxProps) {
     const widthClass = width ? `w-[${width}]` : "w-[400px]";
@@ -37,6 +41,8 @@ export default function Textbox({
                     type="text"
                     className={`${base} ${className}`}
                     placeholder={placeholder}
+                    defaultValue={defaultValue}
+                    onChange={onChange}
                 />
             </label>
         </div>
