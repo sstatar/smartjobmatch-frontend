@@ -9,7 +9,7 @@ export const analyzeResume = async (
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await axios.post("/api/analyze-resume", formData, {
+    const response = await axios.post("/api/analyze-resumes", formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         },

@@ -22,7 +22,7 @@ export async function login(prevState: AuthState, formData: FormData) {
 
     if (!response.ok) {
         // Return ค่ากลับไปโดยมีโครงสร้างตรงกับ AuthState
-        return { error: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" };
+        return { error: "Email or password is not correct" };
     }
 
     const data = await response.json();

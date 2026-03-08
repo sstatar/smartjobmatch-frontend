@@ -16,10 +16,11 @@ export async function aiAnalyzeJob(jobId: string) {
         },
     );
 
+    const data = await response.json();
+
     if (!response.ok) {
-        return { error: "เกิดข้อผิดพลาดในการวิเคราะห์ข้อมูล" };
+        return { error: `failed to analyze this job id (${data.message})` };
     }
 
-    const data = await response.json();
     return { success: true, data }; // ส่งคืน data กลับไปให้ UI
 }

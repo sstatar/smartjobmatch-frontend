@@ -12,7 +12,7 @@ export default function RecommendCandidateList({
     );
     return (
         <div className="flex flex-col gap-4">
-            {candidates.map((candidate) => (
+            {sortedCandidate.map((candidate) => (
                 <RecommendCandidateCard
                     key={candidate.id}
                     candidate={candidate}

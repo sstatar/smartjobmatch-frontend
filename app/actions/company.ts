@@ -3,6 +3,18 @@
 import { cookies } from "next/headers";
 import { API_BASE_URL } from "@/lib/api-config";
 
+export type AiAnalysisResult = {
+    aiScore: number;
+    summary: string;
+    strengths: string;
+    weaknesses: string;
+    reasonForPoints: string;
+    resumeUrlUsed: string;
+    snapshottedEducation: string;
+    snapshottedExperience: string;
+    snapshottedSkills: string;
+};
+
 export type JobPost = {
     id: string;
     title: string;
@@ -42,10 +54,7 @@ export type JobPost = {
             };
         };
         appliedAt: string;
-        aiAnalysisResult: {
-            aiScore: number;
-            summary: string;
-        };
+        aiAnalysisResult: AiAnalysisResult;
     }>;
 };
 

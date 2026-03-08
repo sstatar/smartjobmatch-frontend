@@ -40,11 +40,14 @@ export async function getCandidateRecommendations(jobId: string) {
             },
         );
 
+        const data = await response.json();
+
         if (!response.ok) {
-            return { error: "failed to fetch candidate recommendations." };
+            return {
+                error: `failed to fetch candidate recommendations. (${data.message}) `,
+            };
         }
 
-        const data = await response.json();
         return { success: true, data }; // ส่งคืน data กลับไปให้ UI
     } catch (_) {
         return { error: "failed to fetch candidate recommendations." };
