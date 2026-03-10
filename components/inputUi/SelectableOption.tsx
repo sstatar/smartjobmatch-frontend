@@ -1,5 +1,3 @@
-"use client";
-
 interface SelectableOptionProps {
     option: string;
     isSelected?: boolean;

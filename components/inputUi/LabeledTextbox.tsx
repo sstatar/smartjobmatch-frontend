@@ -1,7 +1,3 @@
-"use client";
-
-import { useState } from "react";
-
 interface LabeledTextboxProps {
     label?: string;
     type?: string;

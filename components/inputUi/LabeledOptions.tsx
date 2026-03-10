@@ -1,5 +1,3 @@
-"use client";
-
 import SelectableOption from "./SelectableOption";
 
 interface Option {

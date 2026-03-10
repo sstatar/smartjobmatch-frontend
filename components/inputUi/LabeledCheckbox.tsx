@@ -1,5 +1,3 @@
-"use client";
-
 interface LabeledTextboxProps {
     label?: string;
     isChecked?: boolean;
