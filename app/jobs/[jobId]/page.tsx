@@ -1,10 +1,10 @@
 import { JobPost } from "@/app/actions/company";
 import CandidateCard from "@/components/CandidateCard";
+import JobDetailCard from "@/components/JobDetailCard";
 import JobCard from "@/components/JobsList/JobCard";
 import Button from "@/components/ui/Button-2";
 import Link from "next/link";
 import { getJobById } from "./service/jobs";
-import JobDetailCard from "@/components/JobDetailCard";
 
 export default async function Page({
     params,
@@ -13,11 +13,13 @@ export default async function Page({
 }) {
     const { jobId } = await params;
     const res = await getJobById(jobId);
+    const isOwner = res.data?.isOwner;
     const job: JobPost & {
         company: { id: string; name: string; logoUrl?: string };
         experienceLevel: { id: string; name: string };
         skillRequirements: { skill: { name: string } }[];
     } = res.data;
+    if (!job) return <div className="text-center">Job not found</div>;
     const candidates = Array.isArray(job.applications)
         ? job.applications.sort(
               (a, b) => b.aiAnalysisResult.aiScore - a.aiAnalysisResult.aiScore,
@@ -35,49 +37,59 @@ export default async function Page({
                             categoryId: job.category.id,
                         }}
                         showBookmark={false}
+                        isOwner={isOwner}
                     />
                     {/* TODO: add loading screen while finding candidates*/}
                     {/* TODO: hide the button if user role is applicant */}
-                    <Link href={`/jobs/${job.id}/candidates`}>
-                        <Button variant="secondary">
-                            Find matching candidates
-                        </Button>
-                    </Link>
+                    {isOwner && (
+                        <>
+                            <Link href={`/jobs/${job.id}/candidates`}>
+                                <Button variant="secondary">
+                                    Find matching candidates
+                                </Button>
+                            </Link>
+                        </>
+                    )}
                 </div>
                 <div className="w-2/3">
                     <JobDetailCard content={job.description} />
                 </div>
             </section>
-            <section id="candidates">
-                <h1 className="text-heading-3 font-semibold">Candidates</h1>
-                <div className="mt-4 flex gap-3">
-                    {/* TODO: if user role is applicant, hide this part */}
-                    {candidates.length > 0
-                        ? candidates.map((candidate) => (
-                              <CandidateCard
-                                  key={`${candidate.id}`}
-                                  candidate={{
-                                      profileId: candidate.profileId,
-                                      profilePictureUrl:
-                                          candidate.profile.user
-                                              .profilePictureUrl,
-                                      firstName:
-                                          candidate.profile.user.firstName,
-                                      lastName: candidate.profile.user.lastName,
-                                      email: candidate.profile.user.email,
-                                      summary:
-                                          candidate.aiAnalysisResult.summary,
-                                      aiScore:
-                                          candidate.aiAnalysisResult.aiScore,
-                                      status: candidate.status,
-                                      aiAnalysisResult:
-                                          candidate.aiAnalysisResult,
-                                  }}
-                              />
-                          ))
-                        : "No candidates"}
-                </div>
-            </section>
+            {isOwner && (
+                <section id="candidates">
+                    <h1 className="text-heading-3 font-semibold">Candidates</h1>
+                    <div className="mt-4 flex gap-3">
+                        {/* TODO: if user role is applicant, hide this part */}
+                        {candidates.length > 0
+                            ? candidates.map((candidate) => (
+                                  <CandidateCard
+                                      key={`${candidate.id}`}
+                                      candidate={{
+                                          profileId: candidate.profileId,
+                                          profilePictureUrl:
+                                              candidate.profile.user
+                                                  .profilePictureUrl,
+                                          firstName:
+                                              candidate.profile.user.firstName,
+                                          lastName:
+                                              candidate.profile.user.lastName,
+                                          email: candidate.profile.user.email,
+                                          summary:
+                                              candidate.aiAnalysisResult
+                                                  .summary,
+                                          aiScore:
+                                              candidate.aiAnalysisResult
+                                                  .aiScore,
+                                          status: candidate.status,
+                                          aiAnalysisResult:
+                                              candidate.aiAnalysisResult,
+                                      }}
+                                  />
+                              ))
+                            : "No candidates"}
+                    </div>
+                </section>
+            )}
         </div>
     ) : (
         <div>{res.error}</div>

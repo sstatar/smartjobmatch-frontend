@@ -1,4 +1,4 @@
-// app/api/analyze-resumes/route.ts
+// app/api/job-posts/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import axios from "axios";
@@ -7,7 +7,7 @@ import { API_BASE_URL } from "@/lib/api-config";
 export async function POST(req: NextRequest) {
     try {
         // รับไฟล์ที่ส่งมาจาก Client
-        const formData = await req.formData();
+        const data = await req.json();
 
         // ดึง Token จาก Cookie (ทำงานบน Server ได้อย่างปลอดภัย)
         const cookieStore = await cookies();
@@ -21,37 +21,30 @@ export async function POST(req: NextRequest) {
         }
 
         // ส่งต่อไปยัง Backend หลักของคุณ
-        const response = await axios.post(
-            `${API_BASE_URL}/profiles`,
-            formData,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "multipart/form-data",
-                },
+        const response = await fetch(`${API_BASE_URL}/job-posts`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
             },
-        );
+            body: JSON.stringify(data),
+        }).then((res) => res.json());
 
         // ส่งผลลัพธ์กลับไปยัง Client
-        return NextResponse.json(response.data);
+        return NextResponse.json(response);
     } catch (error: unknown) {
         // 1. เปลี่ยนจาก any เป็น unknown
         // 2. ตรวจสอบก่อนว่าข้อผิดพลาดมาจาก Axios (เช่น 400, 401, 500) ใช่หรือไม่
         if (axios.isAxiosError(error)) {
             // TypeScript จะรับรู้แล้วว่านี่คือ AxiosError และอนุญาตให้ใช้ property อย่าง error.response ได้
-            console.error(
-                "Axios API Error:",
-                error.response?.data || error.message,
-            );
             return NextResponse.json(
-                { error: "Failed to analyze resume (API Error)" },
-                { status: error.response?.status || 500 },
+                { error: error.response?.data },
+                { status: error.response?.data.statusCode || 500 },
             );
         }
 
         // 3. ตรวจสอบว่าเป็นข้อผิดพลาดมาตรฐานของระบบหรือไม่ (เช่น หาไฟล์ไม่เจอ, Network หลุด)
         if (error instanceof Error) {
-            console.error("System Error:", error.message);
             return NextResponse.json(
                 { error: "Internal Server Error" },
                 { status: 500 },
@@ -59,7 +52,6 @@ export async function POST(req: NextRequest) {
         }
 
         // 4. กรณีที่เป็นข้อผิดพลาดรูปแบบอื่นที่ไม่ระบุชนิด
-        console.error("Unknown Error:", error);
         return NextResponse.json(
             { error: "An unexpected error occurred" },
             { status: 500 },
