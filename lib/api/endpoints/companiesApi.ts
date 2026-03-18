@@ -9,7 +9,7 @@ export type AiAnalysisResult = {
     resumeUrlUsed: string;
     snapshottedEducation: string;
     snapshottedExperience: string;
-    snapshottedSkills: string[];
+    snapshottedSkills: string | string[];
 };
 
 export interface ReasonForPoint {

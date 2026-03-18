@@ -3,10 +3,28 @@
 import CandidateCard from "@/components/CandidateCard";
 import JobDetailCard from "@/components/JobDetailCard";
 import JobCard from "@/components/JobsList/JobCard";
+import CandidateModal from "@/components/CandidateModal";
 import Button from "@/components/ui/Button-2";
 import { AiAnalysisResult, JobPost } from "@/lib/api/endpoints/companiesApi";
 import Link from "next/link";
 import { useState } from "react";
+
+export interface Candidate {
+    id: string;
+    status: string;
+    profileId: string;
+    profile: {
+        user: {
+            firstName: string;
+            lastName: string;
+            email: string;
+            phone: string;
+            profilePictureUrl?: string | undefined;
+        };
+    };
+    appliedAt: string;
+    aiAnalysisResult: AiAnalysisResult;
+}
 
 export interface JobPostDetailProps {
     job: JobPost & {
@@ -25,22 +43,7 @@ export interface JobPostDetailProps {
             };
         }[];
     };
-    candidates: {
-        id: string;
-        status: string;
-        profileId: string;
-        profile: {
-            user: {
-                firstName: string;
-                lastName: string;
-                email: string;
-                phone: string;
-                profilePictureUrl?: string | undefined;
-            };
-        };
-        appliedAt: string;
-        aiAnalysisResult: AiAnalysisResult;
-    }[];
+    candidates: Candidate[];
     isOwner?: boolean;
 }
 
@@ -49,9 +52,10 @@ export default function JobPostDetail({
     candidates,
     isOwner = false,
 }: JobPostDetailProps) {
-    const [open, setOpen] = useState(false);
+    const [selectedCandidate, setSelectedCandidate] =
+        useState<Candidate | null>(null);
     return (
-        <div className="my-10 mx-20 flex flex-col gap-4">
+        <div className="mb-10 mx-20 flex flex-col gap-4">
             <section id="job-description" className="flex gap-4">
                 <div className="banner w-1/3 flex flex-col gap-8 items-start">
                     <JobCard
@@ -108,12 +112,21 @@ export default function JobPostDetail({
                                           aiAnalysisResult:
                                               candidate.aiAnalysisResult,
                                       }}
+                                      onClick={() =>
+                                          setSelectedCandidate(candidate)
+                                      }
                                   />
                               ))
                             : "No candidates"}
                     </div>
                 </section>
             )}
+            <CandidateModal
+                key={selectedCandidate?.id}
+                isOpen={selectedCandidate != null}
+                onClose={() => setSelectedCandidate(null)}
+                candidate={selectedCandidate}
+            />
         </div>
     );
 }

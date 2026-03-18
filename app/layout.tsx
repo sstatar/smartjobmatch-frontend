@@ -26,8 +26,8 @@ export default function RootLayout({
             className={`${inter.variable} scroll-smooth scroll-pt-20`}
         >
             <body className="font-sans antialiased min-h-screen flex flex-col">
-                <Navbar />
-                <div className="mt-24 flex-1">{children}</div>
+                {/* <Navbar /> */}
+                <div className="flex-1">{children}</div>
             </body>
         </html>
     );

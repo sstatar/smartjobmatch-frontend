@@ -46,7 +46,7 @@ export default function EmployerNavbar({ user }: EmployerNavbarProps) {
                     </Link>
                 )}
                 {/* <PictureIcon
-                    imageUrl={user.profilePictureUrl}
+                    src={user.profilePictureUrl}
                     width={50}
                     height={50}
                 /> */}

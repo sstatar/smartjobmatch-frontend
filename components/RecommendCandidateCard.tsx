@@ -6,13 +6,13 @@ import CircularProgress from "./ui/CircularProgress";
 
 export default function RecommendCandidateCard({
     candidate,
+    onClick,
 }: {
     candidate: CandidateResponseType;
+    onClick?: () => void;
 }) {
     function handleCandidateCardClick() {
-        const data = JSON.stringify(candidate);
-        alert(candidate.user.email);
-        console.log(data);
+        if (onClick) onClick();
     }
 
     return (
@@ -22,7 +22,7 @@ export default function RecommendCandidateCard({
         >
             <div className="left w-1/6">
                 <PictureIcon
-                    imageUrl={candidate.user.profilePictureUrl}
+                    src={candidate.user.profilePictureUrl}
                     alt={candidate.user.firstName}
                     className="w-16 h-16 ml-2"
                 />
