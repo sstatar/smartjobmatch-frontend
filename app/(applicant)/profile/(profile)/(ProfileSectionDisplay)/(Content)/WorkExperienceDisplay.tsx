@@ -1,11 +1,15 @@
-import ArrowSmall from '@/public/svgs/arrow-small.svg';
+import ArrowSmall from "@/public/svgs/arrow-small.svg";
 export interface WorkExperienceProps {
-    id: number;
+    id: string;
     jobTitle: string;
     companyName: string;
-    description: string;
-    startDate: string;
-    endDate: string;
+    summary: string;
+    descriptions: string[];
+    startYear: number | null;
+    startMonth: string;
+    endYear: number | null;
+    endMonth: string;
+    isCurrent: boolean;
 }
 
 export default function WorkExperienceDisplay({
@@ -23,13 +27,31 @@ export default function WorkExperienceDisplay({
 
                     <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
-                            <span>
-                                {item.startDate}
-                            </span>
+                            {item.startYear && <span>{item.startYear}</span>}
+                            {item.startYear && item.startMonth && (
+                                <span>-</span>
+                            )}
+                            {item.startMonth && <span>{item.startMonth}</span>}
+
                             <ArrowSmall />
-                            <span>
-                                {item.endDate}
-                            </span>
+                            {item.isCurrent ||
+                            (!item.endYear && !item.endMonth) ? (
+                                <span className="text-accent font-bold">
+                                    Present
+                                </span>
+                            ) : (
+                                <>
+                                    {item.endYear && (
+                                        <span>{item.endYear}</span>
+                                    )}
+                                    {item.endYear && item.endMonth && (
+                                        <span>-</span>
+                                    )}
+                                    {item.endMonth && (
+                                        <span>{item.endMonth}</span>
+                                    )}
+                                </>
+                            )}
                         </div>
                         <h3 className="font-bold text-lg text-black">
                             {item.companyName}
@@ -38,20 +60,25 @@ export default function WorkExperienceDisplay({
                             {item.jobTitle}
                         </p>
 
-                        {item.description && (
+                        {item.summary && (
                             <p className="text-gray-600 text-sm mt-1">
-                                {item.description}
+                                {item.summary}
                             </p>
                         )}
 
+                        {/* {item.descriptions &&
+                            item.descriptions.map((des: string, index) => (
+                                <ul key={index}>  {des} </ul>
+                            ))} */}
+
                         {/* Job Description (Bullet Points) */}
-                        {/* {item.descriptions && item.descriptions.length > 0 && (
+                        {item.descriptions && item.descriptions.length > 0 && ( 
                             <ul className="list-disc ml-5 mt-2 text-sm text-gray-600 space-y-1">
                                 {item.descriptions.map((desc, index) => (
                                     <li key={index}>{desc}</li>
                                 ))}
                             </ul>
-                        )} */}
+                        )}
                     </div>
                 </div>
             ))}

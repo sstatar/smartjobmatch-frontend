@@ -6,7 +6,10 @@ import SkipButton from "@/components/ui/SkipButton";
 import ProgressBar from "@/components/ui/ProgressBar";
 import { useRouter } from "next/navigation";
 import ShowResumePreview from "@/components/ui/ShowResumePreview";
-import { analyzeResume } from "@/app/(applicant)/uploadResume/service/resumeService";
+import {
+    analyzeResumeAction,
+    uploadResumeAction,
+} from "@/app/actions/resume";
 
 type Step = "upload" | "preview" | "analyzing";
 
@@ -17,23 +20,55 @@ export default function UploadResumeClient() {
     const [progress, setProgress] = useState(0);
 
     const handleAnalyze = async (selectedFile: File) => {
+        setStep("analyzing");
+        setProgress(0);
+
+        // 💡 1. เปิดโหมด Fake Progress วิ่งทีละ 5% รันทุกๆ ครึ่งวินาที
+        const progressInterval = setInterval(() => {
+            setProgress((prev) => (prev >= 90 ? 90 : prev + 5));
+        }, 500);
+
         try {
-            setStep("analyzing");
-            const result = await analyzeResume(selectedFile, (percent) => {
-                setProgress(percent);
-            });
+            // 💡 2. Step 1: อัปโหลดไฟล์ไปที่ Backend ก่อน
+            const formData = new FormData();
+            formData.append("resume", selectedFile); // ชื่อ key "resume" ตามที่ uploadResumeAction รับ
 
-            console.log("Analysis Result:", result);
+            const uploadResult = await uploadResumeAction(formData);
+            if (!uploadResult.success) {
+                throw new Error(uploadResult.error);
+            }
 
+            // 💡 3. Step 2: สั่งให้ AI วิเคราะห์ไฟล์ที่เพิ่งอัปโหลด
+            const analyzeResult = await analyzeResumeAction();
+            if (!analyzeResult.success) {
+                throw new Error(analyzeResult.error);
+            }
+
+            // 💡 4. เมื่อทุกอย่างเสร็จสมบูรณ์ หยุดหลอดและกระชากไป 100%
+            clearInterval(progressInterval);
+            setProgress(100);
+            console.log("Analyze Success!", analyzeResult.data);
+
+            // รอให้ผู้ใช้เห็น 100% แป๊บนึง ค่อยเด้งไปหน้าโฮม
             setTimeout(() => {
-                router.push("/home");
-            }, 500);
+                router.push("/profile/resume");
+            }, 800);
         } catch (error) {
-            console.error("Error analyzing resume:", error);
-            alert(
-                "Sorry, an error occurred while analyzing your data. Please try again.",
-            );
-            setFile(null);
+            // 💡 1. ลบ : any ออก ปล่อยให้มันเป็น unknown ไป
+            clearInterval(progressInterval);
+            console.error("Error pipeline:", error);
+
+            // 💡 2. เช็คก่อนว่า error ที่โยนมาเป็นก้อน Error Object จริงไหม
+            let errorMessage = "เกิดข้อผิดพลาดบางอย่าง กรุณาลองใหม่"; // ข้อความกันเหนียว
+
+            if (error instanceof Error) {
+                errorMessage = error.message; // ถ้าเป็น Error ค่อยดึง .message มาใช้
+            } else if (typeof error === "string") {
+                errorMessage = error; // ถ้าโยนมาเป็น String ก็จับใส่เลย
+            }
+
+            alert(`Analysis failed: ${errorMessage}`);
+            setProgress(0);
             setStep("upload");
         }
     };

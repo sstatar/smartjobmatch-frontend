@@ -1,5 +1,7 @@
-import React, { useState } from "react";
 import InputBox from "@/components/ui/InputBox";
+import React, { useState } from "react";
+import { updateEducationAction } from "../../service/profileAction";
+import { EducationEntry, UpdateEducationRequest } from "../../service/type";
 
 // เพิ่ม id เข้ามาใน Type เพื่อให้ React แยกแยะกล่องข้อมูลแต่ละอันได้เวลาลบหรือแก้ไข
 export type EducationData = {
@@ -15,7 +17,7 @@ export type EducationData = {
 
 type EducationFormProps = {
     initialData?: EducationData[]; // เปลี่ยนมารับเป็น Array แทน
-    onSaveSuccess?: (data: EducationData[]) => void;
+    onSaveSuccess?: () => void;
 };
 
 // ==========================================
@@ -27,20 +29,7 @@ export default function EducationForm({
 }: EducationFormProps) {
     // State สำหรับเก็บประวัติการศึกษาเป็น Array (ถ้าไม่มีข้อมูลเก่า ให้สร้าง 1 กล่องเปล่าๆ รอไว้)
     const [educations, setEducations] = useState<EducationData[]>(() => {
-        return initialData && initialData.length > 0
-            ? initialData
-            : [
-                  {
-                      id: Date.now().toString(), // ใช้เวลาปัจจุบันสร้าง ID ไม่ซ้ำกัน
-                      schoolName:
-                          "King Mongkut's Institute of Technology Ladkrabang",
-                      major: "Computer Science",
-                      degreeType: "Master's degree",
-                      gpa: "3.00",
-                      startDate: "2022-09",
-                      isCurrent: true,
-                  },
-              ];
+        return initialData && initialData.length > 0 ? initialData : [];
     });
 
     // ฟังก์ชัน: เมื่อกดปุ่ม + Add Education
@@ -84,11 +73,90 @@ export default function EducationForm({
     };
 
     // ฟังก์ชัน: เมื่อกดปุ่ม Update ที่ SidePanel
-    const handleSaveAll = (e: React.FormEvent) => {
+    const handleSaveAll = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("ข้อมูลทั้งหมดที่เตรียมส่งให้ API:", educations);
-        alert("กำลังบันทึกข้อมูล Education ทั้งหมด...");
-        if (onSaveSuccess) onSaveSuccess(educations);
+        const getMonthName = (month: string) => {
+            if (!month) return "";
+            const monthIndex = parseInt(month) - 1;
+            const months = [
+                "JANUARY",
+                "FEBRUARY",
+                "MARCH",
+                "APRIL",
+                "MAY",
+                "JUNE",
+                "JULY",
+                "AUGUST",
+                "SEPTEMBER",
+                "OCTOBER",
+                "NOVEMBER",
+                "DECEMBER",
+            ];
+            return months[monthIndex] || "";
+        };
+
+        const getDegreeLevelCode = (degreeLevelName: string) => {
+            const degreeLevels = new Map<string, string>([
+                ["Bachelor's Degree", "BACHELOR"],
+                ["Master's Degree", "MASTER"],
+                ["Doctoral Degree", "DOCTORATE"],
+                ["Primary Education Level", "PRIMARY"],
+                ["Secondary Education Level", "SECONDARY"],
+            ]);
+            return degreeLevels.get(degreeLevelName) || "null";
+        };
+
+        // 1. Map ข้อมูลจาก State ในฟอร์ม ให้เป็นรูปแบบที่ Backend ต้องการ
+        const mappedEducations: EducationEntry[] = educations.map((edu) => {
+            const startDateRaw = edu.startDate || "";
+            const startParts = startDateRaw.includes("-")
+                ? startDateRaw.split("-")
+                : [null, null];
+            const sYear = startParts[0];
+            const sMonth = startParts[1];
+
+            // 2. เช็ควันจบ
+            const endDateRaw = edu.endDate || "";
+            const endParts = endDateRaw.includes("-")
+                ? endDateRaw.split("-")
+                : [null, null];
+            const gYear = endParts[0];
+            const gMonth = endParts[1];
+
+            return {
+                university: edu.schoolName || "",
+                degreeLevelCode: getDegreeLevelCode(edu.degreeType!), // หรือดึงจาก edu.degreeType ถ้าทำ Mapping ไว้
+                fieldOfStudy: edu.major || "",
+                startMonth: sMonth ? getMonthName(sMonth) : "",
+                startYear: sYear ? parseInt(sYear) : new Date().getFullYear(),
+                graduationMonth:
+                    edu.isCurrent || !gMonth ? null : getMonthName(gMonth),
+                graduationYear:
+                    edu.isCurrent || !gYear ? null : parseInt(gYear),
+                // degreeName: edu.degreeType || "", // หรือใส่ชื่อเต็มของปริญญา
+                gpa: parseFloat(edu.gpa || "0"),
+                isCurrent: edu.isCurrent || false,
+            };
+        });
+
+        // 2. ห่อด้วย Object "educations" ก่อนส่ง
+        const payload: UpdateEducationRequest = {
+            educations: mappedEducations,
+        };
+
+        payload.educations.forEach((edu) => {
+            console.log(edu);
+        });
+
+        // 3. ยิง Action
+        const result = await updateEducationAction(payload);
+
+        if (result.success) {
+            alert("บันทึกประวัติการศึกษาสำเร็จ!");
+            if (onSaveSuccess) onSaveSuccess();
+        } else {
+            alert("เกิดข้อผิดพลาดที่ไม่คาดคิด");
+        }
     };
 
     return (
@@ -114,7 +182,7 @@ export default function EducationForm({
             <button
                 type="button"
                 onClick={handleAdd}
-                className="flex items-center gap-2 px-4 py-2 mt-2 border border-gray-300 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 mt-2 border border-gray-300 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors cursor-pointer"
             >
                 <span className="text-lg leading-none">+</span> Add Education
             </button>
@@ -147,7 +215,7 @@ function EducationItem({
                 <button
                     type="button"
                     onClick={onDelete}
-                    className="p-1.5 text-gray-500 hover:bg-gray-200 rounded-full transition-colors"
+                    className="p-1.5 text-gray-500 hover:bg-gray-200 rounded-full transition-colors cursor-pointer"
                     title="Delete Education"
                 >
                     <svg
@@ -215,7 +283,7 @@ function EducationItem({
                     <InputBox
                         text="Start Date"
                         type="month"
-                        value={data.startDate || ""}
+                        value={data.startDate || ""} // 2020-01
                         onChange={(e) => onChange("startDate", e.target.value)}
                     />
                 </div>

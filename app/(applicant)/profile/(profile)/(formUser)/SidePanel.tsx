@@ -24,13 +24,13 @@ export default function SidePanel({
                 <div className="flex justify-between items-center p-6 border-b border-gray-100">
                     <h2 className="text-xl font-bold text-gray-800">{title}</h2>
                     <div className="flex gap-5">
-                        <Button type="submit" form="side-panel-form">
+                        <Button type="submit" form="side-panel-form" >
                             Update
                         </Button>
 
                         <button
                             onClick={() => onClose()}
-                            className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-600"
+                            className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-600 cursor-pointer"
                         >
                             ✕
                         </button>

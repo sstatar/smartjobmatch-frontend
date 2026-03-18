@@ -5,23 +5,23 @@ import IconMapPin from "@/public/svgs/iconMapMarker.svg";
 import IconMail from "@/public/svgs/iconMail.svg";
 import IconPhone from "@/public/svgs/iconPhone.svg";
 
-interface PersonalData {
+export interface PersonalDataProps {
     firstName?: string;
     lastName?: string;
     address?: string;
     email: string;
     phone?: string;
-    linkedin?: string;
-    github?: string;
+    linkedInUrl?: string;
+    githubUrl?: string;
 }
 
-export default function PersonalInfoDisplay({ data }: { data: PersonalData }) {
+export default function PersonalInfoDisplay({ data }: { data: PersonalDataProps }) {    
     const infoItems = [
         { text: data.address, icon: IconMapPin },
         { text: data.email, icon: IconMail },
         { text: data.phone, icon: IconPhone },
-        { text: data.linkedin, icon: IconLinkedin },
-        { text: data.github, icon: IconGithub },
+        { text: data.linkedInUrl, icon: IconLinkedin },
+        { text: data.githubUrl, icon: IconGithub },
     ];
     return (
         <div className="flex flex-col gap-4">
