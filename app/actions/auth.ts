@@ -2,7 +2,6 @@
 
 import { API_BASE_URL } from "@/lib/api-config";
 import { User, usersApi } from "@/lib/api/endpoints/usersApi";
-import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -11,6 +10,8 @@ export type AuthState = {
     error: string | null;
     success?: boolean; // เอาไว้บอกหน้า UI ว่าสำเร็จแล้วนะ
 };
+
+export type UserRole = "APPLICANT" | "EMPLOYER";
 
 // ---------------------------------------------
 // 🟢 1. ฟังก์ชัน LOGIN (อัปเกรด Error Handling)
