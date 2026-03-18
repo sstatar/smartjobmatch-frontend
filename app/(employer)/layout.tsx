@@ -1,4 +1,3 @@
-import Navbar from "@/components/navbar/Navbar";
 
 export interface EmployerNavbarLayoutProps {
     /**
@@ -11,8 +10,7 @@ export interface EmployerNavbarLayoutProps {
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <section>
-            <Navbar variant="employer" />
-            <div className="mt-16">{children}</div>
+            <div>{children}</div>
         </section>
     );
 }

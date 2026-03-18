@@ -27,7 +27,7 @@ export default function RootLayout({
         >
             <body className="font-sans antialiased">
                 <Navbar />
-                <div className="pt-16">{children}</div>
+                <div className="mt-24">{children}</div>
             </body>
         </html>
     );

@@ -40,7 +40,7 @@ export default async function Navbar({
     }
 
     return (
-        <nav className="w-full h-18 flex items-center px-6 border-b border-accent-2 fixed top-0 bg-white z-100">
+        <nav className="w-full h-18 flex items-center px-6 border-b border-accent-2 fixed top-0 bg-white z-20">
             {userVariant ?? variants[variant]}
         </nav>
     );

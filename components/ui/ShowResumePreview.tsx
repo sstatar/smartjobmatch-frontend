@@ -16,7 +16,7 @@ export default function ShowResumePreview({
         typeof file === "string"
             ? file.startsWith("http")
                 ? file
-                : `https://df54-49-237-93-161.ngrok-free.app/uploads/${file}` // เติม Path ที่เพื่อนเก็บไฟล์ไว้
+                : `https://f8f3-49-237-80-96.ngrok-free.app/uploads/${file}` // เติม Path ที่เพื่อนเก็บไฟล์ไว้
             : URL.createObjectURL(file);
 
     useEffect(() => {

@@ -102,12 +102,6 @@ export default function JobsListClient({ jobs }: JobListClientProps) {
         return bScore - aScore;
     });
 
-    console.log(
-        userBookmarkedJobIds,
-        jobs.map((job) => job.id),
-        userBookmarkedJobIds.has(jobs[0].id),
-    );
-
     const handleBookmarkToggle = async (jobId: string) => {
         const isBookmarked = userBookmarkedJobIds.has(jobId);
 
