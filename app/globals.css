@@ -76,7 +76,8 @@
 
     --text-button-1: var(--font-size-5);
     --text-button-2: var(--font-size-2);
-    --text-button-3: var(--font-size-0);
+    --text-button-3: var(--font-size-1);
+    --text-button-4: var(--font-size-0);
 
     --text-logo-1: var(--font-size-6);
 

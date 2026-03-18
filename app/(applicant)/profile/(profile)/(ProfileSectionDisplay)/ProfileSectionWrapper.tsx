@@ -25,9 +25,9 @@ export default function ProfileSectionWrapper({
                     <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
                     <button
                         onClick={onEdit}
-                        className="p-2 hover:bg-gray-100 rounded-full transition-all active:scale-95"
+                        className="p-2 hover:bg-gray-100 rounded-full transition-all active:scale-95 cursor-pointer"
                     >
-                        <Pencil className="w-5 h-5 text-accent" />
+                        <Pencil className="w-5 h-5 text-accent " />
                     </button>
                 </div>
 

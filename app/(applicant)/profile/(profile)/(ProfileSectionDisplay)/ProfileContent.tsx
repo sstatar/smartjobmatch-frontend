@@ -10,23 +10,13 @@ import { useState } from "react";
 import SidePanel from "../(formUser)/SidePanel";
 import PersonalForm from "../(formUser)/(FromContent)/PersonalForm";
 import EducationForm from "../(formUser)/(FromContent)/EducationForm";
-import WorkExperienceForm from "../(formUser)/(FromContent)/WorkExperienceForm";
+import WorkExperienceForm from "../(formUser)/(FromContent)/(WorkExperienceForm)/WorkExperienceForm";
 import SkillsForm from "../(formUser)/(FromContent)/SkillsForm";
 import { WorkExperienceProps } from "./(Content)/WorkExperienceDisplay";
+import { PersonalDataProps } from "./(Content)/PersonalInfoDisplay";
 
-interface PersonalData {
-    firstName: string;
-    lastName: string;
-    address?: string;
-    email: string;
-    phone: string;
-    linkedin?: string;
-    github?: string;
-}
-
-// 2. ปรับ ProfileContentProps ให้ใช้ Interface ที่เราสร้างขึ้น
 type ProfileContentProps = {
-    personalData: PersonalData; // ไม่ใช่ string[]
+    personalData: PersonalDataProps; // ไม่ใช่ string[]
     educationData: EducationProps[]; // เป็น Array ของ Object
     workData: WorkExperienceProps[]; // เป็น Array ของ Object
     skills: string[]; // อันนี้เป็น string[] ถูกต้องแล้ว
@@ -40,6 +30,13 @@ export default function ProfileContent({
 }: ProfileContentProps) {
     const [editingSection, setEditingSection] = useState<string | null>(null);
 
+    const cleanNull = (value: string | null | undefined) => {
+        // เช็คทั้งค่าที่เป็น null จริงๆ และ string ที่เขียนว่า "null"
+        if (value === "null" || value === null || value === undefined) {
+            return "";
+        }
+        return value;
+    };
 
     return (
         <div className="flex flex-col bg-accent-2 p-6 rounded-xl overflow-hidden">
@@ -95,16 +92,51 @@ export default function ProfileContent({
                 {/* 💡 4. เลือกว่าจะโชว์ Form ไหน ขึ้นอยู่กับ State ปัจจุบัน */}
                 {editingSection === "personal" && (
                     <PersonalForm
+                        initialData={{
+                            firstName: cleanNull(personalData.firstName),
+                            lastName: cleanNull(personalData.lastName),
+                            phone: cleanNull(personalData.phone),
+                            address: cleanNull(personalData.address),
+                            linkedInUrl: cleanNull(personalData.linkedInUrl),
+                            githubUrl: cleanNull(personalData.githubUrl),
+                            // เพิ่มฟิลด์อื่นๆ ตามที่มีใน PersonalDataProps
+                        }}
                         onSaveSuccess={() => setEditingSection(null)}
                     />
                 )}
                 {editingSection === "education" && (
                     <EducationForm
+                        initialData={educationData.map((edu) => ({
+                            id: edu.id.toString(),
+                            schoolName: edu.university,
+                            major: edu.fieldOfStudy,
+                            degreeType: edu.degreeLevelName,
+                            gpa: edu.gpa?.toString() || "",
+                            startDate: `${edu.startYear}-${edu.startMonth}`,
+                            endDate: edu.graduationYear
+                                ? `${edu.graduationYear}-${edu.graduationMonth}`
+                                : "",
+                            isCurrent: !edu.graduationYear,
+                        }))}
                         onSaveSuccess={() => setEditingSection(null)}
                     />
                 )}
                 {editingSection === "work" && (
                     <WorkExperienceForm
+                        initialData={workData.map((work) => ({
+                            id: work.id.toString(),
+                            jobTitle: work.jobTitle,
+                            companyName: work.companyName,
+                            summary: work.summary,
+                            descriptions: work.descriptions,
+                            startDate: work.startYear
+                                ? `${work.startYear}-${work.startMonth}`
+                                : "",
+                            endDate: work.endYear
+                                ? `${work.endYear}-${work.endMonth}`
+                                : "",
+                            isCurrent: !work.endYear,
+                        }))}
                         onSaveSuccess={() => setEditingSection(null)}
                     />
                 )}

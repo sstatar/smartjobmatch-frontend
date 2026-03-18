@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-
+import { updateSkillsAction } from "../../service/profileAction";
 type SkillsFormProps = {
-    initialData?: string[]; // หน้านี้รับแค่ Array ของ String เพียวๆ เลย
+    initialData?: string[];
     onSaveSuccess?: (data: string[]) => void;
 };
 
-export default function SkillsForm({ initialData = [], onSaveSuccess }: SkillsFormProps) {
-    
+export default function SkillsForm({
+    initialData = [],
+    onSaveSuccess,
+}: SkillsFormProps) {
     // State สำหรับเก็บรายการ Skills
     const [skills, setSkills] = useState<string[]>(initialData);
-    
+
     // State สำหรับเก็บข้อความที่กำลังพิมพ์ในช่อง Add skill...
     const [inputValue, setInputValue] = useState("");
 
@@ -18,9 +20,9 @@ export default function SkillsForm({ initialData = [], onSaveSuccess }: SkillsFo
         // ถ้าปุ่มที่กดคือ "Enter"
         if (e.key === "Enter") {
             e.preventDefault(); // 🛑 ห้ามรันพฤติกรรมดั้งเดิม (ห้าม Submit ฟอร์ม!)
-            
+
             const newSkill = inputValue.trim(); // ตัด Spacebar หน้า-หลังทิ้ง
-            
+
             // เช็คว่าไม่ได้พิมพ์ค่าว่าง และ ทักษะนั้นยังไม่มีใน Array
             if (newSkill !== "" && !skills.includes(newSkill)) {
                 setSkills([...skills, newSkill]); // เพิ่ม Skill ใหม่เข้าไปใน Array
@@ -34,17 +36,33 @@ export default function SkillsForm({ initialData = [], onSaveSuccess }: SkillsFo
         setSkills(skills.filter((skill) => skill !== skillToRemove));
     };
 
-    const handleSaveAll = (e: React.FormEvent) => {
+    const handleSaveAll = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("ข้อมูล Skills ที่จะส่ง API:", skills);
-        alert("กำลังบันทึกข้อมูล Skills...");
-        if (onSaveSuccess) onSaveSuccess(skills);
+
+        // เตรียม Payload ตามที่ Backend ต้องการ { skills: [...] }
+        const payload = {
+            skills: skills,
+        };
+
+        console.log("Payload to Backend:", payload);
+
+        const result = await updateSkillsAction(payload);
+
+        if (result.success) {
+            alert("บันทึกทักษะสำเร็จ!");
+            if (onSaveSuccess) onSaveSuccess(skills); // ปิด SidePanel
+        } else {
+            alert(result.error || "เกิดข้อผิดพลาดในการบันทึก");
+        }
     };
 
     return (
-        <form id="side-panel-form" onSubmit={handleSaveAll} className="bg-secondary p-5">
+        <form
+            id="side-panel-form"
+            onSubmit={handleSaveAll}
+            className="bg-secondary p-5"
+        >
             <div className="flex flex-wrap gap-3">
-                
                 {/* 1. วนลูปแสดง Skills ที่มีอยู่เป็น Tag (เช่น React, Next.js, Tailwind) */}
                 {skills.map((skill, index) => (
                     <div
@@ -55,7 +73,7 @@ export default function SkillsForm({ initialData = [], onSaveSuccess }: SkillsFo
                         <button
                             type="button"
                             onClick={() => handleRemove(skill)}
-                            className="text-gray-400 hover:text-gray-600 focus:outline-none"
+                            className="text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer"
                         >
                             ✕
                         </button>
@@ -74,10 +92,12 @@ export default function SkillsForm({ initialData = [], onSaveSuccess }: SkillsFo
                     />
                 </div>
             </div>
-            
+
             {/* คำใบ้บอกผู้ใช้ว่าต้องกดอะไร */}
             <p className="text-xs text-gray-400 mt-6 flex items-center gap-1.5">
-                <span className="bg-accent text-secondary rounded-md px-1.5 py-0.5 font-mono text-[10px]">Enter</span>
+                <span className="bg-accent text-secondary rounded-md px-1.5 py-0.5 font-mono text-[10px]">
+                    Enter
+                </span>
                 Type a skill and press Enter to add
             </p>
         </form>

@@ -22,7 +22,7 @@ export default function Navbar({
     };
 
     return (
-        <nav className="w-full h-18 flex items-center px-6 border-b border-accent-2">
+        <nav className="w-full h-18 flex items-center px-25 border-b border-accent-2">
             {variants[variant]}
         </nav>
     );

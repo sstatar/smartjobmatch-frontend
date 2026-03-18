@@ -38,13 +38,12 @@ export async function POST(req: NextRequest) {
         // 1. เปลี่ยนจาก any เป็น unknown
         // 2. ตรวจสอบก่อนว่าข้อผิดพลาดมาจาก Axios (เช่น 400, 401, 500) ใช่หรือไม่
         if (axios.isAxiosError(error)) {
-            // TypeScript จะรับรู้แล้วว่านี่คือ AxiosError และอนุญาตให้ใช้ property อย่าง error.response ได้
-            console.error(
-                "Axios API Error:",
-                error.response?.data || error.message,
-            );
+            // ดึง Error Message จริงๆ จาก Backend เพื่อนมาส่งต่อให้ Frontend เราเห็น
+            const backendMessage =
+                error.response?.data?.message || "Failed to analyze resume";
+
             return NextResponse.json(
-                { error: "Failed to analyze resume (API Error)" },
+                { error: backendMessage },
                 { status: error.response?.status || 500 },
             );
         }

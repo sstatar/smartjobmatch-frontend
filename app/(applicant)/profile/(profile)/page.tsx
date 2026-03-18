@@ -1,79 +1,58 @@
 import Navbar from "@/components/navbar/Navbar";
 import ProfileContent from "./(ProfileSectionDisplay)/ProfileContent";
 import Sidebar from "@/components/sideBar/Sidebar";
-import { cookies } from "next/headers";
-import { API_BASE_URL } from "@/lib/api-config";
-
-interface SkillItem {
-    profileId: string;
-    skillId: string;
-    skill: {
-        id: string;
-        name: string;
-    };
-}
-
-interface EducationResponse {
-    id: number;
-    startMonth: string;
-    startYear: string;
-    graduationMonth: string;
-    graduationYear: string;
-    university: string;
-    degreeLevel: {
-        id: string;
-        name: string;
-    };
-    fieldOfStudy: string;
-    gpa?: string;
-}
-
-interface WorkExperienceResponse {
-    id: number;
-    jobTitle: string;
-    companyName: string;
-    description: string;
-    startDate: string;
-    endDate: string;
-}
+import { fetchUserProfileServer } from "./service/profileAction";
+import {
+    WorkExperienceResponse,
+    EducationResponse,
+    SkillResponse,
+    PersonalResponse,
+} from "./service/type";
 
 export default async function page() {
-    // 1. ล้วงมือเข้าไปหยิบ Token จากกระเป๋า Cookie (ฝั่ง Server ทำได้สบายๆ)
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
+    const profileData = await fetchUserProfileServer();
 
-    if (!token) {
-        // ถ้าไม่มี Token แปลว่ายังไม่ล็อกอิน โยนกลับไปหน้า Login ได้เลย
-        return <div>กรุณาล็อกอินก่อนเข้าใช้งาน</div>;
-    }
-
-    let profileData = null;
-
-    try {
-        // 2. ใช้ fetch ของเซิร์ฟเวอร์ยิงไปหา Backend พร้อมแนบ Token ไปใน Header
-        const res = await fetch(`${API_BASE_URL}/profiles/me`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`, // 💡 แนบ Token ตรงนี้!
-            },
-            cache: "no-store", // สั่งให้ดึงข้อมูลใหม่เสมอ ไม่ต้องจำของเก่า
-        });
-
-        if (res.ok) {
-            profileData = await res.json();
-            
-        } else {
-            console.error("ดึงข้อมูลไม่สำเร็จ Status:", res.status);
-        }
-    } catch (error) {
-        console.error("เกิดข้อผิดพลาดในการต่อ API:", error);
-    }
-
-    // 3. ถ้า API ล่ม หรือหาข้อมูลไม่เจอ
     if (!profileData) {
-        return <div>ไม่พบข้อมูลโปรไฟล์ หรือ เซิร์ฟเวอร์มีปัญหา</div>;
+        return (
+            <div className="flex h-screen items-center justify-center">
+                <p>ไม่พบข้อมูลโปรไฟล์ หรือ กรุณาล็อกอินใหม่</p>
+            </div>
+        );
     }
+
+    const getMonthNumber = (monthString: string) => {
+        if (!monthString || monthString === "null") return "";
+        const months = [
+            "JANUARY",
+            "FEBRUARY",
+            "MARCH",
+            "APRIL",
+            "MAY",
+            "JUNE",
+            "JULY",
+            "AUGUST",
+            "SEPTEMBER",
+            "OCTOBER",
+            "NOVEMBER",
+            "DECEMBER",
+        ];
+        const monthNumber = (months.indexOf(monthString) ?? -2) + 1;
+        return monthNumber.toString().padStart(2, "0");
+    };
+
+    const getYearFromISO = (isoString: string | null) => {
+        if (!isoString) return null;
+        const date = new Date(isoString);
+        return isNaN(date.getTime()) ? null : date.getFullYear();
+    };
+
+    const getMonthFromISO = (isoString: string | null) => {
+        if (!isoString) return "";
+        const date = new Date(isoString);
+        if (isNaN(date.getTime())) return "";
+
+        return (date.getMonth() + 1).toString().padStart(2, "0");
+    };
 
     return (
         <div className="h-screen flex flex-col">
@@ -92,10 +71,9 @@ export default async function page() {
                             firstName: profileData.user.firstName,
                             lastName: profileData.user.lastName,
                             email: profileData.user.email,
-                            phone: profileData.user.phone,
-                            address: profileData.address,
-                            linkedin: profileData.linkedin,
-                            github: profileData.github,
+                            phone: profileData.user.phone ,
+                            linkedInUrl: profileData.linkedInUrl,
+                            githubUrl: profileData.githubUrl,
                         }}
                         educationData={
                             profileData.educations
@@ -106,11 +84,16 @@ export default async function page() {
                                           degreeLevel: edu.degreeLevel,
                                           degreeLevelName: edu.degreeLevel.name,
                                           fieldOfStudy: edu.fieldOfStudy,
-                                          startMonth: edu.startMonth,
+                                          startMonth: getMonthNumber(
+                                              edu.startMonth,
+                                          ),
                                           startYear: edu.startYear,
-                                          graduationMonth: edu.graduationMonth,
+                                          graduationMonth: getMonthNumber(
+                                              edu.graduationMonth,
+                                          ),
                                           graduationYear: edu.graduationYear,
                                           gpa: edu.gpa,
+                                          isCurrent: edu.isCurrent,
                                       }),
                                   )
                                 : []
@@ -122,9 +105,20 @@ export default async function page() {
                                           id: exp.id,
                                           jobTitle: exp.jobTitle,
                                           companyName: exp.companyName,
-                                          description: exp.description,
-                                          startDate: exp.startDate,
-                                          endDate: exp.endDate,
+                                          summary: exp.summary,
+                                          descriptions: exp.descriptions,
+                                          startYear: getYearFromISO(
+                                              exp.startDate,
+                                          ),
+                                          startMonth: getMonthFromISO(
+                                              exp.startDate,
+                                          ),
+
+                                          endYear: getYearFromISO(exp.endDate),
+                                          endMonth: getMonthFromISO(
+                                              exp.endDate,
+                                          ),
+                                          isCurrent: exp.isCurrent,
                                       }),
                                   )
                                 : []
@@ -132,7 +126,7 @@ export default async function page() {
                         skills={
                             profileData.skills
                                 ? profileData.skills.map(
-                                      (item: SkillItem) => item.skill.name,
+                                      (item: SkillResponse) => item.skill.name,
                                   )
                                 : []
                         }

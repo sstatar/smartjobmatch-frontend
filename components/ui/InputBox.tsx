@@ -32,7 +32,7 @@ export default function InputBox({
             <div className={`flex items-center rounded-sm overflow-hidden border border-transparent transition-colors ${disabled ? 'bg-gray-200 cursor-not-allowed' : 'bg-accent-2 focus-within:border-accent'}`}>
                 <input 
                     onChange={onChange}
-                    value={value}
+                    value={value}   // 2020-01
                     type={type}
                     placeholder={placeholder}
                     defaultValue={defaultValue}

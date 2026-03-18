@@ -27,7 +27,7 @@ export default function ProfileTabs() {
                     <button
                         key={tab.id}
                         onClick={() => scrollToSection(tab.id)}
-                        className={`relative h-full px-4 text-heading-5 font-semibold transition-all
+                        className={`relative h-full px-4 text-heading-5 font-semibold transition-all cursor-pointer
                         ${activeTab === tab.id ? "text-black" : "text-gray-400 hover:text-gray-600"}
                 `}
                     >

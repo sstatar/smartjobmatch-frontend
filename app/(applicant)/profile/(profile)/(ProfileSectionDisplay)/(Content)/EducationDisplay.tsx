@@ -1,5 +1,4 @@
 import ArrowSmall from "@/public/svgs/arrow-small.svg";
-import { Span } from "next/dist/trace";
 
 export interface EducationProps {
     id: number;
@@ -11,6 +10,7 @@ export interface EducationProps {
     degreeLevelName: string;
     fieldOfStudy: string;
     gpa: string;
+    isCurrent: boolean;
 }
 
 export default function EducationDisplay({ data }: { data: EducationProps[] }) {
@@ -27,14 +27,40 @@ export default function EducationDisplay({ data }: { data: EducationProps[] }) {
                     {/* เนื้อหาข้อมูล */}
                     <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
-                            {item.startYear && (<span>{item.startYear}</span>)}
-                            {item.startYear && item.startMonth && (<span>-</span>)}
-                            {item.startMonth &&(<span>{item.startYear}</span>)}
-                            
+                            {item.startYear && <span>{item.startYear}</span>}
+                            {item.startYear && item.startMonth && (
+                                <span>-</span>
+                            )}
+                            {item.startMonth && (
+                                <span>
+                                    {item.startMonth
+                                        .toString()
+                                        .padStart(2, "0")}
+                                </span>
+                            )}
+
                             <ArrowSmall />
-                            {item.graduationYear && (<span>{item.graduationYear}</span>)}
-                            {item.graduationYear && item.graduationMonth && (<span>-</span>)}
-                            {item.graduationMonth &&(<span>{item.graduationYear}</span>)}
+                            {item.isCurrent ||
+                            (!item.graduationYear && !item.graduationMonth) ? (
+                                <span className="text-accent font-bold">
+                                    Present
+                                </span>
+                            ) : (
+                                <>
+                                    {item.graduationYear && (
+                                        <span>{item.graduationYear}</span>
+                                    )}
+                                    {item.graduationYear &&
+                                        item.graduationMonth && <span>-</span>}
+                                    {item.graduationMonth && (
+                                        <span>
+                                            {item.graduationMonth
+                                                .toString()
+                                                .padStart(2, "0")}
+                                        </span>
+                                    )}
+                                </>
+                            )}
                         </div>
                         <h3 className="font-bold text-lg text-black">
                             {item.university}

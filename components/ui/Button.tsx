@@ -19,7 +19,7 @@ export default function Button({
     form,
 }: ButtonProps) {
     const base =
-        "h-[38px] inline-flex items-center justify-center gap-2 px-6 rounded-xl text-button-2 font-[var(--weight-button)] transition";
+        "h-[38px] inline-flex items-center justify-center gap-2 px-6 rounded-xl text-button-2 font-[var(--weight-button)] transition cursor-pointer";
     const variants = {
         primary: "bg-accent text-secondary",
         secondary: "bg-secondary text-accent",
