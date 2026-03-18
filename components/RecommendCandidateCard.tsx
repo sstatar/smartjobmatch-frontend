@@ -1,6 +1,6 @@
 "use client";
 
-import { CandidateResponseType } from "@/app/jobs/[jobId]/candidates/service/candidate";
+import { CandidateResponseType } from "@/app/(employer)/jobs/[jobId]/candidates/service/candidate";
 import PictureIcon from "./ui/PictureIcon";
 import CircularProgress from "./ui/CircularProgress";
 

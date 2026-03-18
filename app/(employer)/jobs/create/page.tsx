@@ -1,5 +1,6 @@
 import { enumsApi } from "@/lib/api/endpoints/enumsApi";
 import JobCreateForm, { JobData } from "./JobCreateForm";
+import { DegreeLevelCode } from "@/lib/api/endpoints/jobsApi";
 
 async function fetchCategories() {
     const categories = await enumsApi.getCategories();
@@ -10,6 +11,8 @@ async function fetchCategories() {
     }));
 }
 
+const categories = await fetchCategories();
+
 const props: JobData = {
     iJobTitle: "",
     iJobDetails: "",
@@ -18,10 +21,15 @@ const props: JobData = {
         province: "",
         country: "",
     },
+    iWorkplaceType: "ON_SITE",
+    iEmploymentType: "Full-time",
     iSalaryMin: 0.0,
     iSalaryMax: 0.0,
-    categoryOptions: await fetchCategories(),
+    iCurrency: "THB",
+    iIsActive: true,
+    iCategory: categories[0].label,
     iExperienceLevel: "",
+    iDegreeLevelCode: "BACHELOR",
     iFieldOfStudy: "",
     iIsEducationOptional: true,
     iSkillWeight: 34.0,
@@ -31,5 +39,5 @@ const props: JobData = {
 };
 
 export default function Page() {
-    return <JobCreateForm jobData={props} />;
+    return <JobCreateForm jobData={props} categoryOptions={categories} />;
 }

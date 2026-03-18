@@ -1,4 +1,4 @@
-import { CandidateResponseType } from "@/app/jobs/[jobId]/candidates/service/candidate";
+import { CandidateResponseType } from "@/app/(employer)/jobs/[jobId]/candidates/service/candidate";
 import RecommendCandidateCard from "./RecommendCandidateCard";
 
 export default function RecommendCandidateList({

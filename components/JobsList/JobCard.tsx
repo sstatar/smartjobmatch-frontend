@@ -1,12 +1,13 @@
 "use client"; // เพิ่มบรรทัดนี้เพื่อให้รองรับการใช้ useState และ Event Listener ใน Next.js
 
-import { useState, useRef, useEffect } from "react";
+import { deleteJobById } from "@/app/actions/job";
+import FilledBookmark from "@/public/svgs/bookmark-filled.svg";
 import BookmarkIcon from "@/public/svgs/bookmark.svg";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import CircularProgress from "../ui/CircularProgress";
 import { JobCardData } from "./JobsList.client";
-import { useRouter } from "next/navigation";
-import { deleteJobById } from "@/app/actions/job";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 interface JobCardProps {
     jobData: JobCardData; // สมมติว่า jobData มีฟิลด์ id เพื่อส่งกลับไปตอนลบ/แก้ไข
@@ -17,8 +18,10 @@ interface JobCardProps {
      */
     isSelected?: boolean;
     showBookmark?: boolean;
+    isBookmarked?: boolean;
     isOwner?: boolean; // เพิ่ม prop เพื่อเช็คว่าเป็นเจ้าของโพสต์หรือไม่
     onClick?: () => void;
+    onBookmarkClick?: (jobId: string) => void;
 }
 
 export default function JobCard({
@@ -26,11 +29,12 @@ export default function JobCard({
     aiScore = undefined,
     isSelected = false,
     showBookmark = true,
+    isBookmarked = false,
     isOwner = false,
     onClick,
+    onBookmarkClick,
 }: JobCardProps) {
     const router = useRouter();
-
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -72,7 +76,7 @@ export default function JobCard({
         setIsMenuOpen(false);
 
         try {
-            if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบงานนี้?")) {
+            if (confirm("Are you sure you want to delete this job post?")) {
                 const result = await deleteJobById(jobData.id);
 
                 // เช็คว่า Server Action ทำงานพลาดและส่ง Error Message กลับมาหรือไม่
@@ -82,8 +86,15 @@ export default function JobCard({
             }
         } catch (error) {
             if (!isRedirectError(error))
-                alert("เกิดข้อผิดพลาดจากฝั่ง Client หรือการเชื่อมต่อ");
+                alert(
+                    "An unexpected error occurred from the Client or during communication.",
+                );
         }
+    };
+
+    const handleBookmarkClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        onBookmarkClick?.(jobData.id);
     };
 
     return (
@@ -187,6 +198,17 @@ export default function JobCard({
                             ? ` ${jobData.currency}`
                             : ""}
                     </div>
+                    <div className="">
+                        {jobData.isActive ? (
+                            <span className="font-semibold text-green-700">
+                                Active
+                            </span>
+                        ) : (
+                            <span className="font-semibold text-red-700">
+                                Inactive
+                            </span>
+                        )}
+                    </div>
                 </div>
                 <div className="shrink-0">
                     <>
@@ -203,7 +225,13 @@ export default function JobCard({
                 </div>
             </div>
             {showBookmark && (
-                <BookmarkIcon className="w-6 h-6 text-accent stroke-2 fill-current" />
+                <div onClick={handleBookmarkClick}>
+                    {isBookmarked ? (
+                        <FilledBookmark className="w-6 h-6 text-accent" />
+                    ) : (
+                        <BookmarkIcon className="w-6 h-6 text-accent" />
+                    )}
+                </div>
             )}
         </div>
     );

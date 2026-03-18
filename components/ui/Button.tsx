@@ -33,7 +33,7 @@ export default function Button({
             onClick={onClick}
             disabled={disabled}
             className={`${base} ${variants[variant]} ${
-                disabled ? "opacity-50 cursor-not-allowed" : ""
+                disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
             }`}
         >
             {children}

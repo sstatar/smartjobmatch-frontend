@@ -1,13 +1,17 @@
 "use server";
 
+import { API_BASE_URL } from "@/lib/api-config";
+import { User, usersApi } from "@/lib/api/endpoints/usersApi";
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { API_BASE_URL } from "@/lib/api-config";
 
 // 1. ประกาศ Type สำหรับ State ที่จะส่งไป-กลับระหว่าง Client และ Server Action
 export type AuthState = {
     error: string;
 };
+
+export type UserRole = "EMPLOYER" | "APPLICANT";
 
 // 2. แทนที่ any ด้วย AuthState ที่เราเพิ่งสร้างขึ้นมา
 export async function login(prevState: AuthState, formData: FormData) {
@@ -39,6 +43,7 @@ export async function login(prevState: AuthState, formData: FormData) {
     });
 
     // redirect จะหยุดการทำงานของฟังก์ชันทันที
+    revalidatePath("/", "layout");
     redirect("/dashboard");
 }
 
@@ -46,4 +51,14 @@ export async function logout() {
     const cookieStore = await cookies();
     cookieStore.delete("token");
     redirect("/login");
+}
+
+export async function getMyInfo() {
+    let user: User | null = null;
+
+    try {
+        user = await usersApi.getMe();
+    } catch (_) {}
+
+    return user;
 }

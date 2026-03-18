@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { API_BASE_URL } from "../api-config";
-import { ApiError } from "./apiError";
+import { ApiError, ApiErrorResponse } from "./apiError";
 
 export type FetchMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -39,7 +39,11 @@ export async function apiFetch<TResponse, TBody = unknown>(
     }
 
     if (!res.ok) {
-        throw new ApiError(res.status, "API request failed", data);
+        throw new ApiError(
+            res.status,
+            "API request failed",
+            data as ApiErrorResponse,
+        );
     }
 
     return data as TResponse;

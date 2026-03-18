@@ -1,13 +1,27 @@
-import { getMyCompany } from "@/app/actions/company";
+import { getMyInfo } from "@/app/actions/auth";
 import CompanyInfo from "@/components/CompanyInfo";
+import { ApiError } from "@/lib/api/apiError";
+import { companiesApi, Company } from "@/lib/api/endpoints/companiesApi";
 
 export default async function Page() {
-    const myCompany = await getMyCompany();
-    const company = myCompany.data;
+    let company: Company | null = null;
+    try {
+        company = await companiesApi.getMyCompany();
+    } catch (error) {
+        if (error instanceof ApiError) {
+            console.log(error.data);
+        } else {
+            console.log(error);
+        }
+    }
+
+    // TODO: check user is owner and send to companyinfo
+    const user = await getMyInfo();
+    const isOwner = user?.companyId === company?.id;
 
     return company ? (
-        <CompanyInfo company={company} />
+        <CompanyInfo company={company} isOwner={isOwner} />
     ) : (
-        <div>{myCompany.error}</div>
+        <div className="text-center">Failed to fetch company</div>
     );
 }

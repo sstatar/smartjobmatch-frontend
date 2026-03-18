@@ -1,6 +1,8 @@
 // Server Actions
 "use server";
 
+import { ApiError } from "@/lib/api/apiError";
+import { bookmarksApi } from "@/lib/api/endpoints/bookmarksApi";
 import { CreateJobDto, Job, jobsApi } from "@/lib/api/endpoints/jobsApi";
 import { redirect } from "next/navigation";
 
@@ -10,7 +12,10 @@ export async function createJob(data: CreateJobDto) {
     try {
         const response: Job = await jobsApi.createJob(data);
         newJobId = response.id; // เก็บ ID ไว้ใช้ด้านนอก
-    } catch (_) {
+    } catch (error) {
+        if (error instanceof ApiError) {
+            return { error: error.data };
+        }
         return { error: "failed to create this job post" };
     }
 
@@ -24,7 +29,10 @@ export async function updateJobById(
 ) {
     try {
         await jobsApi.updateJob(jobId, data);
-    } catch (_) {
+    } catch (error) {
+        if (error instanceof ApiError) {
+            return { error: error.data };
+        }
         return { error: "failed to update this job post id" };
     }
 
@@ -41,4 +49,39 @@ export async function deleteJobById(jobId: string) {
 
     // ย้าย redirect ออกมานอก try-catch
     redirect("/company/me");
+}
+
+export async function getMyBookmarkedJobs() {
+    try {
+        return await bookmarksApi.getMyBookmarkedJobIds();
+    } catch (error) {
+        if (error instanceof ApiError) {
+            return { error: error.data };
+        }
+        return { error: "failed to get bookmarked jobs" };
+    }
+}
+
+export async function createBookmarked(jobId: string) {
+    try {
+        const res = await bookmarksApi.createBookmark(jobId);
+        return { success: true, data: res };
+    } catch (error) {
+        if (error instanceof ApiError) {
+            return { success: false, error: error.data };
+        }
+        return { success: false, error: "failed to toggle bookmark job" };
+    }
+}
+
+export async function deleteBookmarked(jobId: string) {
+    try {
+        const res = await bookmarksApi.deleteBookmark(jobId);
+        return { success: true, data: res };
+    } catch (error) {
+        if (error instanceof ApiError) {
+            return { success: false, error: error.data };
+        }
+        return { success: false, error: "failed to toggle bookmark job" };
+    }
 }

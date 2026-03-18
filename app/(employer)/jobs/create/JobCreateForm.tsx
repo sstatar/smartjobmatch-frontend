@@ -8,20 +8,26 @@ import LabeledOptions from "@/components/inputUi/LabeledOptions";
 import LabeledTextArea from "@/components/inputUi/LabeledTextArea";
 import LabeledTextbox from "@/components/inputUi/LabeledTextbox";
 import TextboxList from "@/components/inputUi/TextboxList";
+import ProgressPoint from "@/components/ProgressPoint";
 import Button from "@/components/ui/Button-2";
-import { CreateJobDto } from "@/lib/api/endpoints/jobsApi";
+import { ApiError } from "@/lib/api/apiError";
+import {
+    CreateJobDto,
+    Currency,
+    DegreeLevelCode,
+    EmploymentType,
+    WorkplaceType,
+} from "@/lib/api/endpoints/jobsApi";
 import ArrowRight from "@/public/svgs/arrow-right.svg";
-import axios from "axios";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const workplaceOptions: Option[] = [
+const workplaceTypeOptions: Option[] = [
     { value: "ON_SITE", label: "On-Site" },
     { value: "HYBRID", label: "Hybrid" },
     { value: "REMOTE", label: "Remote" },
 ];
-const worktypeOptions: Option[] = [
+const employmentTypeOptions: Option[] = [
     { value: "Full-time", label: "Full Time" },
     { value: "Part-time", label: "Part Time" },
     { value: "Contract", label: "Contract" },
@@ -30,13 +36,12 @@ const currencyOptions: Option[] = [
     { value: "THB", label: "THB" },
     { value: "USD", label: "USD" },
 ];
-const degreeLevelOptions: Option[] = [
-    { value: "BACHELOR", label: "Bachelor's Degree" },
-    { value: "MASTER", label: "Master's Degree" },
-    { value: "DOCTORATE", label: "Doctoral Degree" },
-    { value: "PRIMARY", label: "Primary Education Level" },
-    { value: "SECONDARY", label: "Secondary Education Level" },
-];
+const degreeLevelOptions = Object.entries(DegreeLevelCode).map(
+    ([key, value]) => ({
+        value: key,
+        label: value,
+    }),
+);
 
 export interface Option {
     value: string;
@@ -53,10 +58,15 @@ export interface JobData {
         province: string;
         country: string;
     };
+    iWorkplaceType: WorkplaceType;
+    iEmploymentType: EmploymentType;
     iSalaryMin: number;
     iSalaryMax: number;
-    categoryOptions: Option[];
+    iCurrency: "THB" | "USD";
+    iIsActive: boolean;
+    iCategory: string;
     iExperienceLevel: string;
+    iDegreeLevelCode: keyof typeof DegreeLevelCode;
     iFieldOfStudy: string;
     iIsEducationOptional: boolean;
     iSkillWeight: number;
@@ -64,15 +74,16 @@ export interface JobData {
     iExperienceWeight: number;
     iSkills: string[];
 }
-
 export interface JobCreateFormProps {
     jobData: JobData;
+    categoryOptions: Option[];
     mode?: Mode;
     jobId?: string;
 }
 
 export default function JobCreateForm({
     jobData,
+    categoryOptions,
     mode = "create",
     jobId,
 }: JobCreateFormProps) {
@@ -80,19 +91,46 @@ export default function JobCreateForm({
     const [jobTitle, setJobTitle] = useState(jobData.iJobTitle);
     const [jobDetails, setJobDetails] = useState(jobData.iJobDetails);
     const [location, setLocation] = useState(jobData.iLocation);
-    const [workplaceOption, setWorkplaceOption] = useState(workplaceOptions[0]);
-    const [worktypeOption, setWorkTypeOption] = useState(worktypeOptions[0]);
-    const [currencyOption, setCurrencyOption] = useState(currencyOptions[0]);
+    const [workplaceTypeOption, setWorkplaceTypeOption] = useState(
+        jobData.iWorkplaceType
+            ? workplaceTypeOptions.filter(
+                  (option) => option.value === jobData.iWorkplaceType,
+              )[0]
+            : workplaceTypeOptions[0],
+    );
+    const [employmentTypeOption, setEmploymentTypeOption] = useState(
+        jobData.iEmploymentType
+            ? employmentTypeOptions.filter(
+                  (option) => option.value === jobData.iEmploymentType,
+              )[0]
+            : employmentTypeOptions[0],
+    );
+    const [currencyOption, setCurrencyOption] = useState(
+        jobData.iCurrency
+            ? currencyOptions.filter(
+                  (option) => option.value === jobData.iCurrency,
+              )[0]
+            : currencyOptions[0],
+    );
     const [salaryMin, setSalaryMin] = useState(jobData.iSalaryMin);
     const [salaryMax, setSalaryMax] = useState(jobData.iSalaryMax);
+    const [isActive, setIsActive] = useState(jobData.iIsActive);
     const [categoryOption, setCategoryOption] = useState(
-        jobData.categoryOptions[0],
+        jobData.iCategory
+            ? categoryOptions.filter(
+                  (option) => option.label === jobData.iCategory,
+              )[0]
+            : categoryOptions[0],
     );
     const [experienceLevel, setExperienceLevel] = useState(
         jobData.iExperienceLevel,
     );
     const [degreeLevelOption, setDegreeLevelOption] = useState(
-        degreeLevelOptions[0],
+        jobData.iDegreeLevelCode
+            ? degreeLevelOptions.filter(
+                  (option) => option.value === jobData.iDegreeLevelCode,
+              )[0]
+            : degreeLevelOptions[0],
     );
     const [fieldOfStudy, setFieldOfStudy] = useState(jobData.iFieldOfStudy);
     const [isEducationOptional, setIsEducationOptional] = useState(
@@ -118,16 +156,16 @@ export default function JobCreateForm({
         return {
             title: jobTitle,
             description: jobDetails,
-            workplaceType: workplaceOption.value,
+            workplaceType: workplaceTypeOption.value as WorkplaceType,
             salaryMin: salaryMin || undefined,
             salaryMax: salaryMax || undefined,
             currency:
                 salaryMax !== 0.0 || salaryMin !== 0.0
-                    ? currencyOption.value
+                    ? (currencyOption.value as Currency)
                     : undefined,
-            isActive: true,
+            isActive: isActive,
             location: location.country ? location : undefined,
-            employmentType: worktypeOption.value,
+            employmentType: employmentTypeOption.value as EmploymentType,
             experienceLevel: experienceLevel || undefined,
             category: categoryOption.label,
             skillWeight: skillWeight || 34,
@@ -136,7 +174,8 @@ export default function JobCreateForm({
             skills: skills,
             educationRequirements: [
                 {
-                    degreeLevelCode: degreeLevelOption.value,
+                    degreeLevelCode:
+                        degreeLevelOption.value as keyof typeof DegreeLevelCode,
                     fieldOfStudy: fieldOfStudy || undefined,
                     isOptional: isEducationOptional,
                 },
@@ -149,35 +188,33 @@ export default function JobCreateForm({
 
         if (mode == "create") {
             try {
-                await createJob(jobPostDetails);
+                const result = await createJob(jobPostDetails);
+                if (result.error) alert(result.error);
             } catch (error: unknown) {
                 if (!isRedirectError(error)) alert(error);
             }
         } else {
             try {
-                await updateJobById(jobId!, jobPostDetails);
-            } catch (error: unknown) {
-                if (!isRedirectError(error)) alert(error);
-            }
+                const result = await updateJobById(jobId!, jobPostDetails);
+                if (result.error) alert(result.error);
+            } catch (_) {}
         }
     }
 
     function setAsNumber(setterFunc: (value: number) => void) {
         return (value: string) => setterFunc(parseFloat(value) || 0.0);
     }
+    function setDegreeLevelAsDegreeLevelCode(option: Option) {
+        setDegreeLevelOption({
+            value: option.value,
+            label: option.label as DegreeLevelCode,
+        });
+    }
 
     return (
         <div className="flex flex-col items-center gap-12 max-w-3xl px-4 my-12 mx-auto">
             {/* Progress Bar */}
-            <div onClick={() => console.log(buildPayload())}>
-                {step == 1 ? (
-                    <div>Progress Cycle 1</div>
-                ) : step == 2 ? (
-                    <div>Progress Cycle 2</div>
-                ) : (
-                    <div>Progress Cycle 3</div>
-                )}
-            </div>
+            <ProgressPoint step={step} maxSteps={3} />
 
             {/* Form Body */}
             {step == 1 ? (
@@ -189,6 +226,7 @@ export default function JobCreateForm({
                         placeholder="Enter a simple job title"
                         onChange={setJobTitle}
                         value={jobTitle}
+                        required={true}
                     />
                     {/* -- row 2 -- */}
                     {/* Location Textbox */}
@@ -230,18 +268,18 @@ export default function JobCreateForm({
                         <div className="w-fit">
                             <LabeledDropdown
                                 label="Workplace option"
-                                options={workplaceOptions}
-                                onChange={setWorkplaceOption}
-                                selected={workplaceOption}
+                                options={workplaceTypeOptions}
+                                onChange={setWorkplaceTypeOption}
+                                selected={workplaceTypeOption}
                             />
                         </div>
                         {/* Work Type Option Dropdown */}
                         <div className="">
                             <LabeledOptions
                                 label="Work Type"
-                                options={worktypeOptions}
-                                onChange={setWorkTypeOption}
-                                selected={worktypeOption}
+                                options={employmentTypeOptions}
+                                onChange={setEmploymentTypeOption}
+                                selected={employmentTypeOption}
                             />
                         </div>
                     </div>
@@ -279,6 +317,14 @@ export default function JobCreateForm({
                             />
                         </div>
                     </div>
+                    {/* -- row 5 -- */}
+                    <div>
+                        <LabeledCheckbox
+                            label="Is this job active?"
+                            isChecked={isActive}
+                            onClick={setIsActive}
+                        />
+                    </div>
                 </div>
             ) : step == 2 ? (
                 <div className="flex flex-col gap-6 w-full">
@@ -287,7 +333,7 @@ export default function JobCreateForm({
                         <div className="w-1/2">
                             <LabeledDropdown
                                 label="Job Category"
-                                options={jobData.categoryOptions}
+                                options={categoryOptions}
                                 onChange={setCategoryOption}
                                 selected={categoryOption}
                             />
@@ -309,7 +355,7 @@ export default function JobCreateForm({
                                     label="Degree level"
                                     options={degreeLevelOptions}
                                     selected={degreeLevelOption}
-                                    onChange={setDegreeLevelOption}
+                                    onChange={setDegreeLevelAsDegreeLevelCode}
                                 />
                             </div>
                             <div className="w-1/2">
@@ -372,7 +418,11 @@ export default function JobCreateForm({
                         <span className="text-heading-4 font-bold">
                             Preferred skills
                         </span>
-                        <TextboxList values={skills} onChange={setSkills} />
+                        <TextboxList
+                            values={skills}
+                            icon="🗑"
+                            onChange={setSkills}
+                        />
                     </div>
                 </div>
             ) : (
@@ -424,7 +474,7 @@ export default function JobCreateForm({
                     {/* <Button variant="secondary" onClick={() => handlePostJob()}> */}
 
                     <Button variant="secondary" onClick={handlePostJob}>
-                        Post Job
+                        {mode === "edit" ? "Update Job" : "Post Job"}
                     </Button>
                 </div>
             )}

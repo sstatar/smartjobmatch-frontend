@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import CircularProgress from "./ui/CircularProgress";
-import { AiAnalysisResult } from "@/app/actions/company";
+import { AiAnalysisResult } from "@/lib/api/endpoints/companiesApi";
+import { useState } from "react";
 
 export type CandidateProps = {
     profileId: string;

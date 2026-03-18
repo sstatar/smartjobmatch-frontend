@@ -1,4 +1,5 @@
-import { JobPost } from "@/app/actions/company";
+// import { JobPost } from "@/app/actions/company";
+import { JobPost } from "@/lib/api/endpoints/companiesApi";
 import CandidateCard from "@/components/CandidateCard";
 import JobDetailCard from "@/components/JobDetailCard";
 import JobCard from "@/components/JobsList/JobCard";

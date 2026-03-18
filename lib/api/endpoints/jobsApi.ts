@@ -1,5 +1,16 @@
 import { api } from "../apiUtils";
 
+export type WorkplaceType = "ON_SITE" | "HYBRID" | "REMOTE";
+export type EmploymentType = "Full-time" | "Part-time" | "Contract";
+export type Currency = "THB" | "USD";
+export enum DegreeLevelCode {
+    BACHELOR = "Bachelor's Degree",
+    MASTER = "Master's Degree",
+    DOCTORATE = "Doctoral Degree",
+    PRIMARY = "Primary Education Level",
+    SECONDARY = "Secondary Education Level",
+}
+
 export interface Job extends Omit<
     CreateJobDto,
     "employmentType" | "experienceLevel" | "category" | "skills"
@@ -12,7 +23,7 @@ export interface Job extends Omit<
         logoUrl?: string;
     };
     employmentType: {
-        name: string;
+        name: "Full-time" | "Part-time" | "Contract";
     };
     experienceLevel: {
         name: string;
@@ -31,17 +42,17 @@ export interface Job extends Omit<
 export interface CreateJobDto {
     title: string;
     description: string;
-    workplaceType: string;
+    workplaceType: WorkplaceType;
     salaryMin?: number;
     salaryMax?: number;
-    currency?: string;
+    currency?: Currency;
     isActive: boolean;
     location?: {
         city?: string;
         province?: string;
         country: string;
     };
-    employmentType: string;
+    employmentType: EmploymentType;
     experienceLevel?: string;
     category: string;
     skillWeight: number;
@@ -50,7 +61,7 @@ export interface CreateJobDto {
     skills: Array<string>;
     educationRequirements: [
         {
-            degreeLevelCode: string;
+            degreeLevelCode: keyof typeof DegreeLevelCode;
             fieldOfStudy?: string;
             isOptional: boolean;
         },

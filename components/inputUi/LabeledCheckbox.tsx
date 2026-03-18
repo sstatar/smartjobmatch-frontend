@@ -1,12 +1,14 @@
 interface LabeledTextboxProps {
     label?: string;
     isChecked?: boolean;
+    required?: boolean;
     onClick?: (isChecked: boolean) => void;
 }
 
 export default function LabeledCheckbox({
     label,
     isChecked = false,
+    required = false,
     onClick,
 }: LabeledTextboxProps) {
     function handleClick() {
@@ -22,7 +24,12 @@ export default function LabeledCheckbox({
                 onChange={handleClick}
             />
             {label && (
-                <span className="text-heading-5 font-semibold">{label}</span>
+                <span className="text-heading-5 font-semibold">
+                    {label}
+                    {required && (
+                        <span className="text-red-600 font-semibold">*</span>
+                    )}
+                </span>
             )}
         </label>
     );

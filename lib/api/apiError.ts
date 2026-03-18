@@ -1,10 +1,16 @@
+export interface ApiErrorResponse {
+    message: JSON | string;
+    error: string;
+    statusCode: number;
+}
+
 export class ApiError extends Error {
     status: number;
-    data?: unknown;
+    data?: string;
 
-    constructor(status: number, message: string, data?: unknown) {
+    constructor(status: number, message: string, data?: ApiErrorResponse) {
         super(message);
         this.status = status;
-        this.data = data;
+        this.data = JSON.stringify(data);
     }
 }

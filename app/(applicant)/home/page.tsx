@@ -1,7 +1,6 @@
 // app/jobs/page.tsx
 import JobQueryInput from "@/components/JobQueryInput";
 import JobsList from "@/components/JobsList/JobList.server";
-import Navbar from "@/components/navbar/Navbar";
 
 export default async function Page(props: {
     searchParams?: Promise<{
@@ -17,8 +16,7 @@ export default async function Page(props: {
 
     return (
         <>
-            <Navbar variant="dashboard" activedTab="jobs" />
-            <div className="page flex flex-col gap-8 mt-8 m-12">
+            <div className="page flex flex-col gap-8 m-12">
                 <JobQueryInput />
 
                 {/* ส่ง currentPage ไปยิง API เพื่อดึง data และ totalPages */}

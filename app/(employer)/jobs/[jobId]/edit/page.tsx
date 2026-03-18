@@ -16,12 +16,6 @@ async function fetchJobDetailsById(jobId: string) {
     return job;
 }
 
-/**
- * ! TODO: HERE FINAL
- * * [/] กำหนดค่าเริ่มต้นสำหรับทุก state และส่งไปเป็น props
- * * [X] สร้างหน้า update ดึงข้อมูลจาก Api ส่งไปเป็น initial แทน
- */
-
 export default async function Page({
     params,
 }: {
@@ -32,7 +26,6 @@ export default async function Page({
         fetchJobDetailsById(jobId),
         fetchCategories(),
     ]);
-    console.log(job);
 
     const props: JobData = {
         iJobTitle: job.title,
@@ -42,10 +35,15 @@ export default async function Page({
             province: job.location?.province || "",
             country: job.location?.country || "",
         },
+        iWorkplaceType: job.workplaceType || "HYBRID",
+        iEmploymentType: job.employmentType?.name || "Full-time",
         iSalaryMin: job.salaryMin || 0.0,
         iSalaryMax: job.salaryMax || 0.0,
-        categoryOptions: categories,
+        iCurrency: job.currency || "THB",
+        iIsActive: job.isActive,
+        iCategory: job.category?.name || "",
         iExperienceLevel: job.experienceLevel?.name || "",
+        iDegreeLevelCode: job.educationRequirements?.[0].degreeLevelCode || "",
         iFieldOfStudy: job.educationRequirements?.[0].fieldOfStudy || "",
         iIsEducationOptional: job.educationRequirements?.[0].isOptional || true,
         iSkillWeight: job.skillWeight,
@@ -56,5 +54,12 @@ export default async function Page({
         ),
     };
 
-    return <JobCreateForm jobData={props} mode="edit" jobId={job.id} />;
+    return (
+        <JobCreateForm
+            jobData={props}
+            categoryOptions={categories}
+            mode="edit"
+            jobId={job.id}
+        />
+    );
 }

@@ -7,17 +7,22 @@ import ReactMarkdown from "react-markdown";
 import Button from "../ui/Button-2";
 import { AiAnalysisResults } from "./JobAppliedList.client";
 import { JobCardData } from "./JobsList.client";
+import { UserRole } from "@/app/actions/auth";
 
-export default function JobDetail({
-    job,
-    isApplied = false,
-    aiAnalysisResult = undefined,
-}: {
+export interface JobDetailProps {
+    userRole?: UserRole;
     job: JobCardData | null;
     isApplied?: boolean;
     isNeededAiAction?: boolean;
     aiAnalysisResult?: AiAnalysisResults | undefined;
-}) {
+}
+
+export default function JobDetail({
+    userRole = "APPLICANT",
+    job,
+    isApplied = false,
+    aiAnalysisResult = undefined,
+}: JobDetailProps) {
     // State สำหรับ AI
     const [analysisResult, setAnalysisResult] = useState<
         AiAnalysisResults | undefined
@@ -53,7 +58,7 @@ export default function JobDetail({
             if (result.error) {
                 alert(result.error);
             } else if (result.success) {
-                alert("สมัครงานสำเร็จ!");
+                alert("Job application successful!");
                 setLocalIsApplied(true); // เปลี่ยนสถานะเป็นสมัครแล้ว เพื่อซ่อนปุ่ม
             }
         });
@@ -70,7 +75,7 @@ ${weaknesses?.map((w) => `- ${w}`).join("\n")}
 `;
 
     return (
-        <div className="sticky top-4">
+        <div className="sticky top-24">
             <div className="max-h-screen overflow-y-auto">
                 {job ? (
                     <div className="job-detail w-full sticky top-4">
@@ -84,19 +89,22 @@ ${weaknesses?.map((w) => `- ${w}`).join("\n")}
                                 </p>
                             </div>
                             {/* ปรับปรุงปุ่ม Apply Now */}
-                            {!localIsApplied ? (
-                                <Button
-                                    variant="primary"
-                                    onClick={handleApplyClick}
-                                    disabled={isApplying} // ปิดปุ่มระหว่างรอ API ตอบกลับ
-                                >
-                                    {isApplying ? "Applying..." : "Apply Now"}
-                                </Button>
-                            ) : (
-                                <span className="text-green-600 font-semibold px-4 py-2 bg-green-50 rounded-md">
-                                    Applied
-                                </span>
-                            )}
+                            {userRole === "APPLICANT" &&
+                                (!localIsApplied ? (
+                                    <Button
+                                        variant="primary"
+                                        onClick={handleApplyClick}
+                                        disabled={isApplying} // ปิดปุ่มระหว่างรอ API ตอบกลับ
+                                    >
+                                        {isApplying
+                                            ? "Applying..."
+                                            : "Apply Now"}
+                                    </Button>
+                                ) : (
+                                    <span className="text-green-600 font-semibold px-4 py-2 bg-green-50 rounded-md">
+                                        Applied
+                                    </span>
+                                ))}
                         </div>
                         <div className="job-description p-4 border border-accent-2">
                             <h2 className="text-heading-4 font-semibold">
@@ -106,41 +114,43 @@ ${weaknesses?.map((w) => `- ${w}`).join("\n")}
                                 <ReactMarkdown>{job.description}</ReactMarkdown>
                             </div>
                         </div>
-                        <div className="bg-tertiary">
-                            {analysisResult ? (
-                                <div className="job-actions p-4 border border-accent-2">
-                                    <h2 className="text-heading-4 font-semibold">
-                                        AI Analysis Result
-                                    </h2>
-                                    <div className="markdown">
-                                        <ReactMarkdown>
-                                            {aiResultString
-                                                .split("\n")
-                                                .join("\n\n")}
-                                        </ReactMarkdown>
+                        {userRole === "APPLICANT" && (
+                            <div className="bg-tertiary">
+                                {analysisResult ? (
+                                    <div className="job-actions p-4 border border-accent-2">
+                                        <h2 className="text-heading-4 font-semibold">
+                                            AI Analysis Result
+                                        </h2>
+                                        <div className="markdown">
+                                            <ReactMarkdown>
+                                                {aiResultString
+                                                    .split("\n")
+                                                    .join("\n\n")}
+                                            </ReactMarkdown>
+                                        </div>
                                     </div>
-                                </div>
-                            ) : (
-                                <div className="job-actions p-4 border border-accent-2 flex flex-col gap-4">
-                                    <h4 className="text-heading-4 font-semibold">
-                                        Want to know which skills you need to
-                                        improve your match score?
-                                    </h4>
-                                    <div className="stretch-start">
-                                        {/* ผูก event onClick และทำปุ่ม disable ระหว่างโหลด */}
-                                        <Button
-                                            variant="primary"
-                                            onClick={handleAnalyzeClick}
-                                            disabled={isPendingAI}
-                                        >
-                                            {isPendingAI
-                                                ? "Analyzing..."
-                                                : "Get AI Analysis"}
-                                        </Button>
+                                ) : (
+                                    <div className="job-actions p-4 border border-accent-2 flex flex-col gap-4">
+                                        <h4 className="text-heading-4 font-semibold">
+                                            Want to know which skills you need
+                                            to improve your match score?
+                                        </h4>
+                                        <div className="stretch-start">
+                                            {/* ผูก event onClick และทำปุ่ม disable ระหว่างโหลด */}
+                                            <Button
+                                                variant="primary"
+                                                onClick={handleAnalyzeClick}
+                                                disabled={isPendingAI}
+                                            >
+                                                {isPendingAI
+                                                    ? "Analyzing..."
+                                                    : "Get AI Analysis"}
+                                            </Button>
+                                        </div>
                                     </div>
-                                </div>
-                            )}
-                        </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <div className="job-detail-placeholder w-full flex justify-center">

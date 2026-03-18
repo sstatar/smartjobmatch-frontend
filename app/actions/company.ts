@@ -1,93 +1,91 @@
+// company.ts
 "use server";
 
-import { cookies } from "next/headers";
-import { API_BASE_URL } from "@/lib/api-config";
+import { ApiError, ApiErrorResponse } from "@/lib/api/apiError";
+import {
+    companiesApi,
+    CreateCompanyDto,
+} from "@/lib/api/endpoints/companiesApi";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
-export type AiAnalysisResult = {
-    aiScore: number;
-    summary: string;
-    strengths: string;
-    weaknesses: string;
-    reasonForPoints: string;
-    resumeUrlUsed: string;
-    snapshottedEducation: string;
-    snapshottedExperience: string;
-    snapshottedSkills: string;
-};
+// แนะนำให้สร้าง Type สำหรับ Response กลับไป
+export type CreateCompanyResponse =
+    | { success: true }
+    | { success: false; error: string; data?: ApiErrorResponse | null };
 
-export type JobPost = {
-    id: string;
-    title: string;
-    description: string;
-    salaryMin?: number;
-    salaryMax?: number;
-    currency?: string;
-    isActive: boolean;
-    workplaceType: string;
-    postedAt: string;
-    location: {
-        id: string;
-        city: string;
-        province: string;
-        country: string;
-    };
-    employmentType: {
-        id: string;
-        name: string;
-    };
-    category: {
-        id: string;
-        name: string;
-        keywords: Array<string>;
-    };
-    applications: Array<{
-        id: string;
-        status: string;
-        profileId: string;
-        profile: {
-            user: {
-                firstName: string;
-                lastName: string;
-                email: string;
-                phone: string;
-                profilePictureUrl?: string;
-            };
-        };
-        appliedAt: string;
-        aiAnalysisResult: AiAnalysisResult;
-    }>;
-};
-
-export type Company = {
-    id: string;
-    name: string;
-    description?: string;
-    website?: string;
-    logoUrl?: string;
-    industry?: string;
-    createdAt: string;
-    updatedAt: string;
-    jobPosts: JobPost[];
-};
-
-export async function getMyCompany() {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
-
+export async function createCompany(companyPayload: CreateCompanyDto) {
     try {
-        const response = await fetch(`${API_BASE_URL}/companies/me`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        if (!response.ok) {
-            return { error: "failed to get your company data" };
+        await companiesApi.createCompany(companyPayload);
+    } catch (error) {
+        // หากเป็น ApiError ที่เราดักไว้ ให้ return ค่ากลับไปเลย
+        if (error instanceof ApiError) {
+            return {
+                success: false,
+                error: error.message,
+                data: error.data ? JSON.parse(error.data) : null,
+            };
         }
 
-        const data: Company = await response.json();
-        return { success: true, data }; // ส่งคืน data กลับไปให้ UI
-    } catch (_) {
-        return { error: "failed to get your company data" };
+        // Error อื่นๆ นอกเหนือจากการเรียก API
+        return {
+            success: false,
+            error: "An unexpected error occurred, please try again later",
+        };
     }
+
+    // redirect จะทำงานเมื่อ try ด้านบนสำเร็จ (เพราะถ้า error มันถูก return ออกไปแล้ว)
+    // การวาง redirect ไว้นอก try/catch คือสิ่งที่ถูกต้องแล้วใน Next.js
+    revalidatePath("/(employer)", "layout");
+    redirect("/company/me");
+}
+
+export async function updateCompany(companyPayload: CreateCompanyDto) {
+    try {
+        await companiesApi.updateCompany(companyPayload);
+    } catch (error) {
+        // หากเป็น ApiError ที่เราดักไว้ ให้ return ค่ากลับไปเลย
+        if (error instanceof ApiError) {
+            return {
+                success: false,
+                error: error.message,
+                data: error.data ? JSON.parse(error.data) : null,
+            };
+        }
+
+        // Error อื่นๆ นอกเหนือจากการเรียก API
+        return {
+            success: false,
+            error: "An unexpected error occurred, please try again later",
+        };
+    }
+
+    // redirect จะทำงานเมื่อ try ด้านบนสำเร็จ (เพราะถ้า error มันถูก return ออกไปแล้ว)
+    // การวาง redirect ไว้นอก try/catch คือสิ่งที่ถูกต้องแล้วใน Next.js
+    redirect("/company/me");
+}
+
+export async function deleteCompany() {
+    try {
+        await companiesApi.deleteCompany();
+    } catch (error) {
+        // หากเป็น ApiError ที่เราดักไว้ ให้ return ค่ากลับไปเลย
+        if (error instanceof ApiError) {
+            return {
+                success: false,
+                error: error.message,
+                data: error.data ? JSON.parse(error.data) : null,
+            };
+        }
+
+        // Error อื่นๆ นอกเหนือจากการเรียก API
+        return {
+            success: false,
+            error: "An unexpected error occurred, please try again later",
+        };
+    }
+
+    // redirect จะทำงานเมื่อ try ด้านบนสำเร็จ (เพราะถ้า error มันถูก return ออกไปแล้ว)
+    // การวาง redirect ไว้นอก try/catch คือสิ่งที่ถูกต้องแล้วใน Next.js
+    redirect("/home");
 }

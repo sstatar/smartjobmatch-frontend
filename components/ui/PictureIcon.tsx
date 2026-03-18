@@ -23,10 +23,12 @@ export default function PictureIcon({
                     height={height}
                     src={imageUrl}
                     alt={alt ? alt : imageUrl ? imageUrl : "picture"}
-                    className={`${className} rounded-full object-cover border`}
+                    className={`${className} rounded-full object-cover border border-accent-2`}
                 />
             ) : (
-                <div className={`${className} bg-gray-300 rounded-full`} />
+                <div
+                    className={`${className} bg-gray-300 rounded-full border border-gray-600`}
+                />
             )}
         </div>
     );

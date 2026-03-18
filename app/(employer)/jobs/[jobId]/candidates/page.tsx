@@ -1,4 +1,4 @@
-import { JobPost } from "@/app/actions/company";
+import { JobPost } from "@/lib/api/endpoints/companiesApi";
 import JobDetailCard from "@/components/JobDetailCard";
 import JobCard from "@/components/JobsList/JobCard";
 import { getJobById } from "../service/jobs";
@@ -42,7 +42,7 @@ export default async function Page({
             <div className="candidates w-2/3 flex flex-col gap-4">
                 <h1 className="text-heading-3 font-semibold">Pick for you</h1>
                 {candidates.length === 0 ? (
-                    <h1>ไม่พบผู้สมัครงาน</h1>
+                    <h1>No candidates</h1>
                 ) : (
                     <RecommendCandidateList candidates={candidates} />
                 )}

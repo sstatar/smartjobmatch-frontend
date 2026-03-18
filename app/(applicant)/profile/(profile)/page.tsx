@@ -44,7 +44,7 @@ export default async function page() {
 
     if (!token) {
         // ถ้าไม่มี Token แปลว่ายังไม่ล็อกอิน โยนกลับไปหน้า Login ได้เลย
-        return <div>กรุณาล็อกอินก่อนเข้าใช้งาน</div>;
+        return <div>Please log in first</div>;
     }
 
     let profileData = null;
@@ -62,17 +62,16 @@ export default async function page() {
 
         if (res.ok) {
             profileData = await res.json();
-            
         } else {
-            console.error("ดึงข้อมูลไม่สำเร็จ Status:", res.status);
+            console.error("Failed to fetch data, Status:", res.status);
         }
     } catch (error) {
-        console.error("เกิดข้อผิดพลาดในการต่อ API:", error);
+        console.error("An error occurred while fetching API:", error);
     }
 
-    // 3. ถ้า API ล่ม หรือหาข้อมูลไม่เจอ
+    // 3. If API fails or data is not found
     if (!profileData) {
-        return <div>ไม่พบข้อมูลโปรไฟล์ หรือ เซิร์ฟเวอร์มีปัญหา</div>;
+        return <div>Failed to fetch profile data or server has an error</div>;
     }
 
     return (

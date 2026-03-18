@@ -19,7 +19,6 @@ export async function applyForJob(jobId: string) {
     const data = await response.json();
 
     if (!response.ok) {
-        console.log(data);
         return { error: `failed to apply for this job (${data.message})` };
     }
 
