@@ -12,7 +12,7 @@ export default function LoginPage() {
     const [state, formAction, isPending] = useActionState(login, initialState);
 
     return (
-        <div className="w-full flex justify-center">
+        <div className="w-full flex justify-center h-full">
             <AuthCard
                 type="login"
                 subtitle="Wellcome Back!"

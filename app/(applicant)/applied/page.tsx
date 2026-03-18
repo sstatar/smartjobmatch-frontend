@@ -17,7 +17,6 @@ export default async function Page(props: {
 
     return (
         <>
-            <Navbar variant="dashboard" activedTab="applied" />
             <div className="page flex flex-col gap-8 mt-8 m-12">
                 <JobQueryInput />
 

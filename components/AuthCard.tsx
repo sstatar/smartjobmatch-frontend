@@ -43,7 +43,7 @@ export default function AuthCard({
 }: AuthCardProps) {
     const [role, setRole] = useState<"APPLICANT" | "EMPLOYER">("APPLICANT");
     return (
-        <div className="bg-white border border-accent rounded-3xl shadow-xl p-8 sm:px-18 py-5  w-full max-w-112.5">
+        <div className="bg-white border border-accent rounded-3xl shadow-xl p-8 sm:px-18 py-5 w-full max-w-112.5">
             {/* Header */}
             <div className="text-center mb-5">
                 <Logo size="sm"></Logo>
