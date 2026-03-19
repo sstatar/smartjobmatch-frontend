@@ -15,7 +15,7 @@ export default function ButtonSecond({
     className = "",
 }: ButtonSecondProps) {
     const base =
-        "h-[56px] inline-flex items-center justify-center gap-2 px-7.5 rounded-xl text-button-1 font-[var(--weight-button)] transition";
+        "h-[56px] inline-flex items-center justify-center gap-2 px-7.5 rounded-xl text-button-1 font-[var(--weight-button)] transition max-w-[350px]";
     const variants = {
         primary: "bg-success text-secondary",
         secondary: "bg-primary text-secondary",

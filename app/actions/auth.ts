@@ -79,7 +79,7 @@ export async function login(
                     if (!profileData.resumeUrl) {
                         redirectPath = "/uploadResume"; // ยังไม่มีของ พาไปอัปโหลด
                     } else {
-                        redirectPath = "/dashboard"; // มีแล้ว พาไปหน้าหลัก
+                        redirectPath = "/home"; // มีแล้ว พาไปหน้าหลัก
                     }
                 } catch (checkError) {
                     console.error("เช็ค Profile ไม่ผ่าน", checkError);

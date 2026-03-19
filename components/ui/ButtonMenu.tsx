@@ -13,7 +13,7 @@ export default function ButtonMenu({
     isActive = false,
 }: IconButtonProps) {
     const baseStyles =
-        "flex  justify-start gap-2 px-4 py-3 rounded-sm font-medium transition-all duration-200 active:scale-95 w-full";
+        "flex  justify-start gap-2 px-4 py-3 rounded-sm font-medium transition-all duration-200 active:scale-95 w-full cursor-pointer";
     
         const activeStyles = "bg-accent-2 !text-accent"
 

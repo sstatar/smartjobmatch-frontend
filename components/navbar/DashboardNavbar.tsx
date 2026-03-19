@@ -4,6 +4,7 @@ import Button from "@/components/ui/Button";
 import { API_BASE_URL } from "@/lib/api-config";
 import Link from "next/link";
 import { Route } from "next";
+import IconProfile from "@/public/svgs/iconProfile.svg";    
 
 export type DashboardTab = "jobs" | "bookmarked" | "applied";
 
@@ -99,7 +100,11 @@ export default function DashboardNavbar({
 
             {/* Right */}
             <div className="flex-1 items-center flex justify-end gap-4">
-                search | avatar
+                <Link href="/profile">
+                <button className="cursor-pointer">
+                <IconProfile className="w-9 h-9"></IconProfile>
+                </button>
+                </Link>
             </div>
         </>
     );
