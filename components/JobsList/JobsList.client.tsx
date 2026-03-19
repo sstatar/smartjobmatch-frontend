@@ -11,7 +11,6 @@ import {
     deleteBookmarked,
     getMyBookmarkedJobs,
 } from "@/app/actions/job";
-import { useRouter } from "next/navigation";
 
 export interface JobCardData {
     id: string;
@@ -66,7 +65,6 @@ export interface JobListClientProps {
 }
 
 export default function JobsListClient({ jobs }: JobListClientProps) {
-    const router = useRouter();
     const [selectedJob, setSelectedJob] = useState<JobCardData | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const [userBookmarkedJobIds, setUserBookmarkedJobIds] = useState(
