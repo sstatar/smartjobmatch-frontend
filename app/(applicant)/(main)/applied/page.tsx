@@ -17,7 +17,7 @@ export default async function Page(props: {
 
     return (
         <>
-            <div className="page flex flex-col gap-8 mt-8 m-12">
+            <div className="page flex flex-col gap-8 mt-12 m-12">
                 <JobQueryInput />
 
                 {/* ส่ง currentPage ไปยิง API เพื่อดึง data และ totalPages */}

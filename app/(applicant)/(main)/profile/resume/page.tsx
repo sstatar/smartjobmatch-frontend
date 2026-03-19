@@ -15,8 +15,7 @@ export default async function page() {
     const initialStep = getInitialStep();
     
     return (
-        <div className="h-screen flex flex-col">
-            <Navbar variant="dashboard" />
+        <div className="h-screen flex flex-col mt-8">
             <div className="flex flex-1 overflow-hidden gap-4 justify-center px-8">
                 <Sidebar />
 

@@ -4,11 +4,7 @@ import ProfileVisibilitySelect from "@/components/ui/ProfileVisibilitySelectButt
 import ButtonSecond from "@/components/ui/Button-2";
 import { useEffect, useRef, useState } from "react";
 import ProgressBarCard from "@/components/ui/ProgressBarCard";
-import {
-    analyzeResume,
-    analyzeResumeAction,
-    uploadResumeAction,
-} from "../../../actions/resume"; // ฟังก์ชันเก่าของคุณ
+import { analyzeResumeAction, uploadResumeAction } from "@/app/actions/resume";
 import { isSea } from "node:sea";
 import ShowResumePreview from "@/components/ui/ShowResumePreview";
 

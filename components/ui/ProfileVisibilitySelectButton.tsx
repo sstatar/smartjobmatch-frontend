@@ -4,7 +4,7 @@ import IconDropdown from "@/public/svgs/iconDropdown.svg";
 import { useState } from "react";
 import ProfileVisibilitySelectCard from "./ProfileVisibleSelectCard";
 import IconVisibility from "../icon/IconVisibility";
-import { updateVisibilityAction } from "@/app/(applicant)/profile/resume/service/resumeAction";
+import { updateVisibilityAction } from "@/app/(applicant)/(main)/profile/resume/service/resumeAction";
 export default function ProfileVisibilitySelect({
     isSearchable,
 }: {
