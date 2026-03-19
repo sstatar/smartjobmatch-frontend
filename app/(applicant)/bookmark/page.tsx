@@ -20,7 +20,11 @@ export default async function Page(props: {
                 <JobQueryInput />
 
                 {/* ส่ง currentPage ไปยิง API เพื่อดึง data และ totalPages */}
-                <JobsList query={query} page={currentPage} />
+                <JobsList
+                    queryType="bookmarked"
+                    query={query}
+                    page={currentPage}
+                />
             </div>
         </>
     );

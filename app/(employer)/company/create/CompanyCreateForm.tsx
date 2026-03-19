@@ -59,13 +59,8 @@ export default function CompanyCreateForm({
 
             // เช็คว่าถ้ามี result กลับมาและ success เป็น false แปลว่าเกิด Error
             if (result && !result.success) {
-                console.log("test here");
-                console.log(result.data); // ตอนนี้จะแสดง Object data ที่ต้องการแล้ว
-
                 // alert อาจจะแสดงเป็น [object Object] ให้ใช้ JSON.stringify ช่วย
                 alert(JSON.stringify(result.data, null, 2));
-
-                console.log("end test");
                 return; // หยุดการทำงาน
             }
 
@@ -77,7 +72,7 @@ export default function CompanyCreateForm({
     }
 
     return (
-        <div className="flex flex-col items-center gap-8 max-w-3xl px-16 my-12 mx-auto">
+        <div className="flex flex-col items-center gap-8 max-w-3xl px-16 mb-12 mx-auto">
             <ProgressPoint step={step} maxSteps={2} />
 
             {/* Step 1 */}

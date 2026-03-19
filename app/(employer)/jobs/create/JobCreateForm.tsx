@@ -212,7 +212,7 @@ export default function JobCreateForm({
     }
 
     return (
-        <div className="flex flex-col items-center gap-12 max-w-3xl px-4 my-12 mx-auto">
+        <div className="flex flex-col items-center gap-12 max-w-3xl px-4 mb-12 mx-auto">
             {/* Progress Bar */}
             <ProgressPoint step={step} maxSteps={3} />
 

@@ -4,6 +4,7 @@
 import { ApiError } from "@/lib/api/apiError";
 import { bookmarksApi } from "@/lib/api/endpoints/bookmarksApi";
 import { CreateJobDto, Job, jobsApi } from "@/lib/api/endpoints/jobsApi";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function createJob(data: CreateJobDto) {
@@ -65,6 +66,7 @@ export async function getMyBookmarkedJobs() {
 export async function createBookmarked(jobId: string) {
     try {
         const res = await bookmarksApi.createBookmark(jobId);
+        revalidatePath("/", "layout");
         return { success: true, data: res };
     } catch (error) {
         if (error instanceof ApiError) {
@@ -77,6 +79,7 @@ export async function createBookmarked(jobId: string) {
 export async function deleteBookmarked(jobId: string) {
     try {
         const res = await bookmarksApi.deleteBookmark(jobId);
+        revalidatePath("/", "layout");
         return { success: true, data: res };
     } catch (error) {
         if (error instanceof ApiError) {

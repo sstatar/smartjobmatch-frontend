@@ -137,7 +137,7 @@ export default function JobsListClient({ jobs }: JobListClientProps) {
         }
     };
 
-    return (
+    return jobs.length > 0 ? (
         <div className="jobs flex gap-4">
             <div className="jobs-list flex w-1/3 flex-col gap-4">
                 {jobs.map((job) => (
@@ -161,6 +161,10 @@ export default function JobsListClient({ jobs }: JobListClientProps) {
                     userRole={user?.role}
                 />
             </div>
+        </div>
+    ) : (
+        <div>
+            <p className="text-center">No jobs found</p>
         </div>
     );
 }

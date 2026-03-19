@@ -1,3 +1,6 @@
 / Employer flow
-X Bookmark -> Bookmark page & navbar number count
-X Candidate data visualization
+/ Bookmark -> Bookmark page & navbar number count
+/ Candidate data visualization
+X Candidate Matching Stratigies
+X REMOVE PROFILE ICON
+X Job Matching Analysis

@@ -56,8 +56,8 @@ export async function login(
             console.log("ข้อมูลใน Token:", tokenData);
 
             // ถ้ามี เราก็ดึงมาเช็คได้เลย
-            if (tokenData.role === "employer") {
-                redirectPath = "/employer/dashboard";
+            if (tokenData.role === "EMPLOYER") {
+                redirectPath = "/company/me";
             } else {
                 // 💡 ท่าแอบถาม: ถ้าเป็น Applicant ให้ยิงไปดึงข้อมูล Profile ของตัวเองมาเช็คก่อน
                 try {
