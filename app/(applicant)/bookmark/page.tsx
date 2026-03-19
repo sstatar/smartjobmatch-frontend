@@ -1,7 +1,6 @@
 // app/jobs/page.tsx
 import JobQueryInput from "@/components/JobQueryInput";
 import JobsList from "@/components/JobsList/JobList.server";
-import Navbar from "@/components/navbar/Navbar";
 
 export default async function Page(props: {
     searchParams?: Promise<{
@@ -22,7 +21,7 @@ export default async function Page(props: {
 
                 {/* ส่ง currentPage ไปยิง API เพื่อดึง data และ totalPages */}
                 <JobsList
-                    queryType="applied"
+                    queryType="bookmarked"
                     query={query}
                     page={currentPage}
                 />

@@ -104,7 +104,7 @@ ${weaknesses?.map((w) => `- ${w}`).join("\n")}
             <div className="max-h-screen overflow-y-auto">
                 <div className="job-detail w-full sticky top-4">
                     <div className="head flex justify-between items-center p-4 border border-accent-2 rounded-t-lg">
-                        <div className="flex flex-col gap-2 border-b border-gray-100 max-w-4/5">
+                        <div className="flex flex-col gap-2 max-w-4/5">
                             {/* ส่วนหัว: ชื่อตำแหน่งและชื่อบริษัท */}
                             <div>
                                 <h1 className="text-3xl font-bold text-gray-900 tracking-tight">

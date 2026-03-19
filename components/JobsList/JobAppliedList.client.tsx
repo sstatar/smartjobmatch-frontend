@@ -45,6 +45,7 @@ export default function JobsAppliedListClient({
                             jobData={job.jobPost}
                             isSelected={selectedJob?.id === job.id}
                             onClick={() => setSelectedJob(job)}
+                            showBookmark={false}
                         />
                     ))
                 ) : (

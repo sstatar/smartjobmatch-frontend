@@ -20,7 +20,7 @@ export default async function JobsList({
 
     const queryUrls = {
         all: `${API_BASE_URL}/job-posts?query=${query}&page=${page}`,
-        bookmarked: `${API_BASE_URL}/job-posts/bookmarked`,
+        bookmarked: `${API_BASE_URL}/bookmarks/me?query=${query}&page=${page}`,
         applied: `${API_BASE_URL}/applications/mine?query=${query}&page=${page}`,
     };
 

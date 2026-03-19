@@ -25,7 +25,7 @@ export default async function Page({
     const candidates: CandidateResponseType[] = resCandidate.data;
 
     return job ? (
-        <div className="m-10 flex gap-8 justify-center">
+        <div className="mx-10 mb-10 flex gap-8 justify-center">
             <div className="job-description w-1/3 flex flex-col gap-4">
                 <JobCard
                     jobData={{
