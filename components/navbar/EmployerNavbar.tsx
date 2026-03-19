@@ -5,6 +5,8 @@ import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
 import Logo from "../ui/Logo";
 import NavSimpleItem from "../ui/NavSimpleItem";
+import IconProfile from "@/public/svgs/iconProfile.svg";
+import { logout } from "@/app/actions/auth";
 
 export interface EmployerNavbarProps {
     user: User | null;
@@ -45,11 +47,12 @@ export default function EmployerNavbar({ user }: EmployerNavbarProps) {
                         />
                     </Link>
                 )}
-                {/* <PictureIcon
-                    src={user.profilePictureUrl}
-                    width={50}
-                    height={50}
-                /> */}
+                <button
+                    className="cursor-pointer"
+                    onClick={async () => logout()}
+                >
+                    <NavSimpleItem label="Log out" />
+                </button>
             </div>
         </>
     );
