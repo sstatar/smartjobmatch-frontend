@@ -35,7 +35,8 @@ export default function CandidateCard({
         >
             <div className="flex justify-between">
                 <PictureIcon
-                    src={candidate.profilePictureUrl}
+                    // src={candidate.profilePictureUrl}
+                    src=""
                     alt={candidate.firstName}
                     width={100}
                     height={100}

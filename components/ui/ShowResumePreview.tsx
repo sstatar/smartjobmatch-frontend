@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Button from "./Button";
+import { RESUME_BASE_URL } from "@/lib/api-config";
 
 type ShowResumePreviewProps = {
     file: File | string;
@@ -16,7 +17,7 @@ export default function ShowResumePreview({
         typeof file === "string"
             ? file.startsWith("http")
                 ? file
-                : `https://f8f3-49-237-80-96.ngrok-free.app/uploads/${file}` // เติม Path ที่เพื่อนเก็บไฟล์ไว้
+                : `${RESUME_BASE_URL}/${file}` // เติม Path ที่เพื่อนเก็บไฟล์ไว้
             : URL.createObjectURL(file);
 
     useEffect(() => {

@@ -96,7 +96,8 @@ export default function CandidateModal({
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-6 border-b pb-6 mt-4">
                     <div className="flex items-center gap-5">
                         <PictureIcon
-                            src={imgSrc}
+                            // src={imgSrc}
+                            src=""
                             alt={candidate.profile.user.firstName}
                             width={100}
                             height={100}

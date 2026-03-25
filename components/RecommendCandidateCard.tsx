@@ -22,7 +22,8 @@ export default function RecommendCandidateCard({
         >
             <div className="left w-1/6">
                 <PictureIcon
-                    src={candidate.user.profilePictureUrl}
+                    // src={candidate.user.profilePictureUrl}
+                    src=""
                     alt={candidate.user.firstName}
                     className="w-16 h-16 ml-2"
                 />
