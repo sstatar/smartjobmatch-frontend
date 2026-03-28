@@ -5,6 +5,8 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import axios, { AxiosError } from "axios";
 import { API_BASE_URL } from "@/lib/api-config";
+import { profilesApi } from "@/lib/api/endpoints/profilesApi";
+import { ApiError } from "@/lib/api/apiError";
 
 export async function uploadResumeAction(formData: FormData) {
     try {
@@ -74,5 +76,17 @@ export async function analyzeResumeAction() {
             };
         }
         return { success: false, error: "Internal Server Error" };
+    }
+}
+
+export async function autoFillResumeAction() {
+    try {
+        const res = await profilesApi.autofill();
+        return { success: true, data: res };
+    } catch (error) {
+        if (error instanceof ApiError) {
+            return { success: false, error: error.data };
+        }
+        return { success: false, error: "failed to toggle bookmark job" };
     }
 }

@@ -9,19 +9,21 @@ export type QueryType = "all" | "bookmarked" | "applied";
 export default async function JobsList({
     queryType = "all",
     query = "",
+    location = "",
     page = 1,
 }: {
     queryType?: QueryType;
     query?: string;
+    location?: string;
     page?: number;
 }) {
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
 
     const queryUrls = {
-        all: `${API_BASE_URL}/job-posts?query=${query}&page=${page}`,
-        bookmarked: `${API_BASE_URL}/bookmarks/me?query=${query}&page=${page}`,
-        applied: `${API_BASE_URL}/applications/mine?query=${query}&page=${page}`,
+        all: `${API_BASE_URL}/job-posts?query=${query}&location=${location}&page=${page}`,
+        bookmarked: `${API_BASE_URL}/bookmarks/me?query=${query}&location=${location}&page=${page}`,
+        applied: `${API_BASE_URL}/applications/mine?query=${query}&location=${location}&page=${page}`,
     };
 
     const responseData = await fetch(queryUrls[queryType], {
@@ -40,9 +42,16 @@ export default async function JobsList({
     const totalPages = responseData?.meta?.totalPages || 1;
 
     const JobClient = {
-        all: <JobListClient key={`${query}-${page}`} jobs={jobs} />,
-        bookmarked: <JobListClient key={`${query}-${page}`} jobs={jobs} />,
-        applied: <JobAppliedClient key={`${query}-${page}`} jobs={jobs} />,
+        all: <JobListClient key={`${query}-${location}-${page}`} jobs={jobs} />,
+        bookmarked: (
+            <JobListClient key={`${query}-${location}-${page}`} jobs={jobs} />
+        ),
+        applied: (
+            <JobAppliedClient
+                key={`${query}-${location}-${page}`}
+                jobs={jobs}
+            />
+        ),
     };
     return (
         <>

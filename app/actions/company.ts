@@ -84,8 +84,4 @@ export async function deleteCompany() {
             error: "An unexpected error occurred, please try again later",
         };
     }
-
-    // redirect จะทำงานเมื่อ try ด้านบนสำเร็จ (เพราะถ้า error มันถูก return ออกไปแล้ว)
-    // การวาง redirect ไว้นอก try/catch คือสิ่งที่ถูกต้องแล้วใน Next.js
-    redirect("/home");
 }

@@ -4,10 +4,9 @@ type ProgressBarProps = {
     progress: number;
 };
 export default function ProgressBarCard({ progress }: ProgressBarProps) {
-    
     return (
         <>
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
                 <div className="absolute inset-0 bg-black/50  transition-opacity" />
 
                 <div className="relative z-10 animate-in fade-in zoom-in duration-200 flex flex-col items-center gap-10 w-full max-w-2xl bg-secondary py-20 rounded-4">

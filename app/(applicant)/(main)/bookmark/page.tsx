@@ -23,6 +23,7 @@ export default async function Page(props: {
                 <JobsList
                     queryType="bookmarked"
                     query={query}
+                    location={location}
                     page={currentPage}
                 />
             </div>

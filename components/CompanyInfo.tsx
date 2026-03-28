@@ -3,7 +3,7 @@
 import { deleteCompany } from "@/app/actions/company";
 import { Company } from "@/lib/api/endpoints/companiesApi";
 import Image from "next/image";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import CompanyJobList from "./CompanyJobList";
@@ -16,6 +16,7 @@ export default function CompanyInfo({
     company: Company;
     isOwner?: boolean;
 }) {
+    const router = useRouter();
     const jobsData: JobCardData[] = company.jobPosts.map((job) => ({
         ...job,
         companyId: company.id,
@@ -37,6 +38,7 @@ export default function CompanyInfo({
     async function handleDelete() {
         if (confirm("Do you want to delete this company?")) {
             await deleteCompany();
+            router.refresh();
         }
     }
 

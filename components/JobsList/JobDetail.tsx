@@ -100,7 +100,7 @@ ${weaknesses?.map((w) => `- ${w}`).join("\n")}
     };
 
     return (
-        <div className="sticky top-0">
+        <div className="sticky top-20">
             <div className="max-h-screen overflow-y-auto">
                 <div className="job-detail w-full sticky top-4">
                     <div className="head flex justify-between items-center p-4 border border-accent-2 rounded-t-lg">

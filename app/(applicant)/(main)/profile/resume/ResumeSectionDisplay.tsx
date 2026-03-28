@@ -4,7 +4,11 @@ import ProfileVisibilitySelect from "@/components/ui/ProfileVisibilitySelectButt
 import ButtonSecond from "@/components/ui/Button-2";
 import { useEffect, useRef, useState } from "react";
 import ProgressBarCard from "@/components/ui/ProgressBarCard";
-import { analyzeResumeAction, uploadResumeAction } from "@/app/actions/resume";
+import {
+    analyzeResumeAction,
+    autoFillResumeAction,
+    uploadResumeAction,
+} from "@/app/actions/resume";
 import { isSea } from "node:sea";
 import ShowResumePreview from "@/components/ui/ShowResumePreview";
 
@@ -70,6 +74,15 @@ export default function ResumeSectionDisplay({
         inputRef.current?.click();
     };
 
+    const handleAutofillClick = async () => {
+        const res = await autoFillResumeAction();
+        if (res.success) {
+            alert("Autofill Success!");
+        } else {
+            alert("Autofill Failed!\n" + res.error);
+        }
+    };
+
     const handleAnalyze = async () => {
         setStep("analyze"); // แสดง Progress Bar
         setProgress(10); // เริ่มต้นที่ 10% ให้ดูมีการเคลื่อนไหว
@@ -108,8 +121,8 @@ export default function ResumeSectionDisplay({
                 {step === "start" && (
                     <div className="flex flex-col gap-3">
                         <span>
-                            you don’t have any resume. Please upload your resume
-                            to autofill your profile.
+                            you don&apos;t have any resume. Please upload your
+                            resume to autofill your profile.
                         </span>
                         <ButtonSecond
                             variant="tertiary"
@@ -143,6 +156,10 @@ export default function ResumeSectionDisplay({
                             onReplace={handleReplace}
                         />
 
+                        <ButtonSecond onClick={handleAutofillClick}>
+                            AutoFill From Resume
+                        </ButtonSecond>
+
                         {step === "upload" ? (
                             <ButtonSecond onClick={handleAnalyze}>
                                 Analyze Resume
@@ -170,7 +187,7 @@ export default function ResumeSectionDisplay({
             {step === "analyze" && <ProgressBarCard progress={progress} />}
 
             {showPreview && fileToPreview && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-100 p-4">
                     <div className="bg-white p-8 rounded-2xl max-w-4xl w-full relative">
                         <button
                             onClick={() => setShowPreview(false)}

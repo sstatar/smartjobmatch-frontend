@@ -18,6 +18,7 @@ interface Education {
     startYear?: number;
     graduationMonth?: string | null;
     graduationYear?: number | null;
+    gpa?: number;
 }
 
 interface Experience {
@@ -87,6 +88,8 @@ export default function CandidateModal({
 
     const rawSkills = candidate?.aiAnalysisResult.snapshottedSkills;
     const skills = toStringArray(rawSkills);
+
+    console.log(educations);
 
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
@@ -305,6 +308,9 @@ export default function CandidateModal({
                                                         {item.fieldOfStudy}
                                                     </span>
                                                 </p>
+                                                {item.gpa && (
+                                                    <p>GPA : {item.gpa}</p>
+                                                )}
                                                 <p className="text-xs text-gray-500 mt-1">
                                                     {item.startMonth}{" "}
                                                     {item.startYear}

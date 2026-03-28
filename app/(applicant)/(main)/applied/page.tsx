@@ -24,6 +24,7 @@ export default async function Page(props: {
                 <JobsList
                     queryType="applied"
                     query={query}
+                    location={location}
                     page={currentPage}
                 />
             </div>

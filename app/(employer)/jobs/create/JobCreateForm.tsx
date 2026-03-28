@@ -432,6 +432,7 @@ export default function JobCreateForm({
                         placeholder="Enter a simple job detail (markdown supported for layouting)"
                         value={jobDetails}
                         onChange={setJobDetails}
+                        required={true}
                     />
                 </div>
             )}

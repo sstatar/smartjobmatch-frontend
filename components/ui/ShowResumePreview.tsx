@@ -16,7 +16,8 @@ export default function ShowResumePreview({
         typeof file === "string"
             ? file.startsWith("http")
                 ? file
-                : `https://f8f3-49-237-80-96.ngrok-free.app/uploads/${file}` // เติม Path ที่เพื่อนเก็บไฟล์ไว้
+                : // : `https://f8f3-49-237-80-96.ngrok-free.app/uploads/${file}` // เติม Path ที่เพื่อนเก็บไฟล์ไว้
+                  `http://localhost:3300/uploads/${file}` // เติม Path ที่เพื่อนเก็บไฟล์ไว้
             : URL.createObjectURL(file);
 
     useEffect(() => {
@@ -25,7 +26,7 @@ export default function ShowResumePreview({
                 URL.revokeObjectURL(previewUrl);
             }
         };
-    }, [file, previewUrl] );
+    }, [file, previewUrl]);
 
     return (
         <div className="flex flex-col gap-6 w-full max-w-3xl">
