@@ -2,20 +2,20 @@
 
 // นี่คือหน้าตาที่ Backend (API จริง) ของคุณต้องการ
 export interface EducationEntry {
-  university: string;
-  degreeLevelCode: string; // เช่น "BACHELOR", "MASTER"
-  fieldOfStudy: string;
-  startMonth: string;      // เช่น "JANUARY"
-  startYear: number;       // เป็นตัวเลข 2020
-  graduationMonth: string | null;
-  graduationYear: number | null;
-  degreeName?: string;
-  gpa: number;
-  isCurrent: boolean;
+    university: string;
+    degreeLevelCode: string; // เช่น "BACHELOR", "MASTER"
+    fieldOfStudy: string;
+    startMonth: string; // เช่น "JANUARY"
+    startYear: number; // เป็นตัวเลข 2020
+    graduationMonth: string | null;
+    graduationYear: number | null;
+    degreeName?: string;
+    gpa: number;
+    isCurrent: boolean;
 }
 
 export interface UpdateEducationRequest {
-  educations: EducationEntry[];
+    educations: EducationEntry[];
 }
 
 export interface WorkExperienceEntry {
@@ -23,7 +23,7 @@ export interface WorkExperienceEntry {
     companyName: string;
     summary: string;
     descriptions: string[]; // Backend รอรับเป็น Array ของ string
-    startDate: string;      // ส่งเป็น ISO String ตามที่คุณทำไว้
+    startDate: string; // ส่งเป็น ISO String ตามที่คุณทำไว้
     endDate: string | null;
     isCurrent: boolean;
 }
@@ -39,12 +39,11 @@ export interface UpdateSkillsRequest {
 export interface UpdatePersonalRequest {
     firstName: string;
     lastName: string;
-    phone: string;
+    phone?: string;
     linkedInUrl?: string;
     githubUrl?: string;
     // address?: string; // เพิ่มถ้า Backend ต้องการ
 }
-
 
 // type ในการดึงข้อมูล
 export interface PersonalResponse {

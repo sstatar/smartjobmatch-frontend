@@ -62,13 +62,13 @@ export default function EducationForm({
     const handleChange = (
         idToUpdate: string,
         field: keyof EducationData,
-        value: string | boolean,
+        value: string | boolean
     ) => {
         // เพิ่ม (prevEducations) => เข้าไปข้างใน setEducations
         setEducations((prevEducations) =>
             prevEducations.map((edu) =>
-                edu.id === idToUpdate ? { ...edu, [field]: value } : edu,
-            ),
+                edu.id === idToUpdate ? { ...edu, [field]: value } : edu
+            )
         );
     };
 

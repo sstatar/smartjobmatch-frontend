@@ -1,4 +1,3 @@
-import Navbar from "@/components/navbar/Navbar";
 import ProfileContent from "./(ProfileSectionDisplay)/ProfileContent";
 import Sidebar from "@/components/sideBar/Sidebar";
 import { fetchUserProfileServer } from "./service/profileAction";
@@ -6,7 +5,6 @@ import {
     WorkExperienceResponse,
     EducationResponse,
     SkillResponse,
-    PersonalResponse,
 } from "./service/type";
 
 export default async function page() {
@@ -74,6 +72,7 @@ export default async function page() {
                             phone: profileData.user.phone,
                             linkedInUrl: profileData.linkedInUrl,
                             githubUrl: profileData.githubUrl,
+                            profilePictureUrl: profileData.user.profilePictureUrl,
                         }}
                         educationData={
                             profileData.educations

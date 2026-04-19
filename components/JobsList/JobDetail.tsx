@@ -2,7 +2,7 @@
 
 import { aiAnalyzeJob } from "@/app/actions/ai-analyze"; // import ฟังก์ชัน Server Action
 import { applyForJob } from "@/app/actions/application";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import ReactMarkdown from "react-markdown";
 import Button from "../ui/Button-2";
 import { AiAnalysisResults } from "./JobAppliedList.client";
@@ -16,6 +16,32 @@ export interface JobDetailProps {
     isApplied?: boolean;
     isNeededAiAction?: boolean;
     aiAnalysisResult?: AiAnalysisResults | undefined;
+    onAnalysisComplete?: (jobId: string, analysis: AiAnalysisResults) => void;
+}
+
+function normalizeAnalyzeResponse(data: unknown): AiAnalysisResults | null {
+    if (!data || typeof data !== "object") return null;
+    const d = data as Record<string, unknown>;
+    if (typeof d.aiScore !== "number") return null;
+    return {
+        id: String(d.aiAnalysisResultId ?? d.id ?? ""),
+        aiScore: d.aiScore,
+        strengths: (d.strengths as string[]) ?? [],
+        weaknesses: (d.weaknesses as string[]) ?? [],
+        skillsAnalysis: d.skillsAnalysis as {
+            score: number;
+            reason: string;
+        },
+        experienceAnalysis: d.experienceAnalysis as {
+            score: number;
+            reason: string;
+        },
+        educationAnalysis: d.educationAnalysis as {
+            score: number;
+            reason: string;
+        },
+        summary: String(d.summary ?? ""),
+    };
 }
 
 export default function JobDetail({
@@ -23,11 +49,16 @@ export default function JobDetail({
     job,
     isApplied = false,
     aiAnalysisResult = undefined,
+    onAnalysisComplete,
 }: JobDetailProps) {
     // State สำหรับ AI
     const [analysisResult, setAnalysisResult] = useState<
         AiAnalysisResults | undefined
     >(aiAnalysisResult);
+
+    useEffect(() => {
+        setAnalysisResult(aiAnalysisResult);
+    }, [aiAnalysisResult]);
 
     // State สำหรับเช็คว่าสมัครงานนี้ไปหรือยัง (เอาค่า isApplied จาก Props มาเป็นค่าเริ่มต้น)
     const [localIsApplied, setLocalIsApplied] = useState<boolean>(isApplied);
@@ -39,10 +70,12 @@ export default function JobDetail({
 
     if (!job)
         return (
-            <div className="sticky top-0 job-detail-placeholder w-full flex justify-center">
-                <h1 className="text-heading-3 p-10 border border-accent rounded-sm">
-                    Select a job to see details
-                </h1>
+            <div className="sticky top-20 self-start w-full">
+                <div className="flex w-full justify-center">
+                    <h1 className="text-heading-3 p-10 border border-accent rounded-sm">
+                        Select a job to see details
+                    </h1>
+                </div>
             </div>
         );
 
@@ -53,8 +86,12 @@ export default function JobDetail({
             const result = await aiAnalyzeJob(job.id);
             if (result.error) {
                 alert(result.error);
-            } else if (result.success) {
-                setAnalysisResult(result.data);
+            } else if (result.success && result.data) {
+                const normalized = normalizeAnalyzeResponse(result.data);
+                if (normalized) {
+                    setAnalysisResult(normalized);
+                    onAnalysisComplete?.(job.id, normalized);
+                }
             }
         });
     };
@@ -74,16 +111,6 @@ export default function JobDetail({
         });
     };
 
-    const { aiScore, strengths, weaknesses, summary } = analysisResult || {};
-    const aiResultString: string = `
-**match score** : ${aiScore}
-**strengths** : 
-${strengths?.map((s) => `- ${s}`).join("\n")}
-**weaknesses** : 
-${weaknesses?.map((w) => `- ${w}`).join("\n")}
-**summary** : ${summary}
-`;
-
     // สร้างตัวแปรจัดการที่อยู่ให้อ่านง่ายขึ้น ไม่ต้องมานั่งเขียนเงื่อนไขต่อคอมม่า (,) เอง
     const locationString = [
         job.location?.city,
@@ -100,9 +127,9 @@ ${weaknesses?.map((w) => `- ${w}`).join("\n")}
     };
 
     return (
-        <div className="sticky top-20">
-            <div className="max-h-screen overflow-y-auto">
-                <div className="job-detail w-full sticky top-4">
+        <div className="sticky top-20 z-10 w-full max-w-full self-start">
+            <div className="max-h-[calc(100vh-6rem)] overflow-y-auto overflow-x-hidden overscroll-contain pb-6">
+            <div className="job-detail w-full">
                     <div className="head flex justify-between items-center p-4 border border-accent-2 rounded-t-lg">
                         <div className="flex flex-col gap-2 max-w-4/5">
                             {/* ส่วนหัว: ชื่อตำแหน่งและชื่อบริษัท */}
@@ -175,33 +202,174 @@ ${weaknesses?.map((w) => `- ${w}`).join("\n")}
                     {userRole === "APPLICANT" && (
                         <div className="bg-tertiary">
                             {analysisResult ? (
-                                <div className="job-actions p-4 border border-accent-2">
-                                    <h2 className="text-heading-4 font-semibold">
-                                        AI Analysis Result
-                                    </h2>
-                                    <div className="markdown">
-                                        <ReactMarkdown>
-                                            {aiResultString
-                                                .split("\n")
-                                                .join("\n\n")}
-                                        </ReactMarkdown>
+                                <div className="job-actions p-6 shadow-sm flex flex-col gap-6">
+                                    {/* 1. Header & Overall Score */}
+                                    <div className="flex justify-between items-center border-b pb-4">
+                                        <h2 className="text-heading-4 font-bold text-gray-800">
+                                            AI Analysis Result
+                                        </h2>
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-sm text-gray-500 font-medium">
+                                                Match Score
+                                            </span>
+                                            <span
+                                                className={`text-2xl font-bold px-4 py-1 rounded-full ${
+                                                    analysisResult.aiScore >= 80
+                                                        ? "bg-green-100 text-green-700"
+                                                        : analysisResult.aiScore >=
+                                                            50
+                                                          ? "bg-yellow-100 text-yellow-700"
+                                                          : "bg-red-100 text-red-700"
+                                                }`}
+                                            >
+                                                {analysisResult.aiScore}%
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* 2. Summary */}
+                                    <div className="bg-blue-50/50 p-4 rounded-lg border border-blue-100">
+                                        <h3 className="font-semibold text-blue-800 mb-2 flex items-center gap-2">
+                                            📝 Executive Summary
+                                        </h3>
+                                        <p className="text-gray-700 text-sm leading-relaxed">
+                                            {analysisResult.summary}
+                                        </p>
+                                    </div>
+
+                                    {/* 3. Strengths & Weaknesses (Grid 2 Columns) */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {/* Strengths */}
+                                        <div className="bg-green-50/50 p-4 rounded-lg border border-green-100">
+                                            <h3 className="font-semibold text-green-800 mb-3 flex items-center gap-2">
+                                                ✅ Top Strengths
+                                            </h3>
+                                            <ul className="flex flex-col gap-2">
+                                                {analysisResult.strengths?.map(
+                                                    (strength, index) => (
+                                                        <li
+                                                            key={index}
+                                                            className="text-sm text-green-900 flex items-start gap-2"
+                                                        >
+                                                            <span className="mt-0.5 text-green-600">
+                                                                •
+                                                            </span>
+                                                            <span>
+                                                                {strength}
+                                                            </span>
+                                                        </li>
+                                                    ),
+                                                )}
+                                            </ul>
+                                        </div>
+
+                                        {/* Weaknesses */}
+                                        <div className="bg-red-50/50 p-4 rounded-lg border border-red-100">
+                                            <h3 className="font-semibold text-red-800 mb-3 flex items-center gap-2">
+                                                🎯 Areas for Improvement
+                                            </h3>
+                                            <ul className="flex flex-col gap-2">
+                                                {analysisResult.weaknesses?.map(
+                                                    (weakness, index) => (
+                                                        <li
+                                                            key={index}
+                                                            className="text-sm text-red-900 flex items-start gap-2"
+                                                        >
+                                                            <span className="mt-0.5 text-red-600">
+                                                                •
+                                                            </span>
+                                                            <span>
+                                                                {weakness}
+                                                            </span>
+                                                        </li>
+                                                    ),
+                                                )}
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    {/* 4. Detailed Breakdown */}
+                                    <div className="flex flex-col gap-5 mt-2">
+                                        <h3 className="font-bold text-gray-800 border-b pb-2">
+                                            Detailed Breakdown
+                                        </h3>
+
+                                        {/* Helper function / inline render for breakdown items */}
+                                        {[
+                                            {
+                                                title: "Skills Match",
+                                                data: analysisResult.skillsAnalysis,
+                                            },
+                                            {
+                                                title: "Education Match",
+                                                data: analysisResult.educationAnalysis,
+                                            },
+                                            {
+                                                title: "Experience Match",
+                                                data: analysisResult.experienceAnalysis,
+                                            },
+                                        ].map((item, idx) => (
+                                            <div
+                                                key={idx}
+                                                className="flex flex-col gap-1.5"
+                                            >
+                                                <div className="flex justify-between items-center">
+                                                    <span className="font-medium text-gray-700 text-sm">
+                                                        {item.title}
+                                                    </span>
+                                                    <span className="text-sm font-bold text-gray-600">
+                                                        {item.data.score}%
+                                                    </span>
+                                                </div>
+                                                {/* Progress Bar */}
+                                                <div className="w-full bg-gray-100 rounded-full h-2">
+                                                    <div
+                                                        className={`h-2 rounded-full ${
+                                                            item.data.score >=
+                                                            80
+                                                                ? "bg-green-500"
+                                                                : item.data
+                                                                        .score >=
+                                                                    50
+                                                                  ? "bg-yellow-500"
+                                                                  : "bg-red-500"
+                                                        }`}
+                                                        style={{
+                                                            width: `${item.data.score}%`,
+                                                        }}
+                                                    ></div>
+                                                </div>
+                                                {/* Reason Text */}
+                                                <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                                                    {item.data.reason}
+                                                </p>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             ) : (
-                                <div className="job-actions p-4 border border-accent-2 flex flex-col gap-4">
-                                    <h4 className="text-heading-4 font-semibold">
+                                <div className="job-actions p-6 flex flex-col items-center justify-center gap-4 text-center">
+                                    <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl mb-2">
+                                        🤖
+                                    </div>
+                                    <h4 className="text-heading-4 font-semibold text-gray-800 max-w-md">
                                         Want to know which skills you need to
                                         improve your match score?
                                     </h4>
+                                    <p className="text-sm text-gray-500 mb-2">
+                                        Our AI will analyze your resume against
+                                        this job description and provide
+                                        actionable feedback.
+                                    </p>
                                     <div className="stretch-start">
-                                        {/* ผูก event onClick และทำปุ่ม disable ระหว่างโหลด */}
                                         <Button
                                             variant="primary"
                                             onClick={handleAnalyzeClick}
                                             disabled={isPendingAI}
+                                            className="min-w-50"
                                         >
                                             {isPendingAI
-                                                ? "Analyzing..."
+                                                ? "Analyzing Profile..."
                                                 : "Get AI Analysis"}
                                         </Button>
                                     </div>

@@ -64,7 +64,6 @@ export default function ProfileVisibilitySelectCard({
                         className="w-6 h-6 accent-accent cursor-pointer"
                     />
                     <div className="flex flex-col gap-2">
-                        
                         <span className="text-accent text-heading-5 font-semibold">
                             Hiring employers can&apos;t find you
                         </span>
@@ -78,7 +77,10 @@ export default function ProfileVisibilitySelectCard({
                         className="w-6 h-6 text-accent"
                     ></IconVisibility>
                 </label>
-                <ButtonSecond variant="tertiary" onClick={() => onSave(localVisibility)}>
+                <ButtonSecond
+                    variant="tertiary"
+                    onClick={() => onSave(localVisibility)}
+                >
                     Save
                 </ButtonSecond>
             </div>

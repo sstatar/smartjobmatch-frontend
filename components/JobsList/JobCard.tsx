@@ -38,12 +38,8 @@ export default function JobCard({
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
-    // AI Score fallback
-    if (aiScore === undefined) {
-        if (jobData.aiAnalysisResults?.length) {
-            aiScore = jobData.aiAnalysisResults[0].aiScore;
-        }
-    }
+    const displayScore =
+        aiScore ?? jobData.aiAnalysisResults?.[0]?.aiScore;
 
     // Effect สำหรับการปิดเมนูเมื่อผู้ใช้คลิกพื้นที่อื่นบนหน้าจอ (Click outside)
     useEffect(() => {
@@ -211,17 +207,13 @@ export default function JobCard({
                     </div>
                 </div>
                 <div className="shrink-0">
-                    <>
-                        {aiScore && (
-                            <>
-                                <CircularProgress
-                                    percentage={aiScore}
-                                    size={72}
-                                    strokeWidth={6}
-                                />
-                            </>
-                        )}
-                    </>
+                    {typeof displayScore === "number" && (
+                        <CircularProgress
+                            percentage={displayScore}
+                            size={72}
+                            strokeWidth={6}
+                        />
+                    )}
                 </div>
             </div>
             {showBookmark && (

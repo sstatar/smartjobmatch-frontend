@@ -15,14 +15,18 @@ export default function ProfileSectionWrapper({
     children,
     isEmpty,
 }: WrapperProps) {
-    if (isEmpty) return null;
+    // if (isEmpty) return null;
 
     return (
-        <div id={id} className="w-full max-w-[974px] px-6 pt-6 md:pt-6 flex flex-col items-center">
-            
+        <div
+            id={id}
+            className="w-full max-w-[974px] px-6 pt-6 md:pt-6 flex flex-col items-center"
+        >
             <div className="w-full">
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
+                    <h2 className="text-xl font-semibold text-gray-800">
+                        {title}
+                    </h2>
                     <button
                         onClick={onEdit}
                         className="p-2 hover:bg-gray-100 rounded-full transition-all active:scale-95 cursor-pointer"
@@ -31,11 +35,18 @@ export default function ProfileSectionWrapper({
                     </button>
                 </div>
 
-                <div className="mb-6">{children}</div>
+                {/* <div className="mb-6">{children}</div> */}
+                {!isEmpty ? (
+                    <div className="mb-6">{children}</div>
+                ) : (
+                    <span className="mb-6 text-gray-400">No data</span>
+                )}
             </div>
-            {id === "skills" ? "": <div className="w-full max-w-[850px] border-b border-accent-2" />
-            }
-            
+            {id === "skills" ? (
+                ""
+            ) : (
+                <div className="w-full max-w-[850px] border-b border-accent-2" />
+            )}
         </div>
     );
 }

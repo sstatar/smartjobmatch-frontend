@@ -53,6 +53,48 @@ export async function updatePersonalAction(payload: UpdatePersonalRequest) {
     }
 }
 
+export async function uploadProfilePictureAction(formData: FormData): Promise<{
+    success: boolean;
+    error?: string;
+    profilePictureUrl?: string;
+}> {
+    try {
+        const token = (await cookies()).get("token")?.value;
+        if (!token) return { success: false, error: "Unauthorized" };
+
+        const file = formData.get("file");
+        if (!(file instanceof File) || file.size === 0) {
+            return { success: false, error: "No file selected" };
+        }
+
+        const body = new FormData();
+        body.append("file", file);
+
+        const response = await api.post("/profiles/me/profile-picture", body, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const url = response.data?.user?.profilePictureUrl as string | undefined;
+        revalidatePath("/profile");
+        return { success: true, profilePictureUrl: url };
+    } catch (err: unknown) {
+        if (err instanceof AxiosError) {
+            console.error(
+                "Profile picture upload error:",
+                err.response?.data || err.message,
+            );
+            const msg =
+                typeof err.response?.data?.message === "string"
+                    ? err.response.data.message
+                    : Array.isArray(err.response?.data?.message)
+                      ? err.response.data.message.join(", ")
+                      : "Failed to upload profile picture";
+            return { success: false, error: msg };
+        }
+        return { success: false, error: "Failed to upload profile picture" };
+    }
+}
+
 export async function updateEducationAction(
     educations: UpdateEducationRequest,
 ) {

@@ -65,11 +65,17 @@ export interface JobListClientProps {
 }
 
 export default function JobsListClient({ jobs }: JobListClientProps) {
+    const [jobsState, setJobsState] = useState<JobCardData[]>(jobs);
     const [selectedJob, setSelectedJob] = useState<JobCardData | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const [userBookmarkedJobIds, setUserBookmarkedJobIds] = useState(
         new Set<string>(),
     );
+
+    useEffect(() => {
+        setJobsState(jobs);
+    }, [jobs]);
+
     useEffect(() => {
         async function fetchData() {
             const user = await getMyInfo();
@@ -85,14 +91,7 @@ export default function JobsListClient({ jobs }: JobListClientProps) {
         fetchData();
     }, []);
 
-    if (!jobs)
-        return (
-            <div>
-                <p>Loading...</p>
-            </div>
-        );
-
-    jobs.sort((a, b) => {
+    const sortedJobs = [...jobsState].sort((a, b) => {
         const aScore = a.aiAnalysisResults?.length
             ? a.aiAnalysisResults[0].aiScore
             : 0;
@@ -101,6 +100,24 @@ export default function JobsListClient({ jobs }: JobListClientProps) {
             : 0;
         return bScore - aScore;
     });
+
+    const handleAnalysisComplete = (
+        jobId: string,
+        analysis: AiAnalysisResults,
+    ) => {
+        setJobsState((prev) =>
+            prev.map((j) =>
+                j.id === jobId
+                    ? { ...j, aiAnalysisResults: [analysis] }
+                    : j,
+            ),
+        );
+        setSelectedJob((prev) =>
+            prev?.id === jobId
+                ? { ...prev, aiAnalysisResults: [analysis] }
+                : prev,
+        );
+    };
 
     const handleBookmarkToggle = async (jobId: string) => {
         const isBookmarked = userBookmarkedJobIds.has(jobId);
@@ -137,10 +154,10 @@ export default function JobsListClient({ jobs }: JobListClientProps) {
         }
     };
 
-    return jobs.length > 0 ? (
+    return sortedJobs.length > 0 ? (
         <div className="jobs flex gap-4">
-            <div className="jobs-list flex w-1/3 flex-col gap-4">
-                {jobs.map((job) => (
+            <div className="jobs-list flex w-1/3 shrink-0 flex-col gap-4 self-start">
+                {sortedJobs.map((job) => (
                     <JobCard
                         key={job.id}
                         jobData={job}
@@ -152,13 +169,13 @@ export default function JobsListClient({ jobs }: JobListClientProps) {
                     />
                 ))}
             </div>
-
-            <div className="jobs-detail w-2/3">
+            <div className="jobs-detail flex min-h-0 w-2/3 min-w-0 flex-col self-stretch">
                 <JobDetail
                     key={selectedJob?.id || "empty-job"}
                     job={selectedJob}
                     aiAnalysisResult={selectedJob?.aiAnalysisResults?.[0]}
                     userRole={user?.role}
+                    onAnalysisComplete={handleAnalysisComplete}
                 />
             </div>
         </div>

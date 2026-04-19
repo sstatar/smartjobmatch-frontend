@@ -1,18 +1,12 @@
 "use client";
-import ResumeFileCard from "@/components/ui/ResumeFileCard";
-import ProfileVisibilitySelect from "@/components/ui/ProfileVisibilitySelectButton";
+import { autoFillResumeAction, uploadResumeAction } from "@/app/actions/resume";
 import ButtonSecond from "@/components/ui/Button-2";
-import { useEffect, useRef, useState } from "react";
-import ProgressBarCard from "@/components/ui/ProgressBarCard";
-import {
-    analyzeResumeAction,
-    autoFillResumeAction,
-    uploadResumeAction,
-} from "@/app/actions/resume";
-import { isSea } from "node:sea";
+import ProfileVisibilitySelect from "@/components/ui/ProfileVisibilitySelectButton";
+import ResumeFileCard from "@/components/ui/ResumeFileCard";
 import ShowResumePreview from "@/components/ui/ShowResumePreview";
+import { useEffect, useRef, useState } from "react";
 
-type Step = "start" | "upload" | "analyze" | "done";
+type Step = "start" | "upload" | "done";
 
 interface Props {
     initialStep: Step;
@@ -74,47 +68,22 @@ export default function ResumeSectionDisplay({
         inputRef.current?.click();
     };
 
+    const [isAutofilling, setIsAutofilling] = useState(false);
+
     const handleAutofillClick = async () => {
-        const res = await autoFillResumeAction();
-        if (res.success) {
-            alert("Autofill Success!");
-        } else {
-            alert("Autofill Failed!\n" + res.error);
-        }
-    };
-
-    const handleAnalyze = async () => {
-        setStep("analyze"); // แสดง Progress Bar
-        setProgress(10); // เริ่มต้นที่ 10% ให้ดูมีการเคลื่อนไหว
-
+        setIsAutofilling(true);
         try {
-            // 2. สร้าง Interval จำลอง Progress ระหว่างรอ AI (เพราะ Server Action วัด % จริงไม่ได้)
-            const interval = setInterval(() => {
-                setProgress((prev) => (prev < 90 ? prev + 5 : prev));
-            }, 1000); // ขยับทุก 1 วินาที
-
-            // 3. 🚀 เรียกใช้ Server Action ตัวที่คุณเพิ่งเปลี่ยนเมื่อกี้
-            const result = await analyzeResumeAction();
-
-            clearInterval(interval); // หยุดการจำลอง Progress
-
-            if (result.success) {
-                setProgress(100); // ดีดให้เต็ม
-                setTimeout(() => {
-                    setStep("done"); // เปลี่ยนเป็นปุ่ม Success (สีเขียว)
-                    // 💡 ข้อมูลจะถูก Autofill ในหน้า Profile อัตโนมัติเพราะ revalidatePath ใน Action
-                }, 500);
+            const res = await autoFillResumeAction();
+            if (res.success) {
+                alert("Autofill Success!");
             } else {
-                // ถ้า Backend ตอบกลับมาว่าไม่รองรับ หรือ Error อื่นๆ
-                alert(`Analysis failed: ${result.error}`);
-                setStep("upload"); // ถอยกลับไปสถานะเดิมเพื่อให้ User ลองใหม่ได้
+                alert("Autofill Failed!\n" + res.error);
             }
-        } catch (error) {
-            console.error("Unexpected Error:", error);
-            alert("An unexpected error occurred.");
-            setStep("upload");
+        } finally {
+            setIsAutofilling(false);
         }
     };
+
     return (
         <>
             <div className="flex flex-col gap-3 bg-secondary p-6 rounded-lg w-full items-start">
@@ -156,22 +125,14 @@ export default function ResumeSectionDisplay({
                             onReplace={handleReplace}
                         />
 
-                        <ButtonSecond onClick={handleAutofillClick}>
-                            AutoFill From Resume
+                        <ButtonSecond
+                            onClick={handleAutofillClick}
+                            disabled={isAutofilling || isUploading}
+                        >
+                            {isAutofilling
+                                ? "Autofilling…"
+                                : "Autofill From Resume"}
                         </ButtonSecond>
-
-                        {step === "upload" ? (
-                            <ButtonSecond onClick={handleAnalyze}>
-                                Analyze Resume
-                            </ButtonSecond>
-                        ) : (
-                            <ButtonSecond
-                                variant="tertiary"
-                                className="bg-accent/50 cursor-default"
-                            >
-                                Success Analyzing
-                            </ButtonSecond>
-                        )}
                     </div>
                 )}
             </div>
@@ -183,8 +144,6 @@ export default function ResumeSectionDisplay({
                 onChange={onFileSelected}
                 accept=".pdf"
             />
-
-            {step === "analyze" && <ProgressBarCard progress={progress} />}
 
             {showPreview && fileToPreview && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-100 p-4">

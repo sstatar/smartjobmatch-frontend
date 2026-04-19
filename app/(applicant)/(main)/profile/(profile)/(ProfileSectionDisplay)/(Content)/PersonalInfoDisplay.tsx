@@ -4,6 +4,7 @@ import IconLinkedin from "@/public/svgs/iconLinkedin.svg";
 import IconMapPin from "@/public/svgs/iconMapMarker.svg";
 import IconMail from "@/public/svgs/iconMail.svg";
 import IconPhone from "@/public/svgs/iconPhone.svg";
+import ProfilePictureSection from "@/app/(applicant)/(main)/profile/(profile)/(ProfileSectionDisplay)/(Content)/ProfilePictureSection";
 
 export interface PersonalDataProps {
     firstName?: string;
@@ -13,9 +14,19 @@ export interface PersonalDataProps {
     phone?: string;
     linkedInUrl?: string;
     githubUrl?: string;
+    profilePictureUrl?: string | null;
 }
 
-export default function PersonalInfoDisplay({ data }: { data: PersonalDataProps }) {    
+export default function PersonalInfoDisplay({
+    data,
+}: {
+    data: PersonalDataProps;
+}) {
+    const displayName =
+        data.firstName && data.lastName
+            ? `${data.firstName} ${data.lastName}`
+            : "Name not provided";
+
     const infoItems = [
         { text: data.address, icon: IconMapPin },
         { text: data.email, icon: IconMail },
@@ -25,25 +36,30 @@ export default function PersonalInfoDisplay({ data }: { data: PersonalDataProps 
     ];
     return (
         <div className="flex flex-col gap-4">
-            <h1 className="text-accent text-heading-4 font-bold">
-                {data.firstName && data.lastName
-                    ? `${data.firstName} ${data.lastName}`
-                    : "Name not provided"}
-            </h1>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
+                <ProfilePictureSection
+                    key={data.profilePictureUrl ?? "no-avatar"}
+                    initialUrl={data.profilePictureUrl}
+                    displayName={displayName}
+                />
+                <div className="flex min-w-0 flex-1 flex-col gap-4">
+                    <h1 className="text-accent text-heading-4 font-bold">
+                        {displayName}
+                    </h1>
 
-            {/* 3. ส่วนแสดง InfoTags โดยใช้ flex-wrap เพื่อให้ขึ้นบรรทัดใหม่เมื่อจอกว้างไม่พอ */}
-            <div className="flex flex-wrap gap-x-3 gap-y-2">
-                {infoItems.map(
-                    (item, index) =>
-                        // เช็คเงื่อนไข: ถ้ามีข้อมูล (item.text) ถึงจะแสดง InfoTag
-                        item.text && (
-                            <InfoTag
-                                key={index}
-                                text={item.text}
-                                icon={item.icon}
-                            />
-                        ),
-                )}
+                    <div className="flex flex-wrap gap-x-3 gap-y-2">
+                        {infoItems.map(
+                            (item, index) =>
+                                item.text && (
+                                    <InfoTag
+                                        key={index}
+                                        text={item.text}
+                                        icon={item.icon}
+                                    />
+                                )
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );

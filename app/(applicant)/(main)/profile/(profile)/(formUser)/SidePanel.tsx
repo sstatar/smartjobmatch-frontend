@@ -12,7 +12,7 @@ export default function SidePanel({
     isOpen,
     onClose,
     title,
-    children
+    children,
 }: ModalProps) {
     if (!isOpen) return null;
     return (
@@ -24,7 +24,7 @@ export default function SidePanel({
                 <div className="flex justify-between items-center p-6 border-b border-gray-100">
                     <h2 className="text-xl font-bold text-gray-800">{title}</h2>
                     <div className="flex gap-5">
-                        <Button type="submit" form="side-panel-form" >
+                        <Button type="submit" form="side-panel-form">
                             Update
                         </Button>
 

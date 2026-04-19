@@ -1,4 +1,7 @@
 "use client";
+import { analyzeResumeAction } from "@/app/actions/resume";
+import ButtonSecond from "@/components/ui/Button-2";
+import ProgressBarCard from "@/components/ui/ProgressBarCard";
 import { useState } from "react";
 
 const tabs = [
@@ -10,6 +13,8 @@ const tabs = [
 
 export default function ProfileTabs() {
     const [activeTab, setActiveTab] = useState("personal");
+    const [step, setStep] = useState<"analyze" | "idle">("idle");
+    const [progress, setProgress] = useState(0);
 
     const scrollToSection = (id: string) => {
         setActiveTab(id);
@@ -20,6 +25,39 @@ export default function ProfileTabs() {
         }
     };
 
+    const handleAnalyze = async () => {
+        setStep("analyze");
+        setProgress(10);
+
+        let interval: ReturnType<typeof setInterval> | undefined;
+        try {
+            interval = setInterval(() => {
+                setProgress((prev) => (prev < 90 ? prev + 5 : prev));
+            }, 1000);
+
+            const result = await analyzeResumeAction();
+
+            if (interval) clearInterval(interval);
+
+            if (result.success) {
+                setProgress(100);
+                setTimeout(() => {
+                    setStep("idle");
+                    setProgress(0);
+                }, 500);
+            } else {
+                alert(`Analysis failed: ${result.error}`);
+                setStep("idle");
+                setProgress(0);
+            }
+        } catch (error) {
+            if (interval) clearInterval(interval);
+            console.error("Unexpected Error:", error);
+            alert("An unexpected error occurred.");
+            setStep("idle");
+            setProgress(0);
+        }
+    };
     return (
         <div className="flex bg-secondary border-b-1 border-accent-2 h-15 rounded-t-3 px-15 pt-2">
             <div className="flex items-center justify-start w-full gap-10">
@@ -34,11 +72,19 @@ export default function ProfileTabs() {
                         {tab.label}
                         {/* เส้นขีดสีดำด้านล่าง (Active Indicator) */}
                         {activeTab === tab.id && (
-                            <div className="absolute bottom-0 left-0 w-full h-1 bg-accent rounded-t-full transition-all" /> 
+                            <div className="absolute bottom-0 left-0 w-full h-1 bg-accent rounded-t-full transition-all" />
                         )}
                     </button>
                 ))}
             </div>
+            {step === "analyze" && <ProgressBarCard progress={progress} />}
+            <ButtonSecond
+                className="h-11.5! px-4! w-60!"
+                onClick={handleAnalyze}
+                disabled={step === "analyze"}
+            >
+                {step === "analyze" ? "Analyzing…" : "Smart Analyze"}
+            </ButtonSecond>
         </div>
     );
 }

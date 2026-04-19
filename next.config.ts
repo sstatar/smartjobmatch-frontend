@@ -1,6 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+    async redirects() {
+    	return [
+      	    {
+        	source: '/',          // The initial path
+        	destination: '/login', // The new default page
+        	permanent: true,      // Makes the redirect permanent (HTTP 301)
+      	    },
+    	];
+    },
     images: {
         remotePatterns: [
             {

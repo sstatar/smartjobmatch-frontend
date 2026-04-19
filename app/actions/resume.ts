@@ -8,6 +8,46 @@ import { API_BASE_URL } from "@/lib/api-config";
 import { profilesApi } from "@/lib/api/endpoints/profilesApi";
 import { ApiError } from "@/lib/api/apiError";
 
+export async function uploadResumeAndAnalyzeAction(formData: FormData) {
+    try {
+        const token = (await cookies()).get("token")?.value;
+        if (!token) return { success: false, error: "Unauthorized" };
+
+        // ดึงไฟล์จาก FormData ที่ส่งมาจาก Client
+        const file = formData.get("resume"); // 💡 ชื่อ Key ต้องตรงกับที่ฝั่ง Client ส่งมา
+
+        if (!file) return { success: false, error: "No file provided" };
+
+        // เตรียม FormData ใหม่เพื่อยิงหาเพื่อน
+        const backendFormData = new FormData();
+        backendFormData.append("file", file); // 💡 ปรับชื่อ Key ให้ตรงตามที่เพื่อนต้องการ (เช่น "file" หรือ "resume")
+
+        await axios.post(`${API_BASE_URL}/profiles`, backendFormData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
+        });
+
+        // สั่งให้หน้า Profile โหลดข้อมูลใหม่เพื่อให้ UI อัปเดตชื่อไฟล์ล่าสุด
+        revalidatePath("/profile/resume");
+        return { success: true };
+    } catch (err: unknown) {
+        if (err instanceof AxiosError) {
+            console.error(
+                "Upload Error Details:",
+                err.response?.data || err.message,
+            );
+            return {
+                success: false,
+                error:
+                    err.response?.data?.message || "Backend rejected the file",
+            };
+        }
+        return { success: false, error: "Internal Server Error" };
+    }
+}
+
 export async function uploadResumeAction(formData: FormData) {
     try {
         const token = (await cookies()).get("token")?.value;

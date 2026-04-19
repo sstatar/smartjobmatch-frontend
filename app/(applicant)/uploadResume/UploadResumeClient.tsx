@@ -1,15 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import ResumeUploadCard from "@/app/(applicant)/uploadResume/components/ResumeUploadCard";
-import SkipButton from "@/components/ui/SkipButton";
+import { uploadResumeAndAnalyzeAction } from "@/app/actions/resume";
 import ProgressBar from "@/components/ui/ProgressBar";
-import { useRouter } from "next/navigation";
 import ShowResumePreview from "@/components/ui/ShowResumePreview";
-import {
-    analyzeResumeAction,
-    uploadResumeAction,
-} from "@/app/actions/resume";
+import SkipButton from "@/components/ui/SkipButton";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type Step = "upload" | "preview" | "analyzing";
 
@@ -33,21 +30,21 @@ export default function UploadResumeClient() {
             const formData = new FormData();
             formData.append("resume", selectedFile); // ชื่อ key "resume" ตามที่ uploadResumeAction รับ
 
-            const uploadResult = await uploadResumeAction(formData);
+            const uploadResult = await uploadResumeAndAnalyzeAction(formData);
             if (!uploadResult.success) {
                 throw new Error(uploadResult.error);
             }
 
-            // 💡 3. Step 2: สั่งให้ AI วิเคราะห์ไฟล์ที่เพิ่งอัปโหลด
-            const analyzeResult = await analyzeResumeAction();
-            if (!analyzeResult.success) {
-                throw new Error(analyzeResult.error);
-            }
+            // // 💡 3. Step 2: สั่งให้ AI วิเคราะห์ไฟล์ที่เพิ่งอัปโหลด
+            // const analyzeResult = await analyzeResumeAction();
+            // if (!analyzeResult.success) {
+            //     throw new Error(analyzeResult.error);
+            // }
 
             // 💡 4. เมื่อทุกอย่างเสร็จสมบูรณ์ หยุดหลอดและกระชากไป 100%
             clearInterval(progressInterval);
             setProgress(100);
-            console.log("Analyze Success!", analyzeResult.data);
+            // console.log("Analyze Success!", analyzeResult.data);
 
             // รอให้ผู้ใช้เห็น 100% แป๊บนึง ค่อยเด้งไปหน้าโฮม
             setTimeout(() => {

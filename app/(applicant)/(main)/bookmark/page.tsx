@@ -1,4 +1,4 @@
-// app/jobs/page.tsx
+// app/bookmark/page.tsx
 import JobQueryInput from "@/components/JobQueryInput";
 import JobsList from "@/components/JobsList/JobList.server";
 
@@ -11,7 +11,6 @@ export default async function Page(props: {
 }) {
     const searchParams = await props.searchParams;
     const query = searchParams?.query || "";
-    const location = searchParams?.location || "";
     const currentPage = Number(searchParams?.page) || 1; // แปลงเป็นตัวเลข ถ้าไม่มีให้เริ่มที่ 1
 
     return (
@@ -23,7 +22,6 @@ export default async function Page(props: {
                 <JobsList
                     queryType="bookmarked"
                     query={query}
-                    location={location}
                     page={currentPage}
                 />
             </div>

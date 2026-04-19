@@ -72,7 +72,7 @@ export default function WorkExperienceDisplay({
                             ))} */}
 
                         {/* Job Description (Bullet Points) */}
-                        {item.descriptions && item.descriptions.length > 0 && ( 
+                        {item.descriptions && item.descriptions.length > 0 && (
                             <ul className="list-disc ml-5 mt-2 text-sm text-gray-600 space-y-1">
                                 {item.descriptions.map((desc, index) => (
                                     <li key={index}>{desc}</li>

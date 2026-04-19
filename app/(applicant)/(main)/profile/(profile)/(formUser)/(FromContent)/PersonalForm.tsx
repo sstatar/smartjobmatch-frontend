@@ -35,7 +35,7 @@ export default function PersonalForm({
         e.preventDefault();
 
         // 2. ตรวจสอบข้อมูลบังคับก่อนส่ง
-        if (!formData.firstName || !formData.lastName || !formData.phone) {
+        if (!formData.firstName || !formData.lastName) {
             alert("Please fill in all required fields.");
             return;
         }
@@ -68,13 +68,13 @@ export default function PersonalForm({
                 <InputBox
                     text="First Name"
                     required
-                    value={formData.firstName} 
+                    value={formData.firstName}
                     onChange={(e) => handleChange("firstName", e.target.value)}
                 />
                 <InputBox
                     text="Last Name"
                     required
-                    value={formData.lastName} 
+                    value={formData.lastName}
                     onChange={(e) => handleChange("lastName", e.target.value)}
                 />
 
@@ -88,8 +88,7 @@ export default function PersonalForm({
                 <InputBox
                     text="Phone"
                     type="tel"
-                    required
-                    value={formData.phone} 
+                    value={formData.phone}
                     onChange={(e) => handleChange("phone", e.target.value)}
                 />
 
@@ -125,8 +124,10 @@ export default function PersonalForm({
                 <div className="col-span-2">
                     <InputBox
                         text="Linkedin URL"
-                        value={formData.linkedInUrl} 
-                        onChange={(e) => handleChange("linkedInUrl", e.target.value)}
+                        value={formData.linkedInUrl}
+                        onChange={(e) =>
+                            handleChange("linkedInUrl", e.target.value)
+                        }
                     />
                 </div>
 
@@ -134,8 +135,10 @@ export default function PersonalForm({
                 <div className="col-span-2">
                     <InputBox
                         text="Github URL"
-                        value={formData.githubUrl} 
-                        onChange={(e) => handleChange("githubUrl", e.target.value)}
+                        value={formData.githubUrl}
+                        onChange={(e) =>
+                            handleChange("githubUrl", e.target.value)
+                        }
                     />
                 </div>
             </div>

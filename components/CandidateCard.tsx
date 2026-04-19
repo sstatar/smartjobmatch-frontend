@@ -14,6 +14,7 @@ export type CandidateProps = {
     status: string;
     aiScore: number;
     summary: string;
+    appliedAt: string;
     aiAnalysisResult: AiAnalysisResult;
 };
 
@@ -24,6 +25,28 @@ export default function CandidateCard({
     candidate: CandidateProps;
     onClick?: () => void;
 }) {
+    const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ];
+    const appliedAtDate = new Date(candidate.appliedAt);
+    const appliedAtDateString =
+        appliedAtDate.getDate() +
+        " " +
+        months[appliedAtDate.getMonth()] +
+        " " +
+        appliedAtDate.getFullYear();
+
     function handleCandidateCardClick() {
         if (onClick) onClick();
     }
@@ -64,13 +87,7 @@ export default function CandidateCard({
                 <h1>
                     {candidate.firstName} {candidate.lastName}
                 </h1>
-                <h1>{candidate.email}</h1>
-                <h1>
-                    status :{" "}
-                    <span className="text-subtitle-2 font-thin text-blue-500">
-                        {candidate.status}
-                    </span>
-                </h1>
+                <h1>Applied At : {appliedAtDateString}</h1>
             </div>
         </div>
     );

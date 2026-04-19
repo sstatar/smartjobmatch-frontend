@@ -48,17 +48,14 @@ function isStringifiedArray(value: unknown): value is string {
 }
 
 function toStringArray(value: unknown): string[] {
-    // กรณีเป็น array อยู่แล้ว
     if (isStringArray(value)) {
         return value;
     }
 
-    // กรณีเป็น string ที่ต้อง parse
     if (isStringifiedArray(value)) {
         return JSON.parse(value);
     }
 
-    // fallback
     return [];
 }
 
@@ -89,13 +86,10 @@ export default function CandidateModal({
     const rawSkills = candidate?.aiAnalysisResult.snapshottedSkills;
     const skills = toStringArray(rawSkills);
 
-    console.log(educations);
-
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
-            {/* เพิ่มข้อจำกัดความสูงและ Scrollbar เผื่อกรณีข้อมูลยาว */}
             <div className="flex flex-col w-full max-h-[85vh] overflow-y-auto px-2 pb-4">
-                {/* Header: รูปโปรไฟล์ ชื่อ และ AI Score */}
+                {/* Header */}
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-6 border-b pb-6 mt-4">
                     <div className="flex items-center gap-5">
                         <PictureIcon
@@ -129,7 +123,7 @@ export default function CandidateModal({
 
                 {/* Content Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                    {/* Left Column: ข้อมูลการติดต่อ */}
+                    {/* Left Column */}
                     <div className="md:col-span-1 space-y-4">
                         <div className="bg-gray-50 p-5 rounded-xl border border-gray-100 space-y-4">
                             <h3 className="font-semibold text-gray-800 border-b pb-2">
@@ -170,12 +164,12 @@ export default function CandidateModal({
                             </div>
                         </div>
 
-                        {/* Skills Section ย้ายมาไว้ด้านซ้ายให้ดูสมดุล */}
+                        {/* Skills Section */}
                         <div className="bg-white p-5 rounded-xl border border-gray-100">
                             <h3 className="font-semibold text-gray-800 mb-3">
                                 Skills
                             </h3>
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-wrap gap-2 mb-4">
                                 {skills.map((skill: string) => (
                                     <span
                                         key={skill}
@@ -185,10 +179,30 @@ export default function CandidateModal({
                                     </span>
                                 ))}
                             </div>
+
+                            {/* NEW: Skills Analysis */}
+                            {candidate.aiAnalysisResult.skillsAnalysis && (
+                                <div className="p-3 bg-blue-50/50 rounded-lg border border-blue-100">
+                                    <div className="text-xs font-semibold text-blue-800 uppercase tracking-wider mb-1">
+                                        AI Skills Insight (Score:{" "}
+                                        {
+                                            candidate.aiAnalysisResult
+                                                .skillsAnalysis.score
+                                        }
+                                        )
+                                    </div>
+                                    <p className="text-sm text-blue-900 leading-relaxed">
+                                        {
+                                            candidate.aiAnalysisResult
+                                                .skillsAnalysis.reason
+                                        }
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     </div>
 
-                    {/* Right Column: รายละเอียดจาก AI, ประสบการณ์ และการศึกษา */}
+                    {/* Right Column */}
                     <div className="md:col-span-2 space-y-6">
                         {/* Summary */}
                         <div className="bg-white p-0">
@@ -200,7 +214,7 @@ export default function CandidateModal({
                             </p>
                         </div>
 
-                        {/* Strengths & Weaknesses (แบ่ง 2 คอลัมน์) */}
+                        {/* Strengths & Weaknesses */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="bg-green-50/50 p-4 rounded-xl border border-green-100">
                                 <h4 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
@@ -236,6 +250,28 @@ export default function CandidateModal({
                                 <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">
                                     Experience
                                 </h3>
+
+                                {/* NEW: Experience Analysis */}
+                                {candidate.aiAnalysisResult
+                                    .experienceAnalysis && (
+                                    <div className="mb-4 p-3 bg-blue-50/50 rounded-lg border border-blue-100">
+                                        <div className="text-xs font-semibold text-blue-800 uppercase tracking-wider mb-1">
+                                            AI Experience Insight (Score:{" "}
+                                            {
+                                                candidate.aiAnalysisResult
+                                                    .experienceAnalysis.score
+                                            }
+                                            )
+                                        </div>
+                                        <p className="text-sm text-blue-900 leading-relaxed">
+                                            {
+                                                candidate.aiAnalysisResult
+                                                    .experienceAnalysis.reason
+                                            }
+                                        </p>
+                                    </div>
+                                )}
+
                                 <div className="space-y-4">
                                     {experiences.map(
                                         (item: Experience, index: number) => (
@@ -243,7 +279,6 @@ export default function CandidateModal({
                                                 key={index}
                                                 className="pl-4 border-l-2 border-gray-200 relative"
                                             >
-                                                {/* Bullet point สำหรับ Timeline */}
                                                 <div className="absolute w-2.5 h-2.5 bg-blue-500 rounded-full -left-1.25 top-1.5 ring-4 ring-white"></div>
                                                 <h4 className="font-semibold text-gray-800">
                                                     {item.jobTitle}
@@ -291,6 +326,28 @@ export default function CandidateModal({
                                 <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">
                                     Education
                                 </h3>
+
+                                {/* NEW: Education Analysis */}
+                                {candidate.aiAnalysisResult
+                                    .educationAnalysis && (
+                                    <div className="mb-4 p-3 bg-blue-50/50 rounded-lg border border-blue-100">
+                                        <div className="text-xs font-semibold text-blue-800 uppercase tracking-wider mb-1">
+                                            AI Education Insight (Score:{" "}
+                                            {
+                                                candidate.aiAnalysisResult
+                                                    .educationAnalysis.score
+                                            }
+                                            )
+                                        </div>
+                                        <p className="text-sm text-blue-900 leading-relaxed">
+                                            {
+                                                candidate.aiAnalysisResult
+                                                    .educationAnalysis.reason
+                                            }
+                                        </p>
+                                    </div>
+                                )}
+
                                 <div className="space-y-4">
                                     {educations.map(
                                         (item: Education, index: number) => (
@@ -309,7 +366,9 @@ export default function CandidateModal({
                                                     </span>
                                                 </p>
                                                 {item.gpa && (
-                                                    <p>GPA : {item.gpa}</p>
+                                                    <p className="text-sm text-gray-600 mt-1">
+                                                        GPA : {item.gpa}
+                                                    </p>
                                                 )}
                                                 <p className="text-xs text-gray-500 mt-1">
                                                     {item.startMonth}{" "}

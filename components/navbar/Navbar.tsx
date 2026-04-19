@@ -13,23 +13,19 @@ type NavbarProps = {
     activedTab?: DashboardTab;
 };
 
-export default async function Navbar({
-    variant = "default",
-    activedTab,
-}: NavbarProps) {
+export default async function Navbar({ variant = "default" }: NavbarProps) {
     const user = await getMyInfo();
 
     const variants = {
         default: <DefaultNavbar />,
         auth: <AuthNavbar />,
-        dashboard: <DashboardNavbar activedTab={activedTab as DashboardTab} />,
+        dashboard: <DashboardNavbar />,
         employer: <EmployerNavbar user={user} />,
     };
 
-
     return (
         <nav className="w-full h-18 flex items-center px-20 border-b border-accent-2 fixed top-0 bg-white z-100">
-            {variants[variant] }
+            {variants[variant]}
         </nav>
     );
 }

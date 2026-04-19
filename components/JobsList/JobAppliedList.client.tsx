@@ -5,11 +5,19 @@ import JobCard from "./JobCard";
 import { JobCardData } from "./JobsList.client";
 import JobDetail from "./JobDetail";
 
+export type AnalysisResult = {
+    score: number;
+    reason: string;
+};
+
 export type AiAnalysisResults = {
     id: string;
     aiScore: number;
     strengths: string[];
     weaknesses: string[];
+    skillsAnalysis: AnalysisResult;
+    experienceAnalysis: AnalysisResult;
+    educationAnalysis: AnalysisResult;
     summary: string;
 };
 
@@ -34,11 +42,11 @@ export default function JobsAppliedListClient({
           })
         : [];
 
-    return (
-        <div className="jobs flex gap-4">
-            <div className="jobs-list flex w-1/3 flex-col gap-4">
-                {sortedJobs.length > 0 ? (
-                    sortedJobs.map((job) => (
+    return sortedJobs.length > 0 ? (
+        <>
+            <div className="jobs flex gap-4">
+                <div className="jobs-list flex w-1/3 shrink-0 flex-col gap-4 self-start">
+                    {sortedJobs.map((job) => (
                         <JobCard
                             key={job.id}
                             aiScore={job.aiAnalysisResult?.aiScore}
@@ -47,20 +55,19 @@ export default function JobsAppliedListClient({
                             onClick={() => setSelectedJob(job)}
                             showBookmark={false}
                         />
-                    ))
-                ) : (
-                    <p>No jobs found</p>
-                )}
+                    ))}
+                </div>
+                <div className="jobs-detail flex min-h-0 w-2/3 min-w-0 flex-col self-stretch">
+                    <JobDetail
+                        key={selectedJob?.id || "empty-job"}
+                        job={selectedJob?.jobPost ?? null}
+                        isApplied={true}
+                        aiAnalysisResult={selectedJob?.aiAnalysisResult}
+                    />
+                </div>
             </div>
-
-            <div className="jobs-detail w-2/3">
-                <JobDetail
-                    key={selectedJob?.id || "empty-job"}
-                    job={selectedJob?.jobPost ?? null}
-                    isApplied={true}
-                    aiAnalysisResult={selectedJob?.aiAnalysisResult}
-                />
-            </div>
-        </div>
+        </>
+    ) : (
+        <p className="text-center">No jobs found</p>
     );
 }

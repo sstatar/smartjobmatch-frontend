@@ -50,10 +50,10 @@ export default function WorkExperienceForm({
     const handleChange = (
         id: string,
         field: keyof WorkData,
-        value: string | boolean | string[],
+        value: string | boolean | string[]
     ) => {
         setWorks((prev) =>
-            prev.map((w) => (w.id === id ? { ...w, [field]: value } : w)),
+            prev.map((w) => (w.id === id ? { ...w, [field]: value } : w))
         );
     };
 
@@ -63,7 +63,7 @@ export default function WorkExperienceForm({
         const mappedWorks = works.map((work) => {
             // กรอง Bullet points
             const cleanedDescription = (work.descriptions || []).filter(
-                (desc) => desc.trim() !== "",
+                (desc) => desc.trim() !== ""
             );
 
             const formatDate = (dateStr: string) => {
@@ -81,8 +81,8 @@ export default function WorkExperienceForm({
                 endDate: work.isCurrent
                     ? ""
                     : work.endDate
-                      ? formatDate(work.endDate)
-                      : "",
+                    ? formatDate(work.endDate)
+                    : "",
                 isCurrent: work.isCurrent || false,
             };
         });
@@ -124,7 +124,7 @@ export default function WorkExperienceForm({
                 onClick={handleAdd}
                 className="flex items-center gap-2 px-4 py-2 mt-2 border border-gray-300 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors cursor-pointer"
             >
-                <span className="text-lg leading-none">+</span> Add Education
+                <span className="text-lg leading-none">+</span> Add Experience
             </button>
         </form>
     );

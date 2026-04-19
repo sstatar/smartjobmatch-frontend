@@ -27,6 +27,7 @@ export default function PictureIcon({
                     alt={alt ? alt : src ? src : "picture"}
                     className={`${className} rounded-full object-cover border border-accent-2`}
                     onError={onError}
+                    unoptimized
                 />
             ) : (
                 <Image

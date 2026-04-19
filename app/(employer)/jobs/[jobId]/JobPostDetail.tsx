@@ -86,7 +86,7 @@ export default function JobPostDetail({
             {isOwner && (
                 <section id="candidates">
                     <h1 className="text-heading-3 font-semibold">Candidates</h1>
-                    <div className="mt-4 flex gap-3">
+                    <div className="mt-4 flex flex-wrap gap-3">
                         {/* TODO: if user role is applicant, hide this part */}
                         {candidates.length > 0
                             ? candidates.map((candidate) => (
@@ -109,6 +109,7 @@ export default function JobPostDetail({
                                               candidate.aiAnalysisResult
                                                   .aiScore,
                                           status: candidate.status,
+                                          appliedAt: candidate.appliedAt,
                                           aiAnalysisResult:
                                               candidate.aiAnalysisResult,
                                       }}

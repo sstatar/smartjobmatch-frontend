@@ -4,7 +4,9 @@ export type AiAnalysisResult = {
     aiScore: number;
     strengths: string[];
     weaknesses: string[];
-    reasonForPoints: ReasonForPoint[];
+    skillsAnalysis: { score: number; reason: string };
+    experienceAnalysis: { score: number; reason: string };
+    educationAnalysis: { score: number; reason: string };
     summary: string;
     resumeUrlUsed: string;
     snapshottedEducation: string;
