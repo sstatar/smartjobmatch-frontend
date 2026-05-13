@@ -1,7 +1,7 @@
 import Badge from "./Badge";
 type ButtonProps = {
     children: React.ReactNode;
-    onClick?: () => void;
+    onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
     variant?: "primary" | "secondary" | "tertiary";
     disabled?: boolean;
     count?: number;
