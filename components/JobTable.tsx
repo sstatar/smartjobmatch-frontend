@@ -53,7 +53,19 @@ export default function JobTable({ jobs }: JobTableProps) {
                                     </p>
                                     <div className="flex items-center gap-2 mt-1">
                                         <span className="text-sm text-gray-500">
-                                            Date {job.postedAt}
+                                            Date{" "}
+                                            {job.postedAt
+                                                ? new Date(
+                                                      job.postedAt,
+                                                  ).toLocaleDateString(
+                                                      "en-US",
+                                                      {
+                                                          year: "numeric",
+                                                          month: "short",
+                                                          day: "numeric",
+                                                      },
+                                                  )
+                                                : "-"}
                                         </span>
 
                                         <span
@@ -63,7 +75,7 @@ export default function JobTable({ jobs }: JobTableProps) {
                                                     : "border-gray-400 text-gray-600 bg-gray-100"
                                             }`}
                                         >
-                                            {job.isActive}
+                                            {job.isActive ? "Active" : "closed"}
                                         </span>
                                     </div>
                                 </td>
