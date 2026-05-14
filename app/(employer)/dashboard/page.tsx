@@ -6,7 +6,6 @@ export default async function EmployerDashboardPage() {
     try {
         const companyData = await companiesApi.getMyCompany();
         myJobs = companyData.jobPosts;
-        console.log(myJobs);
     } catch (error) {
         console.error("ดึงข้อมูลบริษัทไม่สำเร็จ:", error);
         hasError = true;
