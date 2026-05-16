@@ -26,6 +26,12 @@ export default function EmployerNavbar({ user }: EmployerNavbarProps) {
             <div className="flex-1 flex justify-end items-center gap-8">
                 {user.companyId ? (
                     <>
+                        <Link href={`/dashboard`}>
+                            <NavSimpleItem
+                                label="Dashboard"
+                                isActived={pathname === "/dashboard"}
+                            />
+                        </Link>
                         <Link href={`/jobs/create`}>
                             <NavSimpleItem
                                 label="Create Job Post"

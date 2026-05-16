@@ -1,7 +1,7 @@
 " use client";
 type ButtonSecondProps = {
     children: React.ReactNode;
-    onClick?: () => void;
+    onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
     variant?: "primary" | "secondary" | "tertiary";
     disabled?: boolean;
     className?: string;
