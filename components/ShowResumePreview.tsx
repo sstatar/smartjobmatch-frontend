@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import Button from "./Button";
+import Button from "./ui/Button";
 import { RESUME_BASE_URL } from "@/lib/api-config";
 
 type ShowResumePreviewProps = {

@@ -2,7 +2,7 @@
 import IconHidden from "@/public/svgs/iconHidden.svg";
 import IconDropdown from "@/public/svgs/iconDropdown.svg";
 import { useState } from "react";
-import ProfileVisibilitySelectCard from "./ProfileVisibleSelectCard";
+import ProfileVisibilitySelectCard from "../ProfileVisibleSelectCard";
 import IconVisibility from "../icon/IconVisibility";
 import { updateVisibilityAction } from "@/app/(applicant)/(main)/profile/resume/service/resumeAction";
 export default function ProfileVisibilitySelect({

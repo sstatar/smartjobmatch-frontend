@@ -5,7 +5,7 @@ import ResumeUploadCard from "@/app/(applicant)/uploadResume/components/ResumeUp
 import SkipButton from "@/components/ui/SkipButton";
 import ProgressBar from "@/components/ui/ProgressBar";
 import { useRouter } from "next/navigation";
-import ShowResumePreview from "@/components/ui/ShowResumePreview";
+import ShowResumePreview from "@/components/ShowResumePreview";
 import {
     analyzeResumeAction,
     uploadResumeAction,
