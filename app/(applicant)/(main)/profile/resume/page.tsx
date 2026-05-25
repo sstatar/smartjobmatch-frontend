@@ -1,5 +1,5 @@
-import Navbar from "@/components/navbar/Navbar";
-import Sidebar from "@/components/sideBar/Sidebar";
+import Navbar from "@/components/layout/navbar/Navbar";
+import Sidebar from "@/components/layout/sidebar/Sidebar";
 import ResumeSectionDisplay from "./ResumeSectionDisplay";
 import { fetchUserProfileServer } from "../(profile)/service/profileAction";
 

@@ -1,4 +1,4 @@
-import Sidebar from "@/components/sideBar/Sidebar";
+import Sidebar from "@/components/layout/sidebar/Sidebar";
 import ButtonSecond from "@/components/ui/Button-2";
 import { logout } from "@/app/actions/auth";
 

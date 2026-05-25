@@ -1,4 +1,4 @@
-import DynamicNavbar from "@/components/navbar/DynamicNavbar";
+import DynamicNavbar from "@/components/layout/navbar/DynamicNavbar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (

@@ -3,8 +3,8 @@
 import { User } from "@/lib/api/endpoints/usersApi";
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
-import Logo from "../ui/Logo";
-import NavSimpleItem from "../ui/NavSimpleItem";
+import Logo from "../../ui/Logo";
+import NavSimpleItem from "../../ui/NavSimpleItem";
 import IconProfile from "@/public/svgs/iconProfile.svg";
 import { logout } from "@/app/actions/auth";
 

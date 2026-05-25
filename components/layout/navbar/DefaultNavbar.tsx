@@ -1,7 +1,7 @@
 // components/navbar/DefaultNavbar.tsx
 
-import Logo from "../ui/Logo";
-import Button from "../ui/Button";
+import Logo from "../../ui/Logo";
+import Button from "../../ui/Button";
 import Link from "next/link";
 
 export default function DefaultNavbar() {
