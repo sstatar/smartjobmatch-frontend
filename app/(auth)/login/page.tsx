@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { login } from "@/app/actions/auth";
-import AuthCard from "@/components/AuthCard";
+import AuthCard from "@/components/shared/auth/AuthCard";
 
 // กำหนด state เริ่มต้น
 const initialState = { error: "" };

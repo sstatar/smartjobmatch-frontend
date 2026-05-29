@@ -1,9 +1,9 @@
 "use client";
 
-import CandidateCard from "@/components/CandidateCard";
-import JobDetailCard from "@/components/JobDetailCard";
-import JobCard from "@/components/JobsList/JobCard";
-import CandidateModal from "@/components/CandidateModal";
+import CandidateCard from "@/components/employer/CandidateCard";
+import JobDetailCard from "@/components/shared/JobDetailCard";
+import JobCard from "@/components/shared/JobsList/JobCard";
+import CandidateModal from "@/components/employer/CandidateModal";
 import Button from "@/components/ui/Button-2";
 import { AiAnalysisResult, JobPost } from "@/lib/api/endpoints/companiesApi";
 import Link from "next/link";

@@ -1,4 +1,4 @@
-import ProgressBar from "./ProgressBar";
+import ProgressBar from "../ui/ProgressBar";
 
 type ProgressBarProps = {
     progress: number;

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import CompanyJobList from "./CompanyJobList";
+import CompanyJobList from "../employer/CompanyJobList";
 import { JobCardData } from "./JobsList/JobsList.client";
 
 export default function CompanyInfo({

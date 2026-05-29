@@ -1,12 +1,12 @@
 import { JobPost } from "@/lib/api/endpoints/companiesApi";
-import JobDetailCard from "@/components/JobDetailCard";
-import JobCard from "@/components/JobsList/JobCard";
+import JobDetailCard from "@/components/shared/JobDetailCard";
+import JobCard from "@/components/shared/JobsList/JobCard";
 import { getJobById } from "../service/jobs";
 import {
     CandidateResponseType,
     getCandidateRecommendations,
 } from "./service/candidate";
-import RecommendCandidateList from "@/components/RecommendCandidatesList";
+import RecommendCandidateList from "@/components/employer/RecommendCandidatesList";
 
 export default async function Page({
     params,

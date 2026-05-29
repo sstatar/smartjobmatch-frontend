@@ -1,6 +1,6 @@
 "use client"; // ต้องใส่เพื่อระบุว่าเป็น Client Component
 
-import Textbox from "./ui/Textbox";
+import Textbox from "../ui/Textbox";
 import SearchIcon from "@/public/svgs/search.svg";
 import LocationIcon from "@/public/svgs/location.svg";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";

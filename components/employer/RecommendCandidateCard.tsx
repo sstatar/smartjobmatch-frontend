@@ -1,8 +1,8 @@
 "use client";
 
 import { CandidateResponseType } from "@/app/(employer)/jobs/[jobId]/candidates/service/candidate";
-import PictureIcon from "./ui/PictureIcon";
-import CircularProgress from "./ui/CircularProgress";
+import PictureIcon from "@/components/ui/PictureIcon";
+import CircularProgress from "@/components/ui/CircularProgress";
 
 export default function RecommendCandidateCard({
     candidate,

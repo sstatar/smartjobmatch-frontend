@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import SearchBar from "@/components/SearchBar";
-import StateCard from "@/components/StateCard";
-import JobTable from "@/components/JobTable";
+import SearchBar from "@/components/ui/SearchBar";
+import StateCard from "@/components/applicant/StateCard";
+import JobTable from "@/components/employer/JobTable";
 import { JobPost } from "@/lib/api/endpoints/companiesApi";
 
 interface DashboardClientProps {

@@ -1,6 +1,6 @@
 import Button from "@/components/ui/Button";
 import Logo from "@/components/ui/Logo";
-import Navbar from "@/components/navbar/Navbar";
+import Navbar from "@/components/layout/navbar/Navbar";
 
 export default function page() {
   return (

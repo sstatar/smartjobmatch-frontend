@@ -1,5 +1,5 @@
-import Logo from "../ui/Logo";
-import Button from "../ui/Button";
+import Logo from "../../ui/Logo";
+import Button from "../../ui/Button";
 import { logout } from "@/app/actions/auth";
 
 export default function AuthNavbar() {

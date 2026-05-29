@@ -2,8 +2,8 @@
 
 import { AiAnalysisResult } from "@/lib/api/endpoints/companiesApi";
 import Image from "next/image";
-import CircularProgress from "./ui/CircularProgress";
-import PictureIcon from "./ui/PictureIcon";
+import CircularProgress from "@/components/ui/CircularProgress";
+import PictureIcon from "@/components/ui/PictureIcon";
 
 export type CandidateProps = {
     profileId: string;

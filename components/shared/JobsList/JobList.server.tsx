@@ -2,7 +2,7 @@ import { API_BASE_URL } from "@/lib/api-config";
 import { cookies } from "next/headers";
 import JobAppliedClient from "./JobAppliedList.client";
 import JobListClient from "./JobsList.client";
-import Pagination from "../Pagination";
+import Pagination from "../../ui/Pagination";
 
 export type QueryType = "all" | "bookmarked" | "applied";
 

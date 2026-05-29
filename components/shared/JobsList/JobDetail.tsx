@@ -4,7 +4,7 @@ import { aiAnalyzeJob } from "@/app/actions/ai-analyze"; // import ฟังก�
 import { applyForJob } from "@/app/actions/application";
 import { useState, useTransition } from "react";
 import ReactMarkdown from "react-markdown";
-import Button from "../ui/Button-2";
+import Button from "../../ui/Button-2";
 import { AiAnalysisResults } from "./JobAppliedList.client";
 import { JobCardData } from "./JobsList.client";
 import { UserRole } from "@/app/actions/auth";

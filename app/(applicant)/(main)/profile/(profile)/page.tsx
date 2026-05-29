@@ -1,6 +1,6 @@
-import Navbar from "@/components/navbar/Navbar";
+import Navbar from "@/components/layout/navbar/Navbar";
 import ProfileContent from "./(ProfileSectionDisplay)/ProfileContent";
-import Sidebar from "@/components/sideBar/Sidebar";
+import Sidebar from "@/components/layout/sidebar/Sidebar";
 import { fetchUserProfileServer } from "./service/profileAction";
 import {
     WorkExperienceResponse,

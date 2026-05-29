@@ -1,5 +1,5 @@
 import { getMyInfo } from "@/app/actions/auth";
-import CompanyInfo from "@/components/CompanyInfo";
+import CompanyInfo from "@/components/shared/CompanyInfo";
 import { ApiError } from "@/lib/api/apiError";
 import { companiesApi, Company } from "@/lib/api/endpoints/companiesApi";
 

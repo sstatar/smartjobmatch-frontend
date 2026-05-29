@@ -1,6 +1,6 @@
 "use client";
-import AuthCard from "@/components/AuthCard";
-import AuthFeatureBanner from "@/components/AuthFeatureBanner";
+import AuthCard from "@/components/shared/auth/AuthCard";
+import AuthFeatureBanner from "@/components/shared/auth/AuthFeatureBanner";
 import { useActionState } from "react";
 import { register } from "@/app/actions/auth";
 

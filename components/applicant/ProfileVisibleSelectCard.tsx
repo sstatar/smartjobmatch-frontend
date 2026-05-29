@@ -1,7 +1,7 @@
 "use client";
-import IconVisibility from "../icon/IconVisibility";
+import IconVisibility from "@/components/icon/IconVisibility";
 import IconCross from "@/public/svgs/cross.svg";
-import ButtonSecond from "./Button-2";
+import ButtonSecond from "@/components/ui/Button-2";
 import { useState } from "react";
 
 type ProfileVisibilitySelectCardProps = {
@@ -46,8 +46,8 @@ export default function ProfileVisibilitySelectCard({
                             Hiring employers can find you
                         </span>
                         <span className="text-accent text-button-3 max-w-100">
-                            Allow employers to find me through Indeed using my
-                            resume and profile. I agree to Indeed&apos;s Terms
+                            Allow employers to find me through SmartJobsMatch using my
+                            resume and profile. I agree to SmartJobsMatch&apos;s Terms
                             and acknowledge their Cookie & Privacy Policies
                         </span>
                     </div>

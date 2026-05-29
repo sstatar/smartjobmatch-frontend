@@ -1,14 +1,14 @@
 "use client";
 
 import { createJob, updateJobById } from "@/app/actions/job";
-import HoverableTips from "@/components/HoverableTips";
-import LabeledCheckbox from "@/components/inputUi/LabeledCheckbox";
-import LabeledDropdown from "@/components/inputUi/LabeledDropdown";
-import LabeledOptions from "@/components/inputUi/LabeledOptions";
-import LabeledTextArea from "@/components/inputUi/LabeledTextArea";
-import LabeledTextbox from "@/components/inputUi/LabeledTextbox";
-import TextboxList from "@/components/inputUi/TextboxList";
-import ProgressPoint from "@/components/ProgressPoint";
+import HoverableTips from "@/components/ui/HoverableTips";
+import LabeledCheckbox from "@/components/ui/inputUi/LabeledCheckbox";
+import LabeledDropdown from "@/components/ui/inputUi/LabeledDropdown";
+import LabeledOptions from "@/components/ui/inputUi/LabeledOptions";
+import LabeledTextArea from "@/components/ui/inputUi/LabeledTextArea";
+import LabeledTextbox from "@/components/ui/inputUi/LabeledTextbox";
+import TextboxList from "@/components/ui/inputUi/TextboxList";
+import ProgressPoint from "@/components/applicant/ProgressPoint";
 import Button from "@/components/ui/Button-2";
 import { ApiError } from "@/lib/api/apiError";
 import {
