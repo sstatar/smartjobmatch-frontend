@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useFormStatus } from "react-dom";
-import Logo from "./ui/Logo";
+import Logo from "@/components/ui/Logo";
 import { useState } from "react";
 
 // 1. สร้าง Props เพื่อให้รู้ว่าหน้านี้คือ Login หรือ Register

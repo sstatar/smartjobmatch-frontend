@@ -6,7 +6,7 @@ import BookmarkIcon from "@/public/svgs/bookmark.svg";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import CircularProgress from "../ui/CircularProgress";
+import CircularProgress from "../../ui/CircularProgress";
 import { JobCardData } from "./JobsList.client";
 
 interface JobCardProps {

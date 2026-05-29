@@ -5,9 +5,9 @@ import {
     CreateCompanyResponse,
     updateCompany,
 } from "@/app/actions/company";
-import LabeledTextArea from "@/components/inputUi/LabeledTextArea";
-import LabeledTextbox from "@/components/inputUi/LabeledTextbox";
-import ProgressPoint from "@/components/ProgressPoint";
+import LabeledTextArea from "@/components/ui/inputUi/LabeledTextArea";
+import LabeledTextbox from "@/components/ui/inputUi/LabeledTextbox";
+import ProgressPoint from "@/components/applicant/ProgressPoint";
 import Button from "@/components/ui/Button-2";
 import { CreateCompanyDto } from "@/lib/api/endpoints/companiesApi";
 import ArrowRight from "@/public/svgs/arrow-right.svg";

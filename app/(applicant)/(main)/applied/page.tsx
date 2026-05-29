@@ -1,6 +1,6 @@
 // app/jobs/page.tsx
-import JobQueryInput from "@/components/JobQueryInput";
-import JobsList from "@/components/JobsList/JobList.server";
+import JobQueryInput from "@/components/applicant/JobQueryInput";
+import JobsList from "@/components/shared/JobsList/JobList.server";
 import Navbar from "@/components/layout/navbar/Navbar";
 
 export default async function Page(props: {

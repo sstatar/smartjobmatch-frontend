@@ -2,9 +2,9 @@ import { Candidate } from "@/app/(employer)/jobs/[jobId]/JobPostDetail";
 import { RESUME_BASE_URL } from "@/lib/api-config";
 import Link from "next/link";
 import { useState } from "react";
-import Modal, { ModalProps } from "./Modal";
-import CircularProgress from "./ui/CircularProgress";
-import PictureIcon from "./ui/PictureIcon";
+import Modal, { ModalProps } from "../ui/Modal";
+import CircularProgress from "../ui/CircularProgress";
+import PictureIcon from "../ui/PictureIcon";
 
 export interface CandidateModalProps extends Omit<ModalProps, "children"> {
     candidate: Candidate | null;

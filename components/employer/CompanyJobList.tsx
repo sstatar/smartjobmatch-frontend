@@ -1,7 +1,7 @@
 "use client";
 
-import { JobCardData } from "./JobsList/JobsList.client";
-import JobCard from "./JobsList/JobCard";
+import { JobCardData } from "@/components/shared/JobsList/JobsList.client";
+import JobCard from "@/components/shared/JobsList/JobCard";
 import { useRouter } from "next/navigation";
 
 export default function CompanyJobList({

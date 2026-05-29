@@ -1,12 +1,12 @@
 "use client";
-import ResumeFileCard from "@/components/ResumeFileCard";
+import ResumeFileCard from "@/components/applicant/ResumeFileCard";
 import ProfileVisibilitySelect from "@/components/ui/ProfileVisibilitySelectButton";
 import ButtonSecond from "@/components/ui/Button-2";
 import { useEffect, useRef, useState } from "react";
-import ProgressBarCard from "@/components/ProgressBarCard";
+import ProgressBarCard from "@/components/applicant/ProgressBarCard";
 import { analyzeResumeAction, uploadResumeAction } from "@/app/actions/resume";
 import { isSea } from "node:sea";
-import ShowResumePreview from "@/components/ShowResumePreview";
+import ShowResumePreview from "@/components/applicant/ShowResumePreview";
 
 type Step = "start" | "upload" | "analyze" | "done";
 

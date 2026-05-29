@@ -1,7 +1,7 @@
 "use client";
-import IconVisibility from "./icon/IconVisibility";
+import IconVisibility from "@/components/icon/IconVisibility";
 import IconCross from "@/public/svgs/cross.svg";
-import ButtonSecond from "./ui/Button-2";
+import ButtonSecond from "@/components/ui/Button-2";
 import { useState } from "react";
 
 type ProfileVisibilitySelectCardProps = {
