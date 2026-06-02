@@ -1,4 +1,4 @@
-"use client"; // ต้องใส่เพื่อระบุว่าเป็น Client Component
+"use client";
 
 import Textbox from "../ui/Textbox";
 import SearchIcon from "@/public/svgs/search.svg";
@@ -11,14 +11,10 @@ export default function JobQueryInput() {
     const pathname = usePathname();
     const { replace } = useRouter();
 
-    // ฟังก์ชันสำหรับอัปเดต URL Params แบบหน่วงเวลา 300ms
     const handleSearch = useDebouncedCallback(
         (term: string, paramKey: string) => {
             const params = new URLSearchParams(searchParams);
-
-            // รีเซ็ตหน้ากลับไปที่ 1 เสมอเมื่อมีการพิมพ์ค้นหาใหม่
             params.set("page", "1");
-
             if (term) {
                 params.set(paramKey, term);
             } else {
@@ -30,19 +26,23 @@ export default function JobQueryInput() {
     );
 
     return (
-        <div className="search flex gap-2 justify-center">
+        <div className="search flex flex-col md:flex-row gap-2 md:gap-0 justify-center w-full max-w-4xl mx-auto shadow-sm md:shadow-none p-2 md:p-0 bg-white rounded-2xl md:bg-transparent">
+            
             <Textbox
-                className="rounded-tl-full rounded-bl-full"
+                className="w-full rounded-xl md:rounded-r-none md:rounded-l-full md:border-r-0"
                 placeholder="Job Title, Keyword, or company"
-                // ดึงค่าเริ่มต้นจาก URL มาแสดง
                 defaultValue={searchParams.get("query")?.toString()}
                 onChange={(e) => handleSearch(e.target.value, "query")}
             >
                 <SearchIcon className="text-accent w-5 h-5" />
             </Textbox>
 
+            {/* ขีดเส้นคั่นบางๆ ระหว่าง 2 ช่อง เฉพาะบนจอคอม (สวยงามแบบมืออาชีพ) */}
+            <div className="hidden md:block w-[1px] bg-gray-200 z-10" />
+
             <Textbox
-                className="rounded-tr-full rounded-br-full"
+                // 💡 4. โค้งทุกมุมบนมือถือ และ โค้งแค่ขวาบนจอคอม
+                className="w-full rounded-xl md:rounded-l-none md:rounded-r-full md:border-l-0"
                 placeholder="Location"
                 defaultValue={searchParams.get("location")?.toString()}
                 onChange={(e) => handleSearch(e.target.value, "location")}

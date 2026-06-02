@@ -137,9 +137,12 @@ export default function JobsListClient({ jobs }: JobListClientProps) {
         }
     };
 
+    // เลื่อนลงไปแก้แค่ตรงส่วน return ด้านล่างสุดของไฟล์ JobListClient.tsx นะครับ
+
     return jobs.length > 0 ? (
-        <div className="jobs flex gap-4">
-            <div className="jobs-list flex w-1/3 flex-col gap-4">
+        // 💡 1. เปลี่ยนเป็น flex-col บนมือถือ (เพื่อความปลอดภัย) และกลับเป็น flex-row เมื่อจอใหญ่ (md:)
+        <div className="jobs flex flex-col lg:flex-row gap-4 w-full">
+            <div className="jobs-list flex w-full lg:w-1/3 flex-col gap-4">
                 {jobs.map((job) => (
                     <JobCard
                         key={job.id}
@@ -153,7 +156,7 @@ export default function JobsListClient({ jobs }: JobListClientProps) {
                 ))}
             </div>
 
-            <div className="jobs-detail w-2/3">
+            <div className="jobs-detail hidden lg:block w-full lg:w-2/3">
                 <JobDetail
                     key={selectedJob?.id || "empty-job"}
                     job={selectedJob}
@@ -163,8 +166,8 @@ export default function JobsListClient({ jobs }: JobListClientProps) {
             </div>
         </div>
     ) : (
-        <div>
-            <p className="text-center">No jobs found</p>
+        <div className="w-full flex justify-center py-10">
+            <p className="text-gray-500 font-medium">No jobs found</p>
         </div>
     );
 }

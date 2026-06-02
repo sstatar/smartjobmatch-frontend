@@ -19,9 +19,11 @@ export default function Textbox({
     onChange,
     children,
 }: TextboxProps) {
-    const widthClass = width ? `w-[${width}]` : "w-[400px]";
+    // 💡 แก้ไข: เปลี่ยนค่าเริ่มต้นจาก w-[400px] เป็น w-full
+    const widthClass = width ? `w-[${width}]` : "w-full";
     const heightClass = height ? `h-[${height}]` : "h-[40px]";
     const borderClass = `border border-transparent focus:outline-none focus:ring-1 focus:ring-accent focus:border-transparent`;
+    
     const base = `${borderClass} bg-accent-2 p-2 ${children ? "pl-10" : "pl-4"} w-full h-full`;
 
     const enhancedChildren = React.Children.map(children, (child) => {
