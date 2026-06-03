@@ -99,7 +99,7 @@ export default function JobCard({
 
     return (
         <div
-            // เพิ่ม class 'relative' เพื่อให้เป็นจุดอ้างอิงตำแหน่งของ absolute dropdown
+            // ใช้ Design เดิมของคุณเป๊ะๆ ไม่เปลี่ยนคลาสสีหรือเงาเลย
             className={`job-card relative cursor-pointer flex gap-1.75 p-4 w-full rounded-lg border bg-white transition-all duration-200 ease-in-out
             ${
                 isSelected
@@ -113,14 +113,13 @@ export default function JobCard({
                 <div
                     className="absolute top-4 right-4 z-10"
                     ref={menuRef}
-                    onClick={(e) => e.stopPropagation()} // ป้องกัน event ทะลุเวลาคลิกบริเวณกรอบเมนู
+                    onClick={(e) => e.stopPropagation()}
                 >
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                         className="p-1 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
                         aria-label="Job options"
                     >
-                        {/* ไอคอน 3 จุด */}
                         <svg
                             width="24"
                             height="24"
@@ -152,7 +151,6 @@ export default function JobCard({
                         </svg>
                     </button>
 
-                    {/* กล่อง Dropdown */}
                     {isMenuOpen && (
                         <div className="absolute right-0 mt-2 w-36 bg-white border border-gray-200 rounded-md shadow-lg overflow-hidden flex flex-col">
                             <button
@@ -173,14 +171,16 @@ export default function JobCard({
             )}
             {/* --- จบส่วนประกอบเมนู Meatballs --- */}
 
-            <div className="card-info flex items-center w-full justify-between">
-                <div className="job-short-info ml-4">
+            {/* 💡 เติม min-w-0 เพื่อห้ามไม่ให้กล่องนี้กว้างทะลุการ์ดแม่ */}
+            <div className="card-info flex items-center w-full justify-between min-w-0">
+                {/* 💡 เติม flex-1 min-w-0 เพื่อให้พื้นที่ตัวหนังสือยืดหยุ่น หดตัวได้ตามกรอบ */}
+                <div className="job-short-info ml-4 flex-1 min-w-0">
                     <div className="company-name font-medium text-subtitle-2">
                         {jobData.company?.name}
                     </div>
-                    {/* เผื่อพื้นที่ขวา (pr-10) ไว้ถ้ามีเมนู จะได้ไม่ให้ตัวหนังสือ title ไปทับปุ่มตอนหน้าจอแคบ */}
+                    {/* 💡 เติม break-words บังคับตัดบรรทัดถ้าชื่อตำแหน่งยาวเกินไป */}
                     <div
-                        className={`job-title font-semibold text-heading-4 ${isOwner ? "pr-10" : ""}`}
+                        className={`job-title font-semibold text-heading-4 break-words ${isOwner ? "pr-10" : ""}`}
                     >
                         {jobData.title}
                     </div>
@@ -210,10 +210,12 @@ export default function JobCard({
                         )}
                     </div>
                 </div>
+
                 <div className="shrink-0">
                     <>
                         {aiScore && (
                             <>
+                                {/* ใช้ขนาด 72 และรูปแบบเดิมของคุณทั้งหมด */}
                                 <CircularProgress
                                     percentage={aiScore}
                                     size={72}
@@ -224,8 +226,9 @@ export default function JobCard({
                     </>
                 </div>
             </div>
+
             {showBookmark && (
-                <div onClick={handleBookmarkClick}>
+                <div onClick={handleBookmarkClick} className="shrink-0">
                     {isBookmarked ? (
                         <FilledBookmark className="w-6 h-6 text-accent" />
                     ) : (

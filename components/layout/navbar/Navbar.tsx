@@ -28,8 +28,8 @@ export default async function Navbar({
 
 
     return (
-        <nav className="w-full h-18 flex items-center px-20 border-b border-accent-2 fixed top-0 bg-white z-100">
-            {variants[variant] }
+        <nav className="w-full h-18 flex items-center px-4 md:px-8 lg:px-20 border-b border-accent-2 fixed top-0 bg-white z-100">
+            {variants[variant]}
         </nav>
     );
 }

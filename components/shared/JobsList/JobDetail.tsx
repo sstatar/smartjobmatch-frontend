@@ -102,23 +102,29 @@ ${weaknesses?.map((w) => `- ${w}`).join("\n")}
     return (
         <div className="sticky top-0">
             <div className="max-h-screen overflow-y-auto">
-                <div className="job-detail w-full sticky top-4">
-                    <div className="head flex justify-between items-center p-4 border border-accent-2 rounded-t-lg">
-                        <div className="flex flex-col gap-2 max-w-4/5">
+                <div className="job-detail w-full sticky top-4 bg-white"> 
+                    
+                    {/* 💡 1. คง flex-row ไว้เสมอ ไม่ว่าจะจอมือถือหรือจอคอม (ลบ flex-col ออก) 
+                        และปรับ gap ให้น้อยลงบนมือถือ (gap-2) เพื่อประหยัดพื้นที่ */}
+                    <div className="head flex flex-row justify-between items-start lg:items-center gap-2 lg:gap-4 p-4 border border-accent-2 rounded-t-lg">
+                        
+                        {/* 💡 2. ให้กล่องข้อความยืดหยุ่นด้วย flex-1 และใช้ min-w-0 เพื่อห้ามข้อความดันทะลุกล่อง */}
+                        <div className="flex flex-col gap-1 lg:gap-2 flex-1 min-w-0">
+                            
                             {/* ส่วนหัว: ชื่อตำแหน่งและชื่อบริษัท */}
                             <div>
-                                <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+                                {/* 💡 ลดขนาดตัวหนังสือบนมือถือเป็น text-xl และใส่ line-clamp-2 เผื่อชื่อยาวเกินไป */}
+                                <h1 className="text-xl lg:text-3xl font-bold text-gray-900 tracking-tight break-words line-clamp-2">
                                     {job.title}
                                 </h1>
-                                <p className="text-lg font-medium text-blue-600 mt-1">
+                                <p className="text-sm lg:text-lg font-medium text-blue-600 mt-1 truncate">
                                     {job.company.name}
                                 </p>
                             </div>
 
                             {/* ส่วนรายละเอียด: เงินเดือน และ สถานที่ */}
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-y-2 gap-x-6 text-gray-600">
-                                <div className="flex items-center gap-2">
-                                    {/* แนะนำให้หาไอคอนธนบัตรมาใส่ตรงนี้ */}
+                            <div className="flex flex-col xl:flex-row xl:items-center gap-y-1 gap-x-6 text-gray-600 text-xs lg:text-base">
+                                <div className="flex items-center gap-1 lg:gap-2">
                                     <span className="font-semibold text-gray-800">
                                         {formatSalary(job.salaryMin)} -{" "}
                                         {formatSalary(job.salaryMax)}{" "}
@@ -127,82 +133,85 @@ ${weaknesses?.map((w) => `- ${w}`).join("\n")}
                                 </div>
 
                                 {locationString && (
-                                    <div className="flex items-center gap-1">
-                                        <LocationIcon />
-                                        <span>{locationString}</span>
+                                    <div className="flex items-center gap-1 truncate">
+                                        <LocationIcon className="w-4 h-4 lg:w-5 lg:h-5 shrink-0" />
+                                        <span className="truncate">{locationString}</span>
                                     </div>
                                 )}
                             </div>
 
-                            {/* ส่วนป้ายกำกับ (Badges): รูปแบบการทำงาน และ ประเภทการจ้าง */}
-                            <div className="flex flex-wrap gap-2 mt-1">
+                            {/* ส่วนป้ายกำกับ (Badges) */}
+                            <div className="flex flex-wrap gap-1 lg:gap-2 mt-1">
                                 {job.workplaceType && (
-                                    <span className="px-3 py-1 bg-blue-50 text-blue-700 text-sm font-medium rounded-full border border-blue-100">
+                                    <span className="px-2 py-0.5 lg:px-3 lg:py-1 bg-blue-50 text-blue-700 text-xs lg:text-sm font-medium rounded-full border border-blue-100 whitespace-nowrap">
                                         {job.workplaceType}
                                     </span>
                                 )}
                                 {job.employmentType?.name && (
-                                    <span className="px-3 py-1 bg-gray-50 text-gray-700 text-sm font-medium rounded-full border border-gray-200">
+                                    <span className="px-2 py-0.5 lg:px-3 lg:py-1 bg-gray-50 text-gray-700 text-xs lg:text-sm font-medium rounded-full border border-gray-200 whitespace-nowrap">
                                         {job.employmentType.name}
                                     </span>
                                 )}
                             </div>
                         </div>
-                        {/* ปรับปรุงปุ่ม Apply Now */}
-                        {userRole === "APPLICANT" &&
-                            (!localIsApplied ? (
-                                <Button
-                                    variant="primary"
-                                    onClick={handleApplyClick}
-                                    disabled={isApplying} // ปิดปุ่มระหว่างรอ API ตอบกลับ
-                                >
-                                    {isApplying ? "Applying..." : "Apply Now"}
-                                </Button>
-                            ) : (
-                                <span className="text-green-600 font-semibold px-4 py-2 bg-green-50 rounded-md">
-                                    Applied
-                                </span>
-                            ))}
+
+                        {/* 💡 3. ฝั่งปุ่ม: หดขนาดลง (shrink-0) เพื่อไม่ให้โดนบีบ และปรับขนาดปุ่มให้เล็กลงบนมือถือ */}
+                        <div className="shrink-0 flex items-start lg:items-center">
+                            {userRole === "APPLICANT" &&
+                                (!localIsApplied ? (
+                                    <Button
+                                        variant="primary"
+                                        onClick={handleApplyClick}
+                                        disabled={isApplying}
+                                        // 💡 ปรับลด padding และขนาดตัวหนังสือของปุ่ม (ถ้าคอมโพเนนต์ Button รองรับ className)
+                                        className="!px-3 !py-2 !h-auto !text-sm lg:!px-7.5 lg:!py-3 lg:!h-[56px] lg:!text-base whitespace-nowrap"
+                                    >
+                                        {isApplying ? "Applying..." : "Apply Now"}
+                                    </Button>
+                                ) : (
+                                    <span className="inline-block text-green-600 font-semibold px-3 py-1.5 lg:px-4 lg:py-2 text-sm lg:text-base bg-green-50 rounded-md whitespace-nowrap">
+                                        Applied
+                                    </span>
+                                ))}
+                        </div>
                     </div>
-                    <div className="job-description p-4 border border-accent-2">
+
+                    {/* ส่วน Job Description (ดีไซน์เดิมของคุณเป๊ะๆ) */}
+                    <div className="job-description p-4 border border-accent-2 border-t-0 bg-white"> {/* 💡 เติม border-t-0 เพื่อไม่ให้เส้นขอบทับซ้อนกัน 2 เส้น */}
                         <h2 className="text-heading-4 font-semibold">
                             Job Details
                         </h2>
-                        <div className="markdown">
+                        <div className="markdown mt-2">
                             <ReactMarkdown>{job.description}</ReactMarkdown>
                         </div>
                     </div>
+
+                    {/* ส่วน AI Analysis (ดีไซน์เดิมของคุณเป๊ะๆ) */}
                     {userRole === "APPLICANT" && (
                         <div className="bg-tertiary">
                             {analysisResult ? (
-                                <div className="job-actions p-4 border border-accent-2">
+                                <div className="job-actions p-4 border border-accent-2 border-t-0 bg-tertiary rounded-b-lg">
                                     <h2 className="text-heading-4 font-semibold">
                                         AI Analysis Result
                                     </h2>
-                                    <div className="markdown">
+                                    <div className="markdown mt-2">
                                         <ReactMarkdown>
-                                            {aiResultString
-                                                .split("\n")
-                                                .join("\n\n")}
+                                            {aiResultString.split("\n").join("\n\n")}
                                         </ReactMarkdown>
                                     </div>
                                 </div>
                             ) : (
-                                <div className="job-actions p-4 border border-accent-2 flex flex-col gap-4">
+                                <div className="job-actions p-4 border border-accent-2 border-t-0 bg-tertiary rounded-b-lg flex flex-col gap-4">
                                     <h4 className="text-heading-4 font-semibold">
-                                        Want to know which skills you need to
-                                        improve your match score?
+                                        Want to know which skills you need to improve your match score?
                                     </h4>
                                     <div className="stretch-start">
-                                        {/* ผูก event onClick และทำปุ่ม disable ระหว่างโหลด */}
                                         <Button
                                             variant="primary"
                                             onClick={handleAnalyzeClick}
                                             disabled={isPendingAI}
                                         >
-                                            {isPendingAI
-                                                ? "Analyzing..."
-                                                : "Get AI Analysis"}
+                                            {isPendingAI ? "Analyzing..." : "Get AI Analysis"}
                                         </Button>
                                     </div>
                                 </div>
@@ -213,4 +222,4 @@ ${weaknesses?.map((w) => `- ${w}`).join("\n")}
             </div>
         </div>
     );
-}
+};

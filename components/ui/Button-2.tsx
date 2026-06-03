@@ -1,4 +1,5 @@
-" use client";
+"use client";
+
 type ButtonSecondProps = {
     children: React.ReactNode;
     onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -14,8 +15,10 @@ export default function ButtonSecond({
     disabled = false,
     className = "",
 }: ButtonSecondProps) {
+    // 💡 ปลดล็อก max-w-[350px] ออก และเติม w-full เพื่อให้ปุ่มยืดหยุ่น 100% ตามกล่องพ่อแม่
     const base =
-        "h-[56px] inline-flex items-center justify-center gap-2 px-7.5 rounded-xl text-button-1 font-[var(--weight-button)] transition max-w-[350px]";
+        "h-[56px] inline-flex w-full items-center justify-center gap-2 px-7.5 rounded-xl text-button-1 font-[var(--weight-button)] transition";
+    
     const variants = {
         primary: "bg-success text-secondary",
         secondary: "bg-primary text-secondary",
