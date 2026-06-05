@@ -6,10 +6,7 @@ import SkipButton from "@/components/ui/SkipButton";
 import ProgressBar from "@/components/ui/ProgressBar";
 import { useRouter } from "next/navigation";
 import ShowResumePreview from "@/components/applicant/ShowResumePreview";
-import {
-    analyzeResumeAction,
-    uploadResumeAction,
-} from "@/app/actions/resume";
+import { analyzeResumeAction, uploadResumeAction } from "@/app/actions/resume";
 
 type Step = "upload" | "preview" | "analyzing";
 
@@ -23,48 +20,41 @@ export default function UploadResumeClient() {
         setStep("analyzing");
         setProgress(0);
 
-        // 💡 1. เปิดโหมด Fake Progress วิ่งทีละ 5% รันทุกๆ ครึ่งวินาที
         const progressInterval = setInterval(() => {
             setProgress((prev) => (prev >= 90 ? 90 : prev + 5));
         }, 500);
 
         try {
-            // 💡 2. Step 1: อัปโหลดไฟล์ไปที่ Backend ก่อน
             const formData = new FormData();
-            formData.append("resume", selectedFile); // ชื่อ key "resume" ตามที่ uploadResumeAction รับ
+            formData.append("resume", selectedFile);
 
             const uploadResult = await uploadResumeAction(formData);
             if (!uploadResult.success) {
                 throw new Error(uploadResult.error);
             }
 
-            // 💡 3. Step 2: สั่งให้ AI วิเคราะห์ไฟล์ที่เพิ่งอัปโหลด
             const analyzeResult = await analyzeResumeAction();
             if (!analyzeResult.success) {
                 throw new Error(analyzeResult.error);
             }
 
-            // 💡 4. เมื่อทุกอย่างเสร็จสมบูรณ์ หยุดหลอดและกระชากไป 100%
             clearInterval(progressInterval);
             setProgress(100);
             console.log("Analyze Success!", analyzeResult.data);
 
-            // รอให้ผู้ใช้เห็น 100% แป๊บนึง ค่อยเด้งไปหน้าโฮม
             setTimeout(() => {
                 router.push("/profile/resume");
             }, 800);
         } catch (error) {
-            // 💡 1. ลบ : any ออก ปล่อยให้มันเป็น unknown ไป
             clearInterval(progressInterval);
             console.error("Error pipeline:", error);
 
-            // 💡 2. เช็คก่อนว่า error ที่โยนมาเป็นก้อน Error Object จริงไหม
-            let errorMessage = "เกิดข้อผิดพลาดบางอย่าง กรุณาลองใหม่"; // ข้อความกันเหนียว
+            let errorMessage = "เกิดข้อผิดพลาดบางอย่าง กรุณาลองใหม่";
 
             if (error instanceof Error) {
-                errorMessage = error.message; // ถ้าเป็น Error ค่อยดึง .message มาใช้
+                errorMessage = error.message;
             } else if (typeof error === "string") {
-                errorMessage = error; // ถ้าโยนมาเป็น String ก็จับใส่เลย
+                errorMessage = error;
             }
 
             alert(`Analysis failed: ${errorMessage}`);
@@ -74,48 +64,58 @@ export default function UploadResumeClient() {
     };
 
     return (
-        <>
-            <div className="flex flex-col items-center gap-13">
+        // 💡 1. เพิ่ม w-full และ max-w-4xl เพื่อคุมขนาดสูงสุดบนจอคอม
+        <div className="w-full max-w-4xl mx-auto flex flex-col items-center -mt-12 md:mt-0">
+            <div className="flex flex-col items-center gap-8 md:gap-13 w-full">
                 {step === "upload" && (
                     <>
-                        <h1 className="text-accent text-heading-200 font-(--weight-heading)">
+                        {/* 💡 2. ใส่ text-center และ ปรับขนาดฟอนต์บนมือถือ */}
+                        <h1 className="text-accent text-xl sm:text-2xl md:text-heading-200 font-(--weight-heading) text-center px-4">
                             Would you like to personalize your search by
-                            uploading a resume?
+                            <br className="hidden md:block" /> uploading a
+                            resume?
                         </h1>
 
-                        <ResumeUploadCard
-                            file={file}
-                            onFileSelect={(f) => setFile(f)}
-                            onPreview={() => setStep("preview")}
-                            onAnalyze={() => {
-                                if (file) handleAnalyze(file);
-                            }}
-                        />
+                        {/* 💡 3. หุ้มกล่องนี้ด้วย w-full เพื่อให้ขยายได้เต็มที่ตามที่ Layout นอกอนุญาต */}
+                        <div className="w-full px-4 md:px-0">
+                            <ResumeUploadCard
+                                file={file}
+                                onFileSelect={(f) => setFile(f)}
+                                onPreview={() => setStep("preview")}
+                                onAnalyze={() => {
+                                    if (file) handleAnalyze(file);
+                                }}
+                            />
+                        </div>
                     </>
                 )}
 
                 {step === "preview" && file && (
-                    <ShowResumePreview
-                        file={file}
-                        onConfirm={() => setStep("upload")}
-                    />
+                    <div className="w-full px-4 md:px-0">
+                        <ShowResumePreview
+                            file={file}
+                            onConfirm={() => setStep("upload")}
+                        />
+                    </div>
                 )}
 
                 {step === "analyzing" && (
-                    <div className="flex flex-col mt-30 gap-10">
-                        <h1 className="text-accent text-heading-1 font-(--weight-heading)">
-                            Analyze Your Resume
+                    // 💡 4. ลด margin-top บนจอมือถือ (mt-16) และคง mt-30 บนจอคอม
+                    <div className="flex flex-col md: gap-8 md:gap-10 w-full px-4 md:px-20 text-center">
+                        <h1 className="text-accent text-xl md:text-heading-1 font-(--weight-heading)">
+                            Analyzing Your Resume...
                         </h1>
-
                         <ProgressBar progress={progress} />
                     </div>
                 )}
             </div>
+
+            {/* 💡 5. แก้จุดตาย! เปลี่ยน mx-60 เป็นการจัด justify แทน */}
             {step === "upload" && (
-                <div className="mx-60 flex justify-end items-center gap-6">
+                <div className="w-full mt-8 md:mt-10 flex justify-end px-6 md:px-8">
                     <SkipButton href="/" />
                 </div>
             )}
-        </>
+        </div>
     );
 }
