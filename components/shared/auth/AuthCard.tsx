@@ -43,9 +43,9 @@ export default function AuthCard({
 }: AuthCardProps) {
     const [role, setRole] = useState<"APPLICANT" | "EMPLOYER">("APPLICANT");
     return (
-        <div className="bg-white border border-accent rounded-3xl shadow-xl p-8 sm:px-18 py-5 w-full max-w-112.5">
+        <div className="bg-white border border-accent rounded-3xl shadow-2xl px-6 py-8 sm:p-10 w-full max-w-[450px] mx-auto">
             {/* Header */}
-            <div className="text-center mb-5">
+            <div className="text-center mb-6 sm:mb-8">
                 <Logo size="sm"></Logo>
                 <h2 className="text-accent text-2xl font-semibold">
                     {subtitle}
@@ -59,7 +59,7 @@ export default function AuthCard({
                         onClick={() => setRole("APPLICANT")}
                         className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all cursor-pointer ${
                             role === "APPLICANT"
-                                ? "bg-accent text-secondary shadow-sm"
+                                ? "bg-accent text-secondary shadow-md"
                                 : "text-gray-500 hover:text-gray-700"
                         }`}
                     >
@@ -96,7 +96,7 @@ export default function AuthCard({
                         type="email"
                         name="email"
                         required
-                        className="w-full border border-accent rounded-md px-4 py-2 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                        className="w-full border border-accent text-base rounded-md px-4 py-2 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                     />
                 </div>
 
