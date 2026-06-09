@@ -16,8 +16,7 @@ export default async function page() {
     
     return (
         <div className="h-screen flex flex-col mt-8">
-            <div className="flex flex-1 overflow-hidden gap-4 justify-center px-8">
-                <Sidebar />
+            
 
                 <div className="flex flex-1 flex-col mt-2.5 width-full overflow-hidden">
                     <div>
@@ -40,6 +39,6 @@ export default async function page() {
                     </div>
                 </div>
             </div>
-        </div>
+    
     );
 }

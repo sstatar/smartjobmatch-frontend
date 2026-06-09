@@ -10,7 +10,7 @@ export default function ApplicantMainLayout({
             {/* 💡 เรียกใช้ Dashboard Navbar ตัวหลัก */}
             <Navbar variant="dashboard" />
 
-            <main className="grow p-6 pt-10">{children}</main>
+            <main className="grow px-0 lg:px-6 pt-0">{children}</main>
         </div>
     );
 }
