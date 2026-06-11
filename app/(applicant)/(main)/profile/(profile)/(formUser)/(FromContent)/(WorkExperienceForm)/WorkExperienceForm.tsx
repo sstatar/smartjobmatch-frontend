@@ -1,9 +1,9 @@
 // Components/(formUser)/(FromContent)/WorkExperienceForm.tsx
+"use client";
 import React, { useState } from "react";
 import WorkExperienceItem from "./WorkExperienceItem";
 import { updateWorkExperienceAction } from "../../../service/profileAction";
 import { UpdateWorkExperienceRequest } from "../../../service/type";
-// import { updateWorkExperienceAction } from "../../service/profileAction"; // สมมติว่ามี Action นี้
 
 export type WorkData = {
     id: string;
@@ -13,7 +13,7 @@ export type WorkData = {
     endDate?: string;
     isCurrent?: boolean;
     summary?: string;
-    descriptions?: string[];
+    descriptions?: string[]; // 💡 ยึดตัวแปรที่มี (s) ตัวนี้เป็นหลักนะครับ
 };
 
 type WorkFormProps = {
@@ -25,18 +25,20 @@ export default function WorkExperienceForm({
     initialData,
     onSaveSuccess,
 }: WorkFormProps) {
+    // State สำหรับเก็บประสบการณ์ทำงานเป็น Array
     const [works, setWorks] = useState<WorkData[]>(() => {
         if (initialData && initialData.length > 0) {
             return initialData.map((w) => ({
                 ...w,
-                // 💡 มั่นใจว่า description มีอย่างน้อย 1 ช่องว่างถ้าไม่มีข้อมูลมา
-                description:
+                // 💡 จุดแก้ไขที่ 1: แก้จาก description เป็น descriptions (เติม s) เพื่อให้ตรงกับ Type ด้านบนครับ
+                descriptions:
                     w.descriptions && w.descriptions.length > 0
                         ? w.descriptions
                         : [""],
             }));
         }
-        return [{ id: Date.now().toString(), description: [""] }];
+        // 💡 จุดแก้ไขที่ 2: แก้ตรงค่าเริ่มต้นตอนไม่มีข้อมูลให้เติม s เช่นเดียวกันครับ
+        return [{ id: Date.now().toString(), descriptions: [""] }];
     });
 
     const handleAdd = () =>
@@ -58,17 +60,15 @@ export default function WorkExperienceForm({
     };
 
     const handleSaveAll = async (e: React.FormEvent) => {
-        e.preventDefault(); // อย่าลืมใส่ e.preventDefault() ป้องกันหน้า Refresh
+        e.preventDefault();
 
         const mappedWorks = works.map((work) => {
-            // กรอง Bullet points
             const cleanedDescription = (work.descriptions || []).filter(
                 (desc) => desc.trim() !== "",
             );
 
             const formatDate = (dateStr: string) => {
                 if (!dateStr) return "";
-                // ถ้าส่งมาเป็น YYYY-MM ให้เติม -01 ต่อท้ายให้เป็นวันแรกของเดือน
                 return `${dateStr}-01`;
             };
 
@@ -76,7 +76,7 @@ export default function WorkExperienceForm({
                 jobTitle: work.jobTitle || "",
                 companyName: work.companyName || "",
                 summary: work.summary || "",
-                descriptions: cleanedDescription, // ส่งชื่อ field ตามที่ Backend ต้องการ (description)
+                descriptions: cleanedDescription,
                 startDate: work.startDate ? formatDate(work.startDate) : "",
                 endDate: work.isCurrent
                     ? ""
@@ -88,12 +88,11 @@ export default function WorkExperienceForm({
         });
 
         const payload: UpdateWorkExperienceRequest = {
-            experiences: mappedWorks, // ห่อใส่ object ตาม type
+            experiences: mappedWorks,
         };
 
         console.log("Payload to Backend:", payload);
 
-        // 2. เรียกใช้ Action
         const result = await updateWorkExperienceAction(payload);
 
         if (result.success) {
@@ -108,7 +107,8 @@ export default function WorkExperienceForm({
         <form
             id="side-panel-form"
             onSubmit={handleSaveAll}
-            className="bg-secondary p-1"
+            // 💡 ปรับ Padding บนจอมือถือจาก p-1 เป็น p-0 md:p-1 ให้เนียนรับกับขอบกล่อง SidePanel ตัวแม่ครับ
+            className="bg-secondary p-0 md:p-1"
         >
             {works.map((work, index) => (
                 <WorkExperienceItem
@@ -119,12 +119,15 @@ export default function WorkExperienceForm({
                     onChange={(field, val) => handleChange(work.id, field, val)}
                 />
             ))}
+
             <button
                 type="button"
                 onClick={handleAdd}
                 className="flex items-center gap-2 px-4 py-2 mt-2 border border-gray-300 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors cursor-pointer"
             >
-                <span className="text-lg leading-none">+</span> Add Education
+                {/* 💡 จุดแก้ไขที่ 3: เปลี่ยนข้อความปุ่มให้ถูกต้องตรงกับบริบทฟอร์มงาน */}
+                <span className="text-lg leading-none">+</span> Add Work
+                Experience
             </button>
         </form>
     );

@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { updateEducationAction } from "../../service/profileAction";
 import { EducationEntry, UpdateEducationRequest } from "../../service/type";
 
-// เพิ่ม id เข้ามาใน Type เพื่อให้ React แยกแยะกล่องข้อมูลแต่ละอันได้เวลาลบหรือแก้ไข
 export type EducationData = {
     id: string;
     schoolName?: string;
@@ -16,7 +15,7 @@ export type EducationData = {
 };
 
 type EducationFormProps = {
-    initialData?: EducationData[]; // เปลี่ยนมารับเป็น Array แทน
+    initialData?: EducationData[];
     onSaveSuccess?: () => void;
 };
 
@@ -27,12 +26,10 @@ export default function EducationForm({
     initialData,
     onSaveSuccess,
 }: EducationFormProps) {
-    // State สำหรับเก็บประวัติการศึกษาเป็น Array (ถ้าไม่มีข้อมูลเก่า ให้สร้าง 1 กล่องเปล่าๆ รอไว้)
     const [educations, setEducations] = useState<EducationData[]>(() => {
         return initialData && initialData.length > 0 ? initialData : [];
     });
 
-    // ฟังก์ชัน: เมื่อกดปุ่ม + Add Education
     const handleAdd = () => {
         setEducations([
             ...educations,
@@ -49,7 +46,6 @@ export default function EducationForm({
         ]);
     };
 
-    // ฟังก์ชัน: เมื่อกดปุ่มถังขยะ
     const handleDelete = (idToRemove: string) => {
         if (educations.length === 1) {
             alert("คุณต้องมีประวัติการศึกษาอย่างน้อย 1 รายการครับ");
@@ -58,13 +54,11 @@ export default function EducationForm({
         setEducations(educations.filter((edu) => edu.id !== idToRemove));
     };
 
-    // ฟังก์ชัน: เมื่อผู้ใช้พิมพ์ข้อมูลในช่องต่างๆ (รับค่าจากตัวลูกมาอัปเดต Array)
     const handleChange = (
         idToUpdate: string,
         field: keyof EducationData,
         value: string | boolean,
     ) => {
-        // เพิ่ม (prevEducations) => เข้าไปข้างใน setEducations
         setEducations((prevEducations) =>
             prevEducations.map((edu) =>
                 edu.id === idToUpdate ? { ...edu, [field]: value } : edu,
@@ -72,8 +66,7 @@ export default function EducationForm({
         );
     };
 
-    // ฟังก์ชัน: เมื่อกดปุ่ม Update ที่ SidePanel
-    const handleSaveAll = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    const handleSaveAll = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const getMonthName = (month: string) => {
             if (!month) return "";
@@ -106,7 +99,6 @@ export default function EducationForm({
             return degreeLevels.get(degreeLevelName) || "null";
         };
 
-        // 1. Map ข้อมูลจาก State ในฟอร์ม ให้เป็นรูปแบบที่ Backend ต้องการ
         const mappedEducations: EducationEntry[] = educations.map((edu) => {
             const startDateRaw = edu.startDate || "";
             const startParts = startDateRaw.includes("-")
@@ -115,7 +107,6 @@ export default function EducationForm({
             const sYear = startParts[0];
             const sMonth = startParts[1];
 
-            // 2. เช็ควันจบ
             const endDateRaw = edu.endDate || "";
             const endParts = endDateRaw.includes("-")
                 ? endDateRaw.split("-")
@@ -125,7 +116,7 @@ export default function EducationForm({
 
             return {
                 university: edu.schoolName || "",
-                degreeLevelCode: getDegreeLevelCode(edu.degreeType!), // หรือดึงจาก edu.degreeType ถ้าทำ Mapping ไว้
+                degreeLevelCode: getDegreeLevelCode(edu.degreeType!),
                 fieldOfStudy: edu.major || "",
                 startMonth: sMonth ? getMonthName(sMonth) : "",
                 startYear: sYear ? parseInt(sYear) : new Date().getFullYear(),
@@ -133,22 +124,15 @@ export default function EducationForm({
                     edu.isCurrent || !gMonth ? null : getMonthName(gMonth),
                 graduationYear:
                     edu.isCurrent || !gYear ? null : parseInt(gYear),
-                // degreeName: edu.degreeType || "", // หรือใส่ชื่อเต็มของปริญญา
                 gpa: parseFloat(edu.gpa || "0"),
                 isCurrent: edu.isCurrent || false,
             };
         });
 
-        // 2. ห่อด้วย Object "educations" ก่อนส่ง
         const payload: UpdateEducationRequest = {
             educations: mappedEducations,
         };
 
-        payload.educations.forEach((edu) => {
-            console.log(edu);
-        });
-
-        // 3. ยิง Action
         const result = await updateEducationAction(payload);
 
         if (result.success) {
@@ -163,9 +147,9 @@ export default function EducationForm({
         <form
             id="side-panel-form"
             onSubmit={handleSaveAll}
-            className="bg-secondary p-1"
+            // 💡 ปรับ Padding รอยต่อฟอร์มบนมือถือให้ชิดขอบพอดีกับกล่อง SidePanel
+            className="bg-secondary p-0 md:p-1"
         >
-            {/* วนลูป (Map) สร้างกล่อง EducationItem ตามจำนวนใน Array */}
             {educations.map((edu, index) => (
                 <EducationItem
                     key={edu.id}
@@ -178,7 +162,6 @@ export default function EducationForm({
                 />
             ))}
 
-            {/* ปุ่ม Add Education (ย้ายมาไว้ข้างล่างสุดของฟอร์มหลัก) */}
             <button
                 type="button"
                 onClick={handleAdd}
@@ -200,7 +183,6 @@ type EducationItemProps = {
     onChange: (field: keyof EducationData, value: string | boolean) => void;
 };
 
-// สังเกตว่าเราไม่ได้ export ตรงนี้นะครับ ให้มันใช้แค่ในไฟล์นี้ก็พอ
 function EducationItem({
     data,
     index,
@@ -215,7 +197,7 @@ function EducationItem({
                 <button
                     type="button"
                     onClick={onDelete}
-                    className="p-1.5 text-gray-500 hover:bg-gray-200 rounded-full transition-colors cursor-pointer"
+                    className="p-1.5 text-gray-500 hover:bg-gray-200 rounded-full transition-colors cursor-pointer shrink-0"
                     title="Delete Education"
                 >
                     <svg
@@ -236,9 +218,10 @@ function EducationItem({
                 </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-6">
+            {/* 💡 1. ปรับระบบ Grid: บนมือถือเรียงแถวเดี่ยว (grid-cols-1) บนคอมพิวเตอร์กางออกเป็น 2 แถว (md:grid-cols-2) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 {/* School Name */}
-                <div className="col-span-2">
+                <div className="md:col-span-2">
                     <InputBox
                         text="School Name"
                         required
@@ -248,7 +231,7 @@ function EducationItem({
                 </div>
 
                 {/* Major */}
-                <div className="col-span-1">
+                <div className="md:col-span-1">
                     <InputBox
                         text="Major"
                         required
@@ -257,8 +240,9 @@ function EducationItem({
                     />
                 </div>
 
-                {/* Degree Type & GPA (ที่แก้เรื่องล้นกล่องแล้ว) */}
-                <div className="col-span-1 flex gap-4">
+                {/* Degree Type & GPA */}
+                {/* 💡 2. บนมือถือกล่องนี้จะยืดเต็มความกว้างแถว ทำให้ Flexbox ข้างในของคุณทำงานได้เต็มที่ ดีไซน์เรื่อง 'แก้ล้นกล่อง' จะแสดงผลได้อย่างสวยงามพิมพ์ง่ายครับ */}
+                <div className="md:col-span-1 flex gap-4">
                     <div className="flex-1 min-w-0">
                         <InputBox
                             text="Degree Type"
@@ -279,33 +263,32 @@ function EducationItem({
                 </div>
 
                 {/* Start Date */}
-                <div className="col-span-1">
+                <div className="md:col-span-1">
                     <InputBox
                         text="Start Date"
                         type="month"
-                        value={data.startDate || ""} // 2020-01
+                        value={data.startDate || ""}
                         onChange={(e) => onChange("startDate", e.target.value)}
                     />
                 </div>
 
                 {/* End Date & Checkbox */}
-                <div className="col-span-1 flex flex-col gap-3">
+                <div className="md:col-span-1 flex flex-col gap-3">
                     <InputBox
                         text="End Date"
                         type="month"
                         value={data.endDate || ""}
                         onChange={(e) => onChange("endDate", e.target.value)}
-                        disabled={data.isCurrent} // ถ้าติ๊กช่องกำลังศึกษา ให้ปิดไม่ให้พิมพ์
+                        disabled={data.isCurrent}
                     />
 
-                    <label className="flex items-center gap-2 cursor-pointer mt-1">
+                    <label className="flex items-center gap-2 cursor-pointer mt-1 select-none">
                         <input
                             type="checkbox"
-                            className="w-5 h-5 rounded text-emerald-400 focus:ring-emerald-400 accent-emerald-400"
+                            className="w-5 h-5 rounded text-emerald-400 focus:ring-emerald-400 accent-emerald-400 cursor-pointer"
                             checked={data.isCurrent || false}
                             onChange={(e) => {
                                 onChange("isCurrent", e.target.checked);
-                                // ถ้าเลือกเรียนอยู่ ให้เคลียร์ช่อง End Date ทิ้ง
                                 if (e.target.checked) onChange("endDate", "");
                             }}
                         />

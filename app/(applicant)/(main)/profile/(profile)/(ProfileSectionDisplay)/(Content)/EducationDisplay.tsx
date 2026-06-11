@@ -26,7 +26,8 @@ export default function EducationDisplay({ data }: { data: EducationProps[] }) {
 
                     {/* เนื้อหาข้อมูล */}
                     <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2">
+                        {/* 💡 เติมแค่ flex-wrap ตรงนี้จุดเดียวครับ เพื่อให้วันที่มันปัดลงบรรทัดใหม่ได้ถ้าจอแคบจัดๆ */}
+                        <div className="flex flex-wrap items-center gap-2">
                             {item.startYear && <span>{item.startYear}</span>}
                             {item.startYear && item.startMonth && (
                                 <span>-</span>
@@ -40,6 +41,7 @@ export default function EducationDisplay({ data }: { data: EducationProps[] }) {
                             )}
 
                             <ArrowSmall />
+
                             {item.isCurrent ||
                             (!item.graduationYear && !item.graduationMonth) ? (
                                 <span className="text-accent font-bold">
@@ -62,6 +64,7 @@ export default function EducationDisplay({ data }: { data: EducationProps[] }) {
                                 </>
                             )}
                         </div>
+
                         <h3 className="font-bold text-lg text-black">
                             {item.university}
                         </h3>
