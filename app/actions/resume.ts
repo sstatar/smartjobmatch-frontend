@@ -61,6 +61,42 @@ export async function analyzeResumeAction() {
         );
         console.log("Analyze Success:", response.data);
 
+        revalidatePath("/profile/resume", "page");
+        revalidatePath("/profile", "layout");
+
+        return { success: true, data: response.data };
+    } catch (err: unknown) {
+        if (err instanceof AxiosError) {
+            console.error(
+                "Analysis Error Details:",
+                err.response?.data || err.message,
+            );
+            return {
+                success: false,
+                error: err.response?.data?.message || "Backend AI Error",
+            };
+        }
+        return { success: false, error: "Internal Server Error" };
+    }
+}
+
+export async function autoFillResumeAction() {
+    try {
+        const token = (await cookies()).get("token")?.value;
+        if (!token) return { success: false, error: "Unauthorized" };
+
+        const response = await axios.post(
+            `${API_BASE_URL}/profiles/autofill`, {},
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            },
+        );
+
+        revalidatePath("/profile/resume", "page");
+        revalidatePath("/profile", "layout");
+
         return { success: true, data: response.data };
     } catch (err: unknown) {
         if (err instanceof AxiosError) {
