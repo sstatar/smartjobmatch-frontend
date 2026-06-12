@@ -4,11 +4,11 @@ import ProfileVisibilitySelect from "@/components/ui/ProfileVisibilitySelectButt
 import ButtonSecond from "@/components/ui/Button-2";
 import { useEffect, useRef, useState } from "react";
 import ProgressBarCard from "@/components/applicant/ProgressBarCard";
-import { analyzeResumeAction, uploadResumeAction } from "@/app/actions/resume";
-import { isSea } from "node:sea";
+import { autoFillResumeAction, uploadResumeAction } from "@/app/actions/resume";
 import ShowResumePreview from "@/components/applicant/ShowResumePreview";
 
-type Step = "start" | "upload" | "analyze" | "done";
+// 💡 เปลี่ยนจาก "analyze" เป็น "autofill" ให้ตรงกับการทำงานจริง
+type Step = "start" | "upload" | "autofill" | "done";
 
 interface Props {
     initialStep: Step;
@@ -20,6 +20,7 @@ interface Props {
         isResumeAnalyzed: boolean;
     };
 }
+
 export default function ResumeSectionDisplay({
     initialStep,
     resumeData,
@@ -28,7 +29,7 @@ export default function ResumeSectionDisplay({
     const [file, setFile] = useState<File | null>(null);
     const [progress, setProgress] = useState(0);
     const [showPreview, setShowPreview] = useState(false);
-    const [isUploading, setIsUploading] = useState(false); //เผื่ออยากเพิ่มทีหลัง
+    const [isUploading, setIsUploading] = useState(false);
 
     const inputRef = useRef<HTMLInputElement>(null);
     const fileToPreview = file || resumeData?.resumeUrl;
@@ -44,15 +45,12 @@ export default function ResumeSectionDisplay({
             setIsUploading(true);
 
             try {
-                // 💡 เตรียม FormData เพื่อส่งให้ Server Action
                 const formData = new FormData();
                 formData.append("resume", selectedFile);
-
-                // 💡 เรียกใช้ Server Action
                 const result = await uploadResumeAction(formData);
 
                 if (result.success) {
-                    setStep("upload"); // สำเร็จ! หยุดรอให้ User กด Analyze เอง
+                    setStep("upload");
                 } else {
                     alert(`Upload failed: ${result.error}`);
                     setStep(resumeData?.resumeUrl ? "upload" : "start");
@@ -65,63 +63,72 @@ export default function ResumeSectionDisplay({
             }
         }
     };
+
     const handleReplace = () => {
-        // 💡 สั่งให้ input[type="file"] ทำงานใหม่ทันที
         inputRef.current?.click();
     };
 
-    const handleAnalyze = async () => {
-        setStep("analyze"); // แสดง Progress Bar
-        setProgress(10); // เริ่มต้นที่ 10% ให้ดูมีการเคลื่อนไหว
+    const handleAutofillClick = async () => {
+        // 💡 เปลี่ยนมาใช้ "autofill"
+        setStep("autofill");
+        setProgress(10);
+
+        const interval = setInterval(() => {
+            setProgress((prev) => (prev < 90 ? prev + 5 : prev));
+        }, 1000);
 
         try {
-            // 2. สร้าง Interval จำลอง Progress ระหว่างรอ AI (เพราะ Server Action วัด % จริงไม่ได้)
-            const interval = setInterval(() => {
-                setProgress((prev) => (prev < 90 ? prev + 5 : prev));
-            }, 1000); // ขยับทุก 1 วินาที
+            const res = await autoFillResumeAction();
+            clearInterval(interval);
 
-            // 3. 🚀 เรียกใช้ Server Action ตัวที่คุณเพิ่งเปลี่ยนเมื่อกี้
-            const result = await analyzeResumeAction();
-
-            clearInterval(interval); // หยุดการจำลอง Progress
-
-            if (result.success) {
-                setProgress(100); // ดีดให้เต็ม
+            if (res.success) {
+                setProgress(100);
                 setTimeout(() => {
-                    setStep("done"); // เปลี่ยนเป็นปุ่ม Success (สีเขียว)
-                    // 💡 ข้อมูลจะถูก Autofill ในหน้า Profile อัตโนมัติเพราะ revalidatePath ใน Action
+                    alert(
+                        "Autofill Success! เติมข้อมูลลงในโปรไฟล์เรียบร้อยแล้ว",
+                    );
+                    setStep("upload");
+                    setProgress(0);
                 }, 500);
             } else {
-                // ถ้า Backend ตอบกลับมาว่าไม่รองรับ หรือ Error อื่นๆ
-                alert(`Analysis failed: ${result.error}`);
-                setStep("upload"); // ถอยกลับไปสถานะเดิมเพื่อให้ User ลองใหม่ได้
+                alert(`Autofill Failed! \n${res.error}`);
+                setStep("upload");
+                setProgress(0);
             }
         } catch (error) {
+            clearInterval(interval);
             console.error("Unexpected Error:", error);
             alert("An unexpected error occurred.");
             setStep("upload");
+            setProgress(0);
         }
     };
+
     return (
         <>
-            <div className="flex flex-col gap-3 bg-secondary p-6 rounded-lg w-full items-start">
+            <div className="flex flex-col gap-4 md:gap-6 bg-secondary p-4 md:p-6 rounded-lg w-full items-start">
                 {step === "start" && (
-                    <div className="flex flex-col gap-3">
-                        <span>
-                            you don’t have any resume. Please upload your resume
+                    <div className="flex flex-col gap-3 w-full">
+                        <span className="text-gray-600 text-sm md:text-base">
+                            You don’t have any resume. Please upload your resume
                             to autofill your profile.
                         </span>
                         <ButtonSecond
                             variant="tertiary"
+                            className="h-10! px-6! text-sm! w-full md:w-fit! rounded-xl!"
                             onClick={() => inputRef.current?.click()}
+                            disabled={isUploading}
                         >
-                            Upload Resume
+                            {isUploading ? "Uploading..." : "Upload Resume"}
                         </ButtonSecond>
                     </div>
                 )}
-                {/* สถานะ: อัปโหลดแล้ว (รอ Analyze) หรือ วิเคราะห์เสร็จแล้ว (Done) */}
-                {(step === "upload" || step === "done") && (
-                    <div className="flex flex-col gap-6 w-full">
+
+                {/* 💡 เปลี่ยนจุดเช็คเงื่อนไขเป็น "autofill" */}
+                {(step === "upload" ||
+                    step === "autofill" ||
+                    step === "done") && (
+                    <div className="flex flex-col gap-4 md:gap-5 w-full">
                         <ProfileVisibilitySelect
                             isSearchable={
                                 resumeData?.isSearchable ? "public" : "private"
@@ -142,17 +149,23 @@ export default function ResumeSectionDisplay({
                             onPreview={() => setShowPreview(true)}
                             onReplace={handleReplace}
                         />
-
-                        {step === "upload" ? (
-                            <ButtonSecond onClick={handleAnalyze}>
-                                Analyze Resume
-                            </ButtonSecond>
-                        ) : (
+                        {/* 💡 แสดง Progress Bar ตอน step เป็น "autofill" */}
+                        {step === "autofill" && (
+                            <div className="w-full py-1">
+                                {/* 💡 ส่งคำใหม่เข้าไปให้ตรงกับบริบทของการ Autofill */}
+                                <ProgressBarCard
+                                    progress={progress}
+                                    title="Autofilling Your Profile"
+                                />
+                            </div>
+                        )}
+                        
+                        {(step === "upload" || step === "done") && (
                             <ButtonSecond
-                                variant="tertiary"
-                                className="bg-accent/50 cursor-default"
+                                className="h-10! px-6! text-sm! w-full md:w-fit! md:text-xl! rounded-xl! mt-1"
+                                onClick={handleAutofillClick}
                             >
-                                Success Analyzing
+                                Autofill From Resume
                             </ButtonSecond>
                         )}
                     </div>
@@ -167,31 +180,25 @@ export default function ResumeSectionDisplay({
                 accept=".pdf"
             />
 
-            {step === "analyze" && <ProgressBarCard progress={progress} />}
-
             {showPreview && fileToPreview && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
-                    <div className="bg-white p-8 rounded-2xl max-w-4xl w-full relative">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-0 md:p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+                    <div className="bg-white w-full max-w-4xl h-full md:h-auto md:max-h-[90vh] p-4 md:p-8 rounded-none md:rounded-2xl shadow-xl flex flex-col relative animate-in fade-in zoom-in duration-200">
                         <button
                             onClick={() => setShowPreview(false)}
-                            className="absolute top-4 right-4 text-2xl hover:text-accent transition-colors"
+                            className="absolute top-2 right-2 md:top-4 md:right-4 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-800 transition-colors z-10"
                         >
                             ✕
                         </button>
 
-                        <ShowResumePreview
-                            file={fileToPreview} // ส่งตัวแปรใหม่ไป
-                            onConfirm={() => setShowPreview(false)}
-                        />
+                        <div className="flex-1 overflow-y-auto mt-8 md:mt-0">
+                            <ShowResumePreview
+                                file={fileToPreview}
+                                onConfirm={() => setShowPreview(false)}
+                            />
+                        </div>
                     </div>
                 </div>
             )}
         </>
     );
 }
-// ดึงข้อมูลจาก API ว่ามีไฟล์ไหม ถ้าไม่มี set step == "start"  ถ้ามี set step == "done"
-
-// step start : ไม่แสดง resumeUploadCardและโปรไฟล์ Visibility Select แต่จะ แสดงตัวอักษรแจ้งและปุ่มขึ้นให้อัพโหลด
-// step upload : จะแสดง resumeUploadCard และโปรไฟล์ Visibility Select และเปลี่ยนปุ่มเป็น Analyze Resume (มีไฟล์ เอาชื่อไฟล์ วันที่เพิ่มไฟล์)
-// step analyze : แสดง progressbarCard (ส่ง Progress เข้าไป)
-// step done : จะแสดง resumeUploadCard และโปรไฟล์ Visibility Select และเปลี่ยนปุ่มเป็น Analyze Resume เป็น Success Analyzing (ใช้ชื่อไฟล์ วันที่เพิ่มไฟล์)

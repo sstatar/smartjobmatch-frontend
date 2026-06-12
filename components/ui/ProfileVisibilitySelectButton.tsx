@@ -38,31 +38,39 @@ export default function ProfileVisibilitySelect({
     };
     return (
         <>
+            {/* 💡 1. ปรับกล่องนอกสุดจาก w-full เป็น w-fit เพื่อให้ปุ่มหดสั้นลงพอดีกับเนื้อหา ไม่กางแผ่เต็มจอ */}
             <button
-                className="flex w-full max-w-[330px] items-center justify-between cursor-pointer"
+                className="flex w-fit items-center cursor-pointer"
                 onClick={() => setIsOpen(!isOpen)}
             >
-                <div className="flex gap-2 px-4 py-2 items-center border-2 border-accent rounded-xl w-full max-w-[330px]">
+                {/* 💡 2. ปรับ Padding บนมือถือให้เล็กลง (px-2.5 py-1) และลดความหนาของเส้นขอบบนมือถือเหลือ border เฉยๆ */}
+                <div className="flex gap-1.5 md:gap-2 px-2.5 md:px-4 py-1 md:py-2 items-center border border-accent/70 md:border-2 border-accent rounded-lg md:rounded-xl w-fit max-w-[280px] md:max-w-[330px]">
+                    {/* 💡 3. ย่อขนาดไอคอนบนมือถือลงเล็กน้อย (w-4 h-4) */}
                     <IconVisibility
-                        className="w-5 h-5 flex-shrink-0 text-accent"
+                        className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0 text-accent"
                         isHidden={visibility === "private"}
                     />
-                    <span className="text-accent text-subtitle-2 font-semibold">
+
+                    {/* 💡 4. ลดขนาดฟอนต์บนมือถือเหลือ text-[11px] เพื่อให้ดูเป็นปุ่มสถานะเล็กๆ ไซส์มินิมอล */}
+                    <span className="text-accent text-[11px] md:text-subtitle-2 font-semibold whitespace-nowrap">
                         {visibility === "private"
-                            ? "Hiring Employers can't find you"
-                            : "Hiring Employers can find you"}
+                            ? "Employers can't find you"
+                            : "Employers can find you"}
                     </span>
-                    <IconDropdown></IconDropdown>
+
+                    {/* 💡 5. ย่อขนาดไอคอน Dropdown บนมือถือ */}
+                    <div className="w-3 h-3 md:w-4 md:h-4 flex items-center justify-center text-accent shrink-0">
+                        <IconDropdown className="w-full h-full" />
+                    </div>
                 </div>
             </button>
 
+            {/* โค้ดส่วน Modal {isOpen && (...)} ด้านล่างสามารถคงไว้เหมือนเดิมได้เลยครับ */}
             {isOpen && (
-                /* 1. Wrapper สำหรับ Modal: ใช้ fixed inset-0 เพื่อจองพื้นที่เต็มหน้าจอ */
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div
-                        /* bg-black/50 คือสีดำโปร่งแสง 50%, backdrop-blur-sm คือการเบลอฉากหลัง */
-                        className="absolute inset-0 bg-black/50  transition-opacity"
-                        onClick={() => setIsOpen(false)} // 👈 เพิ่มเพื่อให้กดที่ว่างแล้วปิด Modal ได้
+                        className="absolute inset-0 bg-black/50 transition-opacity"
+                        onClick={() => setIsOpen(false)}
                     />
 
                     <div className="relative z-10 animate-in fade-in zoom-in duration-200">
