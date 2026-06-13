@@ -60,7 +60,7 @@ export default function SkillsForm({
         <form
             id="side-panel-form"
             onSubmit={handleSaveAll}
-            className="bg-secondary p-5"
+            className="bg-secondary p-0 md:p-5"
         >
             <div className="flex flex-wrap gap-3">
                 {/* 1. วนลูปแสดง Skills ที่มีอยู่เป็น Tag (เช่น React, Next.js, Tailwind) */}

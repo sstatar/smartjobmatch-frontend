@@ -39,9 +39,11 @@ export default function ProfileContent({
     };
 
     return (
-        <div className="flex flex-col bg-accent-2 p-6 rounded-xl overflow-hidden">
-            <ProfileTabs />
-            <div className="bg-secondary rounded-b-2xl overflow-y-auto flex-1 scroll-smooth">
+        <div className="flex flex-col flex-1 min-h-0 bg-accent-2 p-4 md:p-6 rounded-xl overflow-hidden">
+            <div className="shrink-0">
+                <ProfileTabs />
+            </div>
+            <div className="bg-secondary rounded-b-2xl flex-1 overflow-y-auto min-h-0 scroll-smooth">
                 {/* Section 1: Personal Information */}
                 <ProfileSectionWrapper
                     id="personal"
@@ -81,6 +83,7 @@ export default function ProfileContent({
                 </ProfileSectionWrapper>
             </div>
 
+            {/* SidePanel เพื่อแสดง Form แก้ไขข้อมูล */}
             <SidePanel
                 // เปิดเมื่อ State ไม่ใช่ null
                 isOpen={editingSection !== null}
