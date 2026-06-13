@@ -30,7 +30,7 @@ export default async function page() {
                         Resume
                     </h1>
 
-                    <div className="flex bg-accent-2 p-4 md:p-6 rounded-lg shadow-sm">
+                    <div className="flex bg-accent-2 p-4 md:p-6 rounded-xl shadow-sm">
                         <ResumeSectionDisplay
                             initialStep={initialStep}
                             resumeData={{
