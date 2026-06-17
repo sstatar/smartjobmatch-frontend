@@ -5,7 +5,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <section>
             <Navbar variant="employer"></Navbar>
-            <div className="mt-30">{children}</div>
+            <div className="mt-3 lg:mt-9">{children}</div>
         </section>
-    );
+    ); 
 }
