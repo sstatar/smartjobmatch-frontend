@@ -72,7 +72,7 @@ export default function CompanyCreateForm({
     }
 
     return (
-        <div className="flex flex-col items-center gap-8 max-w-3xl px-16 mb-12 mx-auto">
+        <div className="flex flex-col items-center gap-8 w-full max-w-3xl px-6 md:px-16 mb-12 mx-auto">
             <ProgressPoint step={step} maxSteps={2} />
 
             {/* Step 1 */}
