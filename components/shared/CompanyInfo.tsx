@@ -41,7 +41,7 @@ export default function CompanyInfo({
     }
 
     return (
-        <div className="mx-40 border border-gray-300 rounded-lg py-8 px-12">
+        <div className="mx-4 md:mx-16 lg:mx-40 border border-gray-300 rounded-lg py-6 px-4 md:py-8 md:px-12">
             <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2 pb-4 border-b border-gray-300">
                     {company?.logoUrl ? (
@@ -65,9 +65,9 @@ export default function CompanyInfo({
                         {isOwner && (
                             <div className="relative">
                                 <div
-                                    className="absolute top-4 right-4 z-10"
+                                    className="relative z-10"
                                     ref={menuRef}
-                                    onClick={(e) => e.stopPropagation()} // ป้องกัน event ทะลุเวลาคลิกบริเวณกรอบเมนู
+                                    onClick={(e) => e.stopPropagation()}
                                 >
                                     <button
                                         onClick={() =>

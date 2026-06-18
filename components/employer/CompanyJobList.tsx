@@ -16,7 +16,7 @@ export default function CompanyJobList({
             <div className="jobs flex flex-col gap-2">
                 {jobsData && jobsData.length > 0 ? (
                     jobsData.map((job) => (
-                        <div key={job.id} className="job w-3/4">
+                        <div key={job.id} className="job w-full lg:w-3/4">
                             <JobCard
                                 jobData={job}
                                 showBookmark={false}
