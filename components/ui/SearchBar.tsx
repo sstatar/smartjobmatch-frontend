@@ -23,7 +23,7 @@ export default function SearchBar({ value, onChange, onSearch } : SearchBarProps
         onClick={onSearch}
         className="bg-primary text-white px-6 py-2 rounded-md hover:bg-blue-800 transition-colors duration-200 cursor-pointer"
       >
-        ค้นหา
+        Search
       </button>
 
     </div>
