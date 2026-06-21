@@ -212,7 +212,8 @@ export default function JobCreateForm({
     }
 
     return (
-        <div className="flex flex-col items-center gap-12 max-w-3xl px-4 mb-12 mx-auto">
+        // ปรับ padding ให้เล็กลงบนมือถือ
+        <div className="flex flex-col items-center gap-8 md:gap-12 max-w-3xl px-4 md:px-8 mb-12 mx-auto w-full">
             {/* Progress Bar */}
             <ProgressPoint step={step} maxSteps={3} />
 
@@ -220,7 +221,6 @@ export default function JobCreateForm({
             {step == 1 ? (
                 <div className="flex flex-col gap-6 w-full">
                     {/* -- row 1 -- */}
-                    {/* Job Title Textbox */}
                     <LabeledTextbox
                         label="Job Title"
                         placeholder="Enter a simple job title"
@@ -228,10 +228,10 @@ export default function JobCreateForm({
                         value={jobTitle}
                         required={true}
                     />
-                    {/* -- row 2 -- */}
-                    {/* Location Textbox */}
-                    <div className="flex justify-between">
-                        <div className="w-10/31">
+
+                    {/* -- row 2: Location (ซ้อนกันบนมือถือ, เรียง 3 คอลัมน์บนคอม) -- */}
+                    <div className="flex flex-col md:flex-row justify-between gap-4">
+                        <div className="w-full md:w-[31%]">
                             <LabeledTextbox
                                 label="City"
                                 placeholder="Ladkrabang"
@@ -241,7 +241,7 @@ export default function JobCreateForm({
                                 value={location.city}
                             />
                         </div>
-                        <div className="w-10/31">
+                        <div className="w-full md:w-[31%]">
                             <LabeledTextbox
                                 label="Province"
                                 placeholder="Bangkok"
@@ -251,7 +251,7 @@ export default function JobCreateForm({
                                 value={location.province}
                             />
                         </div>
-                        <div className="w-10/31">
+                        <div className="w-full md:w-[31%]">
                             <LabeledTextbox
                                 label="Country"
                                 placeholder="Thailand"
@@ -262,10 +262,10 @@ export default function JobCreateForm({
                             />
                         </div>
                     </div>
-                    {/* -- row 3 -- */}
-                    <div className="w-full flex justify-around">
-                        {/* Workplace Option Dropdown */}
-                        <div className="w-fit">
+
+                    {/* -- row 3: Workplace & Employment Type (ซ้อนกันบนมือถือ, เรียง 2 คอลัมน์บนคอม) -- */}
+                    <div className="flex flex-col md:flex-row w-full justify-between gap-4">
+                        <div className="w-full md:w-[48%]">
                             <LabeledDropdown
                                 label="Workplace option"
                                 options={workplaceTypeOptions}
@@ -273,8 +273,7 @@ export default function JobCreateForm({
                                 selected={workplaceTypeOption}
                             />
                         </div>
-                        {/* Work Type Option Dropdown */}
-                        <div className="">
+                        <div className="w-full md:w-[48%]">
                             <LabeledOptions
                                 label="Work Type"
                                 options={employmentTypeOptions}
@@ -283,10 +282,10 @@ export default function JobCreateForm({
                             />
                         </div>
                     </div>
-                    {/* -- row 4 -- */}
-                    <div className="flex w-full justify-around">
-                        {/* Currency Option Dropdown */}
-                        <div className="w-1/5">
+
+                    {/* -- row 4: Currency & Salary (ซ้อนกันบนมือถือ, เรียงแนวนอนบนคอม) -- */}
+                    <div className="flex flex-col md:flex-row w-full justify-between gap-4">
+                        <div className="w-full md:w-1/4">
                             <LabeledDropdown
                                 label="Currency"
                                 options={currencyOptions}
@@ -294,9 +293,7 @@ export default function JobCreateForm({
                                 selected={currencyOption}
                             />
                         </div>
-
-                        {/* Salary-FROM Textbox */}
-                        <div className="w-3/8">
+                        <div className="w-full md:w-[35%]">
                             <LabeledTextbox
                                 type="number"
                                 label="From"
@@ -305,9 +302,7 @@ export default function JobCreateForm({
                                 value={salaryMin.toString()}
                             />
                         </div>
-
-                        {/* Salary-TO Textbox */}
-                        <div className="w-3/8">
+                        <div className="w-full md:w-[35%]">
                             <LabeledTextbox
                                 type="number"
                                 label="To"
@@ -317,6 +312,7 @@ export default function JobCreateForm({
                             />
                         </div>
                     </div>
+
                     {/* -- row 5 -- */}
                     <div>
                         <LabeledCheckbox
@@ -328,9 +324,9 @@ export default function JobCreateForm({
                 </div>
             ) : step == 2 ? (
                 <div className="flex flex-col gap-6 w-full">
-                    {/* -- row 1 -- */}
-                    <div className="flex w-full gap-4">
-                        <div className="w-1/2">
+                    {/* -- row 1 (ซ้อนกันบนมือถือ, เรียง 2 คอลัมน์บนคอม) -- */}
+                    <div className="flex flex-col md:flex-row w-full gap-4">
+                        <div className="w-full md:w-1/2">
                             <LabeledDropdown
                                 label="Job Category"
                                 options={categoryOptions}
@@ -338,7 +334,7 @@ export default function JobCreateForm({
                                 selected={categoryOption}
                             />
                         </div>
-                        <div className="w-1/2">
+                        <div className="w-full md:w-1/2">
                             <LabeledTextbox
                                 label="Experience Level Required"
                                 placeholder="Senior, Mid, Junior, ..."
@@ -347,10 +343,11 @@ export default function JobCreateForm({
                             />
                         </div>
                     </div>
-                    {/* -- row 2 -- */}
-                    <div className="flex flex-col gap-2">
-                        <div className="flex w-full gap-4">
-                            <div className="w-1/2">
+
+                    {/* -- row 2 (ซ้อนกันบนมือถือ, เรียง 2 คอลัมน์บนคอม) -- */}
+                    <div className="flex flex-col gap-4">
+                        <div className="flex flex-col md:flex-row w-full gap-4">
+                            <div className="w-full md:w-1/2">
                                 <LabeledDropdown
                                     label="Degree level"
                                     options={degreeLevelOptions}
@@ -358,7 +355,7 @@ export default function JobCreateForm({
                                     onChange={setDegreeLevelAsDegreeLevelCode}
                                 />
                             </div>
-                            <div className="w-1/2">
+                            <div className="w-full md:w-1/2">
                                 <LabeledTextbox
                                     label="Field of study"
                                     placeholder="Computer Science, Business Management"
@@ -375,11 +372,10 @@ export default function JobCreateForm({
                             />
                         </div>
                     </div>
-                    {/* -- row 3 -- */}
-                    {/* TODO: Education Requirements */}
 
-                    <div className="flex w-full justify-around">
-                        <div className="w-3/10">
+                    {/* -- row 3: Weights (กลับมาสมมาตรแบบ 3 กล่องเท่ากันแล้ว ✨) -- */}
+                    <div className="flex flex-col md:flex-row w-full justify-between items-start gap-4">
+                        <div className="w-full md:w-[31%]">
                             <LabeledTextbox
                                 label="Skill Weight"
                                 type="number"
@@ -388,7 +384,7 @@ export default function JobCreateForm({
                                 onChange={setAsNumber(setSkillWeight)}
                             />
                         </div>
-                        <div className="w-3/10">
+                        <div className="w-full md:w-[31%]">
                             <LabeledTextbox
                                 label="Experience Weight"
                                 type="number"
@@ -397,7 +393,8 @@ export default function JobCreateForm({
                                 onChange={setAsNumber(setExperienceWeight)}
                             />
                         </div>
-                        <div className="w-3/10">
+                        {/* ใส่ relative ไว้ที่กล่องสุดท้าย เพื่อให้ปุ่ม ? ยึดเกาะไว้ที่ขวาสุดของกล่องนี้ */}
+                        <div className="w-full md:w-[31%] relative">
                             <LabeledTextbox
                                 label="Education Weight"
                                 type="number"
@@ -405,16 +402,18 @@ export default function JobCreateForm({
                                 value={educationWeight.toString()}
                                 onChange={setAsNumber(setEducationWeight)}
                             />
+                            {/* จัดปุ่ม ? ให้ลอยอยู่ด้านขวา (ใช้ top-8 หรือ top-9 เพื่อให้มันหลบ Label ลงมาอยู่ระดับเดียวกับช่องกรอก) */}
+                            <div className="mt-2 md:mt-0 md:absolute md:-right-7 md:top-8">
+                                <HoverableTips
+                                    symbol="?"
+                                    body="Skill Weight + Experience Weight + Education Weight = 100"
+                                />
+                            </div>
                         </div>
-                        <HoverableTips
-                            symbol="?"
-                            body="Skill Weight + Experience Weight + Education Weight = 100"
-                        />
                     </div>
 
-                    {/* -- row 4 -- */}
-                    {/* TODO: Skill Requirements */}
-                    <div className="flex flex-col gap-1 max-w-1/2">
+                    {/* -- row 4: Skills -- */}
+                    <div className="flex flex-col gap-1 w-full md:w-1/2">
                         <span className="text-heading-4 font-bold">
                             Preferred skills
                         </span>
@@ -426,7 +425,8 @@ export default function JobCreateForm({
                     </div>
                 </div>
             ) : (
-                <div className="w-full h-100">
+                <div className="w-full">
+                    {/* ปรับความสูงของกล่องข้อความให้ยืดหยุ่น */}
                     <LabeledTextArea
                         label="Job Details (markdown supported)"
                         placeholder="Enter a simple job detail (markdown supported for layouting)"
@@ -436,7 +436,7 @@ export default function JobCreateForm({
                 </div>
             )}
 
-            {/* Continue button */}
+            {/* ส่วนปุ่มกด Navigation */}
             {step == 1 ? (
                 <div className="flex w-full justify-end">
                     <Button variant="secondary" onClick={() => setStep(2)}>
@@ -445,7 +445,7 @@ export default function JobCreateForm({
                     </Button>
                 </div>
             ) : step == 2 ? (
-                <div className="flex w-full justify-between">
+                <div className="flex w-full justify-between gap-4">
                     <Button variant="secondary" onClick={() => setStep(1)}>
                         <ArrowRight
                             width={36}
@@ -454,15 +454,13 @@ export default function JobCreateForm({
                         />
                         <div>Back</div>
                     </Button>
-
-                    {/* <Button variant="secondary" onClick={() => handlePostJob()}> */}
                     <Button variant="secondary" onClick={() => setStep(3)}>
                         <div>Continue</div>
                         <ArrowRight width={36} height={36} />
                     </Button>
                 </div>
             ) : (
-                <div className="flex w-full justify-between">
+                <div className="flex w-full justify-between gap-4">
                     <Button variant="secondary" onClick={() => setStep(2)}>
                         <ArrowRight
                             width={36}
@@ -471,8 +469,6 @@ export default function JobCreateForm({
                         />
                         <div>Back</div>
                     </Button>
-                    {/* <Button variant="secondary" onClick={() => handlePostJob()}> */}
-
                     <Button variant="secondary" onClick={handlePostJob}>
                         {mode === "edit" ? "Update Job" : "Post Job"}
                     </Button>
