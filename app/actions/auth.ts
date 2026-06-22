@@ -106,7 +106,7 @@ export async function login(
     }
 
     // 💡 redirect ต้องอยู่นอก try-catch เสมอใน Next.js
-    redirect("/dashboard"); // 👈 เปลี่ยนเป็นหน้าแรกที่คุณอยากให้ไปหลัง Login เสร็จ
+    redirect("/home"); // 👈 เปลี่ยนเป็นหน้าแรกที่คุณอยากให้ไปหลัง Login เสร็จ
 }
 
 // ---------------------------------------------
