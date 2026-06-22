@@ -1,7 +1,7 @@
-// components/Modal.tsx
 "use client";
 
 import { ReactNode, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 export interface ModalProps {
     isOpen: boolean;
@@ -20,10 +20,27 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
         return () => window.removeEventListener("keydown", handleEsc);
     }, [onClose]);
 
+    // บล็อกไม่ให้พื้นหลังเลื่อนเวลาเปิด Modal
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, [isOpen]);
+
+    // 1. ถ้ายังไม่ได้เปิด Modal ก็ return null ไปเลย
     if (!isOpen) return null;
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+    // 2. ป้องกัน Error จาก Next.js ฝั่ง Server (ถ้ายก Modal มาตอนกำลัง Render บน Server ให้ข้ามไปก่อน)
+    if (typeof document === "undefined") return null;
+
+    // ร่ายเวทมนตร์ createPortal โยนไปที่ document.body
+    return createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
             {/* Background overlay */}
             <div
                 className="absolute inset-0 bg-black/40 backdrop-blur-sm"
@@ -35,12 +52,14 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
                 {/* Close button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-3 right-3 text-gray-500 hover:text-black"
+                    className="absolute top-3 right-3 z-50 text-gray-500 hover:text-black w-8 h-8 flex items-center justify-center rounded-full bg-gray-100/50 hover:bg-gray-200"
                 >
                     ✕
                 </button>
+
                 {children}
             </div>
-        </div>
+        </div>,
+        document.body,
     );
 }
