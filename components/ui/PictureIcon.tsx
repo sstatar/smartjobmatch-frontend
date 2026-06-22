@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 export type PictureIconProps = {
-    src?: string;
+    src?: string | null; // เผื่อกรณีที่ API ส่ง null กลับมา
     alt?: string;
     width?: number;
     height?: number;
@@ -14,30 +14,21 @@ export default function PictureIcon({
     alt,
     width = 400,
     height = 400,
-    className,
+    className = "",
     onError,
 }: PictureIconProps) {
+    // กำหนดรูปที่จะใช้ ถ้าไม่มี src ให้ใช้ default ทันที
+    const imageSource = src || "/default-logo.png";
+
+    // คืนค่า <Image> ตัวเดียวเพียวๆ โดยไม่มี div มาครอบ
     return (
-        <div>
-            {src ? (
-                <Image
-                    width={width}
-                    height={height}
-                    src={src}
-                    alt={alt ? alt : src ? src : "picture"}
-                    className={`${className} rounded-full object-cover border border-accent-2`}
-                    onError={onError}
-                />
-            ) : (
-                <Image
-                    width={width}
-                    height={height}
-                    src="/default-logo.png"
-                    alt={alt ? alt : src ? src : "picture"}
-                    className={`${className} rounded-full object-cover border border-accent-2`}
-                    onError={onError}
-                />
-            )}
-        </div>
+        <Image
+            width={width}
+            height={height}
+            src={imageSource}
+            alt={alt || "Profile picture"}
+            className={`${className} rounded-full object-cover border border-accent-2`}
+            onError={onError}
+        />
     );
 }
