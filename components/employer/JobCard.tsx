@@ -6,8 +6,8 @@ import BookmarkIcon from "@/public/svgs/bookmark.svg";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import CircularProgress from "../../ui/CircularProgress";
-import { JobCardData } from "./JobsList.client";
+import CircularProgress from "@/components/ui/CircularProgress";
+import { JobCardData } from "@/components/shared/JobsList/JobsList.client";
 
 interface JobCardProps {
     jobData: JobCardData; // สมมติว่า jobData มีฟิลด์ id เพื่อส่งกลับไปตอนลบ/แก้ไข
@@ -100,7 +100,7 @@ export default function JobCard({
     return (
         <div
             // ใช้ Design เดิมของคุณเป๊ะๆ ไม่เปลี่ยนคลาสสีหรือเงาเลย
-            className={`job-card relative cursor-pointer flex gap-1.75 p-4 w-full rounded-lg border bg-white transition-all duration-200 ease-in-out
+            className={`job-card relative cursor-pointer flex flex-col md:flex-row md:items-center gap-4 p-4 w-full rounded-lg border bg-white transition-all duration-200 ease-in-out
             ${
                 isSelected
                     ? "border-black shadow-xl"
@@ -171,26 +171,25 @@ export default function JobCard({
             )}
             {/* --- จบส่วนประกอบเมนู Meatballs --- */}
 
-            {/* 💡 เติม min-w-0 เพื่อห้ามไม่ให้กล่องนี้กว้างทะลุการ์ดแม่ */}
-            <div className="card-info flex items-center w-full justify-between min-w-0">
-                {/* 💡 เติม flex-1 min-w-0 เพื่อให้พื้นที่ตัวหนังสือยืดหยุ่น หดตัวได้ตามกรอบ */}
-                <div className="job-short-info ml-4 flex-1 min-w-0">
-                    <div className="company-name font-medium text-subtitle-2">
+            {/* กล่องคลุมเนื้อหาหลัก จัด flex ให้รองรับมือถือ */}
+            <div className="card-info flex items-start md:items-center w-full justify-between min-w-0">
+                <div className="job-short-info flex-1 min-w-0 pr-10">
+                    {" "}
+                    {/* เติม pr-10 ไว้กันข้อความไปชนกับปุ่ม 3 จุด */}
+                    <div className="company-name font-medium text-subtitle-2 text-gray-600">
                         {jobData.company?.name}
                     </div>
-                    {/* 💡 เติม break-words บังคับตัดบรรทัดถ้าชื่อตำแหน่งยาวเกินไป */}
-                    <div
-                        className={`job-title font-semibold text-heading-4 break-words ${isOwner ? "pr-10" : ""}`}
-                    >
+                    {/* ปรับขนาดชื่องานให้ใหญ่ขึ้นนิดนึงบนจอใหญ่ */}
+                    <h3 className="job-title font-semibold text-heading-5 md:text-heading-4 text-gray-900 break-words my-1">
                         {jobData.title}
-                    </div>
-                    <div className="location font-medium text-subtitle-2">
+                    </h3>
+                    <div className="location font-medium text-subtitle-2 text-gray-500">
                         {jobData.location?.province
                             ? `${jobData.location?.province}, `
                             : ""}
                         {jobData.location?.country}
                     </div>
-                    <div className="salary font-medium text-subtitle-2">
+                    <div className="salary font-medium text-subtitle-2 text-gray-600 mt-1">
                         {jobData.salaryMin}
                         {jobData.salaryMin && jobData.salaryMax && " - "}
                         {jobData.salaryMax}
@@ -198,44 +197,47 @@ export default function JobCard({
                             ? ` ${jobData.currency}`
                             : ""}
                     </div>
-                    <div className="">
-                        {jobData.isActive ? (
-                            <span className="font-semibold text-green-700">
-                                Active
-                            </span>
-                        ) : (
-                            <span className="font-semibold text-red-700">
-                                Inactive
-                            </span>
-                        )}
+                    <div className="mt-3">
+                        <span
+                            className={`text-xs px-2 py-0.5 rounded-full border ${
+                                jobData.isActive
+                                    ? "border-green-500 text-green-700 bg-green-50"
+                                    : "border-gray-400 text-gray-600 bg-gray-100"
+                            }`}
+                        >
+                            {jobData.isActive ? "Active" : "Inactive"}
+                        </span>
                     </div>
                 </div>
 
-                <div className="shrink-0">
-                    <>
-                        {aiScore && (
-                            <>
-                                {/* ใช้ขนาด 72 และรูปแบบเดิมของคุณทั้งหมด */}
-                                <CircularProgress
-                                    percentage={aiScore}
-                                    size={72}
-                                    strokeWidth={6}
-                                />
-                            </>
-                        )}
-                    </>
-                </div>
-            </div>
+                {/* ส่วนคะแนน AI วงกลม (ให้อยู่ขวาบนในมือถือ และขวากลางในจอใหญ่) */}
+                <div className="shrink-0 flex flex-col items-end gap-2">
+                    {aiScore !== undefined && (
+                        <div className="bg-white rounded-full shadow-sm">
+                            <CircularProgress
+                                percentage={aiScore}
+                                size={64} // ปรับเล็กลงนิดนึงให้ดูพอดีกับการ์ด
+                                strokeWidth={5}
+                            />
+                        </div>
+                    )}
 
-            {showBookmark && (
-                <div onClick={handleBookmarkClick} className="shrink-0">
-                    {isBookmarked ? (
-                        <FilledBookmark className="w-6 h-6 text-accent" />
-                    ) : (
-                        <BookmarkIcon className="w-6 h-6 text-accent" />
+                    {/* ย้ายปุ่ม Bookmark มารวมไว้ฝั่งขวากับวงกลม AI (ถ้ามีการแสดง) */}
+                    {showBookmark && (
+                        <button
+                            onClick={handleBookmarkClick}
+                            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                            aria-label="Bookmark job"
+                        >
+                            {isBookmarked ? (
+                                <FilledBookmark className="w-6 h-6 text-blue-600" />
+                            ) : (
+                                <BookmarkIcon className="w-6 h-6 text-gray-400 hover:text-gray-600" />
+                            )}
+                        </button>
                     )}
                 </div>
-            )}
+            </div>
         </div>
     );
 }
